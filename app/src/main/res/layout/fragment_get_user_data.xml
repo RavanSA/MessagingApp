@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.GetUserData"
+    android:background="@color/BackGround">
+
+    <EditText
+        android:id="@+id/edtProfileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="15"
+        android:inputType="textPersonName"
+        android:layout_gravity="center"
+        android:autofillHints="" />
+
+    <com.theartofdev.edmodo.cropper.CropImageView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cropImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:id="@+id/imgPickImage"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/ic_baseline_person_add_24"
+        android:tint="#2196F3"
+        app:layout_anchor="@id/cropImageView"
+        app:layout_anchorGravity="end|center" />
+
+    <EditText
+        android:id="@+id/edtProfileStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:autofillHints=""
+        android:ems="15"
+        android:inputType="textShortMessage" />
+
+    <Button
+        android:id="@+id/UserProfileSave"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:text="@string/save" />
+</FrameLayout>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Messaging App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="send">Send</string>
+    <string name="save">save</string>
+    <string name="AppName">App Name Temp</string>
+    <string name="welcome_to_secure_n_messaging_app">Welcome to Secure "\n" Messaging App</string>
+    <string name="welcomescreen_terms">We would be happy to register you. You can register if you accept the Terms and Conditions.</string>
+    <string name="accept_get_started"><![CDATA[Accept & Get Started]]></string>
+    <string name="send_sms">SEND SMS</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet
+        , consectetur adipiscing elit. Aliquam luctus augue
+        vitae dui laoreet pulvinar</string>
+    <string name="resend_sms">Resend SMS</string>
+    <string name="wrong_number">If you typed the number wrong click here</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+</resources>

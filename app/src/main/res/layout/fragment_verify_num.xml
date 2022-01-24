@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.VerifyNum"
+    android:background="@color/BackGround">
+
+    <TextView
+        android:id="@+id/VerifyAddNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verify "
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp" />
+
+    <TextView
+        android:id="@+id/SplashBottomText"
+        android:layout_width="371dp"
+        android:layout_height="119dp"
+        android:layout_marginBottom="216dp"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="20dp"/>
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        android:alpha="0.9"
+        android:layout_marginTop="90dp"
+        android:layout_marginLeft="50dp"/>
+
+    <EditText
+        android:id="@+id/OTPPinText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="15"
+        android:inputType="phone"
+        android:layout_gravity="center"
+        android:autofillHints=""
+        android:layout_marginTop="-110dp"/>
+
+    <TextView
+        android:id="@+id/VerifyNumText"
+        android:layout_width="371dp"
+        android:layout_height="119dp"
+        android:layout_marginBottom="216dp"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/VerifyNumReSend"
+        android:layout_width="371dp"
+        android:layout_height="119dp"
+        android:layout_marginBottom="216dp"
+        android:text="@string/resend_sms"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:layout_marginTop="340dp"
+        android:layout_marginLeft="40dp"/>
+
+    <TextView
+        android:id="@+id/VerifyNumWrongNum"
+        android:layout_width="371dp"
+        android:layout_height="119dp"
+        android:layout_marginBottom="216dp"
+        android:text="@string/wrong_number"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:layout_marginTop="380dp"
+        android:layout_marginLeft="40dp"/>
+
+    <Button
+        android:id="@+id/OTPPinSend"
+        android:layout_marginTop="90dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:text="Complete"
+        />
+</FrameLayout>
