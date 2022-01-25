@@ -30,7 +30,6 @@
         android:layout_marginLeft="150dp"
         android:layout_marginTop="150dp"
         android:src="@drawable/ic_baseline_person_add_24"
-        android:tint="#2196F3"
         app:layout_anchor="@id/cropImageView"
         app:layout_anchorGravity="end|center" />
 
