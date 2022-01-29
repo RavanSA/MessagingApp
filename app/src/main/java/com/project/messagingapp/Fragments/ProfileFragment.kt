@@ -1,6 +1,7 @@
 package com.project.messagingapp.Fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.project.messagingapp.ViewModel.ProfileViewModel
 import com.project.messagingapp.databinding.FragmentProfileBinding
+import kotlinx.android.synthetic.main.fragment_get_number.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+
 //import com.project.messagingapp.ViewModel.ProfileViewModel as ProfileViewModel
 
 class ProfileFragment : Fragment() {
@@ -29,14 +33,20 @@ class ProfileFragment : Fragment() {
             .create(ProfileViewModel::class.java)
 
 
-        profileViewModel.getUser().observe(viewLifecycleOwner, Observer {
-            profileBinding.userModel = it
+        profileViewModel.getUser().observe(viewLifecycleOwner, Observer { userModel ->
+            profileBinding.userModel = userModel
 
-            if(it.name.contains(" ")){
-                val split = it.name.split(" ")
+            if(userModel.name?.contains(" ") == true)  {
+                val split = userModel.name.split(" ")
 
                 profileBinding.ProfileFirstName.text = split[0]
                 profileBinding.ProfileLastName.text = split[1]
+                ProfileFirstName.text =split[0]
+                ProfileLastName.text =split[1]
+                ProfilePhoneNumber.text = userModel.number.toString()
+                Log.d("FIRSTNAME:", split[0])
+                Log.d("LASTNAME:", split[1])
+                Log.d("PHONE:", userModel.number.toString())
             }
         })
         return inflater.inflate(R.layout.fragment_profile, container, false)

@@ -16,4 +16,7 @@
     <string name="wrong_number">If you typed the number wrong click here</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
+    <string name="full_name">Full Name</string>
+    <string name="status">Status</string>
+    <string name="phone">Phone</string>
 </resources>
