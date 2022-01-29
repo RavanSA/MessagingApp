@@ -3,11 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.GetNumber"
-    android:background="@color/BackGround"
-    android:forceDarkAllowed="false"
-    >
+    android:background="@color/BackGround">
 
     <TextView
         android:id="@+id/AppName"
@@ -57,10 +54,10 @@
             android:layout_width="267dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:autofillHints=""
             android:ems="15"
             android:inputType="phone" />
     </com.hbb20.CountryCodePicker>
+
 
     <Button
         android:id="@+id/otpSendBtn"

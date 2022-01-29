@@ -1,10 +1,12 @@
 package com.project.messagingapp.Fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.project.messagingapp.R
 import com.project.messagingapp.UserModel
+import kotlinx.android.synthetic.main.fragment_get_number.*
 import kotlinx.android.synthetic.main.fragment_get_number.view.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KMutableProperty1
@@ -26,16 +29,24 @@ class GetNumber : Fragment() {
     private var firebaseAuth: FirebaseAuth? = null
     private var databaseReference: DatabaseReference? = null
     private var mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+    private var countryCode:String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
+//        country_code_picker!!.setOnCountryChangeListener(this)
+//        country_code_picker!!.setOnCountryChangeListener(this)
+//        //to set default country code as Japan
+//        countryCode = country_code_picker!!.selectedCountryCode
+        val progressDialog = ProgressDialog(requireActivity())
+        progressDialog.setTitle("Please wait")
+        progressDialog.setMessage("We sending code, please wait")
         val view = inflater.inflate(R.layout.fragment_get_number, container, false)
         view.otpSendBtn.setOnClickListener {
             if(checkNumber()){
                 sendOneTimePassword(number)
+                progressDialog.show()
             }
         }
         mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
@@ -49,7 +60,6 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.currentUser!!.phoneNumber!!,
                                 firebaseAuth!!.uid!!
                             )
-
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
                         activity?.supportFragmentManager
                             ?.beginTransaction()
@@ -65,6 +75,8 @@ class GetNumber : Fragment() {
             }
 
             override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                progressDialog.cancel()
+                progressDialog.dismiss()
                 activity!!.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.main_container, VerifyNum
@@ -95,7 +107,8 @@ class GetNumber : Fragment() {
     }
 
     private fun checkNumber(): Boolean {
-        number = requireView().edtPhone.text.toString().trim()
+        number =requireView().country_code_picker.selectedCountryCodeWithPlus+ requireView().edtPhone.text.toString().trim()
+        Log.d("NUMBER:", number!!)
         if(number!!.isEmpty()){
             requireView().edtPhone?.error ="Field is reqiured"
             return false

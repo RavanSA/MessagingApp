@@ -14,7 +14,8 @@
         android:ems="15"
         android:inputType="textPersonName"
         android:layout_gravity="center"
-        android:autofillHints="" />
+        android:hint="@string/full_name"
+         />
 
     <com.theartofdev.edmodo.cropper.CropImageView
         xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -31,7 +32,8 @@
         android:layout_marginTop="150dp"
         android:src="@drawable/ic_baseline_person_add_24"
         app:layout_anchor="@id/cropImageView"
-        app:layout_anchorGravity="end|center" />
+        app:layout_anchorGravity="end|center"
+        />
 
     <EditText
         android:id="@+id/edtProfileStatus"
@@ -39,9 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:autofillHints=""
         android:ems="15"
-        android:inputType="textShortMessage" />
+        android:inputType="textShortMessage"
+        android:hint="@string/status"/>
 
     <Button
         android:id="@+id/UserProfileSave"
