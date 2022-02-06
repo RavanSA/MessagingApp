@@ -11,6 +11,8 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_main_chat_screen.xml" value="0.10916919959473151" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_registration.xml" value="0.17980072463768115" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.12952898550724637" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_user_registration_profile.xml" value="0.15" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_dialog.xml" value="0.1394736842105263" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_get_number.xml" value="0.18" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_get_user_data.xml" value="0.16" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_profile.xml" value="0.17317073170731706" />
@@ -18,6 +20,7 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_welcome.xml" value="0.17980072463768115" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.240625" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.240625" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/xml/file_path.xml" value="0.1" />
       </map>
     </option>
   </component>

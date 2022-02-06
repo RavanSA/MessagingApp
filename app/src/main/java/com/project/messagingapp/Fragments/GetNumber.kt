@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
+import com.project.messagingapp.Activities.UserRegistrationProfile
 import com.project.messagingapp.R
 import com.project.messagingapp.UserModel
 import kotlinx.android.synthetic.main.fragment_get_number.*
@@ -61,10 +63,8 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.uid!!
                             )
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
-                        activity?.supportFragmentManager
-                            ?.beginTransaction()
-                            ?.replace(R.id.main_container, GetUserData())
-                            ?.commit()
+                        startActivity(Intent(context, UserRegistrationProfile::class.java))
+                        requireActivity().finish()
 
                         val sharedPref: SharedPreferences = activity!!.applicationContext.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
                         val editor = sharedPref.edit()
@@ -84,6 +84,8 @@ class GetNumber : Fragment() {
                         ).commit()
             }
             override fun onVerificationFailed(p0: FirebaseException) {
+                progressDialog.cancel()
+                progressDialog.dismiss()
                 if(p0 is FirebaseAuthInvalidCredentialsException)
                     Toast.makeText(context, " " + p0.message, Toast.LENGTH_SHORT).show()
                 else if (p0 is FirebaseTooManyRequestsException)

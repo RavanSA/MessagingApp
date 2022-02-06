@@ -8,11 +8,14 @@ import android.os.Handler
 import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.project.messagingapp.R
 
 
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         super.onCreate(savedInstanceState)
         val actionBar: ActionBar? = supportActionBar
         actionBar?.hide()
