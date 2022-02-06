@@ -19,4 +19,8 @@
     <string name="full_name">Full Name</string>
     <string name="status">Status</string>
     <string name="phone">Phone</string>
+    <string name="username">Username</string>
+    <string name="hey_i_m_using_this_app">Hey! I,m using this app</string>
+    <string name="done">Done</string>
+    <string name="todo">TODO</string>
 </resources>

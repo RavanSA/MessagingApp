@@ -1,6 +1,7 @@
 package com.project.messagingapp.Fragments
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.project.messagingapp.Activities.MainChatScreen
+import com.project.messagingapp.Activities.UserRegistrationProfile
 import com.project.messagingapp.R
 import com.project.messagingapp.UserModel
 import kotlinx.android.synthetic.*
@@ -59,10 +62,13 @@ class VerifyNum : Fragment() {
                     firebaseAuth!!.uid!!
                 )
                 databaseReference!!.child(firebaseAuth?.uid!!).setValue(userModel)
-                requireActivity().supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.main_container, GetUserData())
-                    .commit()
+//                requireActivity().supportFragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.main_container, GetUserData())
+//                    .commit()
+
+                startActivity(Intent(context, UserRegistrationProfile::class.java))
+                requireActivity().finish()
             }
         }
     }
