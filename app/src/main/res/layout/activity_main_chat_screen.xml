@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/chat_container"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainChatScreen">
+    tools:context=".Activities.MainChatScreen"
+    android:background="@color/BackGround">
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/dashboardContainer"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_above="@+id/bottomChip" />-->
-
-<!--    <com.ismaeldivita.chipnavigation.ChipNavigationBar-->
-<!--        android:id="@+id/bottomChip"-->
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="150dp"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:background="@color/browser_actions_bg_grey"-->
-<!--        app:cnb_menuResource="@menu/nav"-->
-<!--        app:cnb_unselectedColor="@color/browser_actions_divider_color" />-->
+<!--        android:background="@color/SecondColor"-->
+<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+<!--        app:title="@string/AppName"-->
+<!--        app:titleMarginStart="40dp"-->
+<!--        app:subtitle="@string/first_name"-->
+<!--        app:logo="@drawable/ic_baseline_phone_android_24"-->
+<!--        />-->
+    <include layout="@layout/toolbar"/>
 
-
-</FrameLayout>
+</LinearLayout>
