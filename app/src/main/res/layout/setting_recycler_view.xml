@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+    <data class="SettingListBinding">
+        <variable
+            name="settingsView"
+            type="com.project.messagingapp.viewmodel.SettingsViewModel"
+            />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="vertical"
+        android:gravity="fill_vertical"
+        >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+
+        <ImageView
+            android:id="@+id/setting_imageView"
+            android:layout_width="57dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="28dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/setting_recycler_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            binding:imageURL="@{settingsView.imageSettings}" />
+
+        <TextView
+            android:id="@+id/setting_recycler_title"
+            android:layout_width="199dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="80dp"
+            android:text="@{settingsView.title}"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        app:drawableStartCompat="@{settingsView.imageURL}"-->
+<!--        <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="84dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:src="@{settingsView.imageURL}"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.355"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.0" />-->
+
+    </LinearLayout>
+</layout>

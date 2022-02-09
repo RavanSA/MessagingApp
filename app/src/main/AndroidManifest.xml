@@ -6,6 +6,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessagingApp">
         <activity
-            android:name=".Activities.UserRegistrationProfile" />
-        <activity android:name="com.canhub.cropper.CropImageActivity"
-            />
+            android:name=".Activities.Settings"
+            android:exported="false" />
+        <activity android:name=".Activities.UserRegistrationProfile" />
+        <activity android:name="com.canhub.cropper.CropImageActivity" />
         <activity android:name=".Activities.MainChatScreen" />
         <activity
             android:name=".Activities.SplashScreen"
@@ -44,7 +46,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
-
     </application>
 
 </manifest>

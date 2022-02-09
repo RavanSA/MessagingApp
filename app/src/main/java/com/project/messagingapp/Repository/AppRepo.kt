@@ -31,8 +31,8 @@ class AppRepo {
                 override fun onDataChange(snapshot: DataSnapshot) {
                  if(snapshot.exists()){
                      val userModel = snapshot.getValue(UserModel::class.java)
-                     liveData!!.postValue(userModel)
-                 }
+                     liveData!!.postValue(userModel!!)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
