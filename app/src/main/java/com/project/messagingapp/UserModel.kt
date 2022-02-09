@@ -12,13 +12,13 @@ data class UserModel (
     val UID: String? = ""
 )
 {
-    companion object {
-        @JvmStatic
-        @BindingAdapter("imageSRC")
-        fun LoadImage(view: CircleImageView, imageSRC :String?){
-            imageSRC?.let{
-                Glide.with(view.context).load(imageSRC).into(view)
-            }
-        }
-    }
+//    companion object {
+//        @JvmStatic
+//        @BindingAdapter("imageSRC")
+//        fun LoadImage(view: CircleImageView, imageSRC :String?){
+//            imageSRC?.let{
+//                Glide.with(view.context).load(imageSRC).into(view)
+//            }
+//        }
+//    }
 }

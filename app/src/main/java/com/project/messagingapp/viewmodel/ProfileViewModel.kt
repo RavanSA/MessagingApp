@@ -1,4 +1,4 @@
-package com.project.messagingapp.ViewModel
+package com.project.messagingapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

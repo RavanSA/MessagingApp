@@ -2,11 +2,14 @@ package com.project.messagingapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.project.messagingapp.Fragments.SettingsFragment
 import com.project.messagingapp.R
-import com.project.messagingapp.ViewModel.SettingsViewModel
+import com.project.messagingapp.viewmodel.SettingsViewModel
 import com.project.messagingapp.databinding.SettingListBinding
 
 class CustomSettingsAdapter(private val context: SettingsFragment,
@@ -31,6 +34,8 @@ class CustomSettingsAdapter(private val context: SettingsFragment,
         val settingViewModel = arrayList[position]
 
         holder.bindSettingList(settingViewModel)
+//        Glide.with(holder.itemView.context).load(settingViewModel.imageSettings).into(holder.settingView.settingImageView)
+
     }
 
     override fun getItemCount(): Int {
@@ -46,4 +51,13 @@ class CustomSettingsAdapter(private val context: SettingsFragment,
             settingView.executePendingBindings()
         }
     }
+
 }
+
+//object ImageBindingAdapter{
+//    @JvmStatic
+//    @BindingAdapter("android:src")
+//    fun setImageUrl(view: ImageView, url: String){
+//        Glide.with(view.context).load(url).placeholder(R.drawable.ic_baseline_person_add_24).into(view)
+//    }
+//}

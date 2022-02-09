@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activities.Settings"
     android:background="@color/BackGround"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/setting_container">
 
 
 

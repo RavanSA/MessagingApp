@@ -44,6 +44,7 @@ class MainChatScreen : AppCompatActivity() {
                          this@MainChatScreen,
                          Settings::class.java
                      ))
+                     Toast.makeText(applicationContext,"CLICK",Toast.LENGTH_LONG).show()
                 }
 //                supportFragmentManager.beginTransaction()
 //                    .add(R.id.chat_container, ProfileFragment())

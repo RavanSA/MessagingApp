@@ -1,5 +1,6 @@
-package com.project.messagingapp.ViewModel
+package com.project.messagingapp.viewmodel
 
+import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
@@ -7,19 +8,18 @@ import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.project.messagingapp.R
 import com.project.messagingapp.model.SettingList
-import kotlinx.android.synthetic.main.activity_user_registration_profile.*
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel : ViewModel {
 
     var id = ""
     var title=""
-    var image = ""
+    var imageSettings = ""
     constructor():super()
 
     constructor(setting: SettingList) : super() {
         this.id = setting.id
         this.title = setting.title
-        this.image = setting.image
+        this.imageSettings = setting.imageSettings
     }
 
     var arrlistMutableLiveData = MutableLiveData<ArrayList<SettingsViewModel>>()
@@ -28,9 +28,9 @@ class SettingsViewModel : ViewModel() {
 
 
     fun getArrayList() : MutableLiveData<ArrayList<SettingsViewModel>>{
-        val editprofile = SettingList("1","Edit Profile","test.png")
-        val editprofile2 = SettingList("2","Edit Profile2","test3.png")
-        val editprofile3 = SettingList("3","Edit Profile3","test4.png")
+        val editprofile = SettingList("1","Edit Profile1","logo_png")
+        val editprofile2 = SettingList("2","Edit Profile2","logo_png.png")
+        val editprofile3 = SettingList("3","Edit Profile3","R.drawable.logo_png")
 
         val settingviewmodel1: SettingsViewModel = SettingsViewModel(editprofile)
         val settingviewmodel2: SettingsViewModel = SettingsViewModel(editprofile2)
@@ -45,17 +45,25 @@ class SettingsViewModel : ViewModel() {
         return arrlistMutableLiveData
     }
 
-    fun getImageURL() : String{
-     return image
+    fun getImageUrl() : String{
+     return imageSettings
     }
+
 }
 
-object IconBindingAdapter{
+
+
+object ImageBindingAdapter{
     @JvmStatic
-    @BindingAdapter("android:src")
-
-    fun setIconImage(view: ImageView, url: String){
-        Glide.with(view.context).load(url).placeholder(R.drawable.ic_baseline_person_add_24).into(view)
+    @BindingAdapter("imageURL")
+    fun setImageURL(view: ImageView, url: String){
+//        Glide.with(view.context).load(url).placeholder(R.drawable.ic_baseline_person_add_24).into(view)
+        Log.d("IMAGERESOURCES",url)
+        Glide.with(view.context)
+            .load(view.context.resources
+                .getIdentifier(url, "drawable", view.context.packageName))
+                .into(view)
     }
-}
 
+
+}
