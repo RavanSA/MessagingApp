@@ -1,4 +1,4 @@
-package com.project.messagingapp.Fragments
+package com.project.messagingapp.ui.main.view.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +10,8 @@ import com.project.messagingapp.R
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.project.messagingapp.viewmodel.ProfileViewModel
+import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
 import com.project.messagingapp.databinding.FragmentProfileBinding
-import kotlinx.android.synthetic.main.activity_user_registration_profile.*
-import kotlinx.android.synthetic.main.fragment_get_number.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 //import com.project.messagingapp.ViewModel.ProfileViewModel as ProfileViewModel

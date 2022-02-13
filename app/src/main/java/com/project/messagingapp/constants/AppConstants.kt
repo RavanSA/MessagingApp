@@ -1,4 +1,4 @@
-package com.project.messagingapp.Constants
+package com.project.messagingapp.constants
 
 interface AppConstants {
     companion object{

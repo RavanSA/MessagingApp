@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/BackGround"
-    tools:context=".Activities.UserRegistrationProfile"
+    tools:context=".ui.main.view.activities.UserRegistrationProfile"
     android:id="@+id/user_profile_lay_id"
     >
 

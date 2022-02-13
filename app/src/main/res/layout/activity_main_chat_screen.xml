@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainChatScreen"
+    tools:context=".ui.main.view.activities.MainChatScreen"
     android:background="@color/BackGround">
 
 <!--    <androidx.appcompat.widget.Toolbar-->

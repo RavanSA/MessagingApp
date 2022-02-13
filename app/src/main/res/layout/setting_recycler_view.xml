@@ -6,7 +6,7 @@
     <data class="SettingListBinding">
         <variable
             name="settingsView"
-            type="com.project.messagingapp.viewmodel.SettingsViewModel"
+            type="com.project.messagingapp.ui.main.viewmodel.SettingsViewModel"
             />
     </data>
 
@@ -24,26 +24,40 @@
 
         <ImageView
             android:id="@+id/setting_imageView"
-            android:layout_width="57dp"
-            android:layout_height="56dp"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
             android:layout_marginStart="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/setting_recycler_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            binding:imageURL="@{settingsView.imageSettings}" />
+            binding:imageUrl="@{settingsView.imageSettings}" />
 
         <TextView
             android:id="@+id/setting_recycler_title"
-            android:layout_width="199dp"
+            android:layout_width="182dp"
             android:layout_height="28dp"
-            android:layout_marginEnd="80dp"
+            android:layout_marginEnd="132dp"
             android:text="@{settingsView.title}"
-            android:textSize="25dp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.307" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="185dp"
+            android:layout_height="15dp"
+            android:text="@{settingsView.settingDesc}"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.11"
+            app:layout_constraintStart_toEndOf="@+id/setting_imageView"
+            app:layout_constraintTop_toBottomOf="@+id/setting_recycler_title"
+            app:layout_constraintVertical_bias="0.238" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--        app:drawableStartCompat="@{settingsView.imageURL}"-->

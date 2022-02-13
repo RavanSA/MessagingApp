@@ -1,9 +1,8 @@
-package com.project.messagingapp.Fragments
+package com.project.messagingapp.ui.main.view.fragments
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,13 +16,11 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
-import com.project.messagingapp.Activities.UserRegistrationProfile
+import com.project.messagingapp.ui.main.view.activities.UserRegistrationProfile
 import com.project.messagingapp.R
-import com.project.messagingapp.UserModel
-import kotlinx.android.synthetic.main.fragment_get_number.*
+import com.project.messagingapp.data.model.UserModel
 import kotlinx.android.synthetic.main.fragment_get_number.view.*
 import java.util.concurrent.TimeUnit
-import kotlin.reflect.KMutableProperty1
 
 
 class GetNumber : Fragment() {
@@ -62,14 +59,12 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.currentUser!!.phoneNumber!!,
                                 firebaseAuth!!.uid!!
                             )
+
+
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
                         startActivity(Intent(context, UserRegistrationProfile::class.java))
                         requireActivity().finish()
 
-                        val sharedPref: SharedPreferences = activity!!.applicationContext.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
-                        val editor = sharedPref.edit()
-                        editor.putString("PhoneNumber",number)
-                        editor.apply()
                     }
                 }
             }
@@ -117,7 +112,13 @@ class GetNumber : Fragment() {
         } else if (number!!.length<10){
             requireView().edtPhone?.error ="Invalid length"
             return false
-        } else
+        } else {
+            val sharedPref: SharedPreferences = context!!.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            number?.let { Log.d("PHONENUMBER,", it) }
+            editor.putString("PhoneNumber",number?.let { it })
+            editor.apply()
             return true
+        }
     }
 }

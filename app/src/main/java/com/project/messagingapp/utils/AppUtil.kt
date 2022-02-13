@@ -1,4 +1,4 @@
-package com.project.messagingapp.Utils
+package com.project.messagingapp.utils
 
 import com.google.firebase.auth.FirebaseAuth
 

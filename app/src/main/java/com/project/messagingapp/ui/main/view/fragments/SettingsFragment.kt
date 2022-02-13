@@ -1,4 +1,4 @@
-package com.project.messagingapp.Fragments
+package com.project.messagingapp.ui.main.view.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.project.messagingapp.R
-import com.project.messagingapp.viewmodel.SettingsViewModel
-import com.project.messagingapp.adapter.CustomSettingsAdapter
+import com.project.messagingapp.ui.main.viewmodel.SettingsViewModel
+import com.project.messagingapp.ui.main.adapter.CustomSettingsAdapter
 import kotlinx.android.synthetic.main.settings_fragment.*
 
 class SettingsFragment : Fragment() {

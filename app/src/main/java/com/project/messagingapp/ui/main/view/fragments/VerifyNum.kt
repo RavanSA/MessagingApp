@@ -1,4 +1,4 @@
-package com.project.messagingapp.Fragments
+package com.project.messagingapp.ui.main.view.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -12,12 +12,9 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.project.messagingapp.Activities.MainChatScreen
-import com.project.messagingapp.Activities.UserRegistrationProfile
+import com.project.messagingapp.ui.main.view.activities.UserRegistrationProfile
 import com.project.messagingapp.R
-import com.project.messagingapp.UserModel
-import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_verify_num.*
+import com.project.messagingapp.data.model.UserModel
 import kotlinx.android.synthetic.main.fragment_verify_num.view.*
 
 class VerifyNum : Fragment() {

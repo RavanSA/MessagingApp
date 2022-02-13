@@ -1,9 +1,8 @@
-package com.project.messagingapp.Activities
+package com.project.messagingapp.ui.main.view.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.project.messagingapp.Fragments.SettingsFragment
-import com.project.messagingapp.Fragments.WelcomeFragment
+import com.project.messagingapp.ui.main.view.fragments.SettingsFragment
 import com.project.messagingapp.R
 
 class Settings : AppCompatActivity() {

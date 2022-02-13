@@ -1,15 +1,12 @@
-package com.project.messagingapp.Activities
+package com.project.messagingapp.ui.main.view.activities
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import com.project.messagingapp.Fragments.ProfileFragment
-import com.project.messagingapp.Fragments.WelcomeFragment
 import com.project.messagingapp.R
 import kotlinx.android.synthetic.main.toolbar.*
 

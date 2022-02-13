@@ -1,6 +1,5 @@
-package com.project.messagingapp.Activities
+package com.project.messagingapp.ui.main.view.activities
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,34 +8,20 @@ import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.util.ObjectsCompat.requireNonNull
 import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.get
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
-import com.project.messagingapp.Constants.AppConstants
+import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.R
-import com.canhub.cropper.CropImage
-import com.canhub.cropper.PickImageContract
 import com.example.awesomedialog.*
-import com.google.android.gms.common.internal.Objects
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.BuildConfig
-import com.project.messagingapp.Fragments.DialogFragment
-import com.project.messagingapp.Fragments.VerifyNum
-import com.project.messagingapp.Fragments.WelcomeFragment
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
 import java.io.File
-import java.lang.reflect.Array.get
-import java.util.Objects.requireNonNull
 
 
 class UserRegistrationProfile : AppCompatActivity() {
@@ -140,24 +125,27 @@ class UserRegistrationProfile : AppCompatActivity() {
     }
 
     private fun UploadData(username: String, status: String, image: Uri) = kotlin.run {
-        storageRef!!.child(firebaseAuth!!.uid + AppConstants.Path).putFile(image)
-            .addOnSuccessListener {
-                val task = it.storage.downloadUrl
-                task.addOnCompleteListener { uri ->
-                    ImageUrl = uri.result.toString()
-                    val map = mapOf(
-                        "name" to username,
-                        "status" to status,
-                        "image" to ImageUrl
-                    )
-                    Log.d("FAILURELISTENER",map.toString())
-                    DatabaseRef!!.child(firebaseAuth!!.uid!!).updateChildren(map)
-                    startActivity(Intent(this@UserRegistrationProfile, MainChatScreen::class.java))
+        firebaseAuth!!.uid?.let {
+            storageRef!!.child(AppConstants.Path).child(it).putFile(image)
+                .addOnSuccessListener {
+                    val task = it.storage.downloadUrl
+                    task.addOnCompleteListener { uri ->
+                        ImageUrl = uri.result.toString()
+                        val map = mapOf(
+                            "name" to username,
+                            "status" to status,
+                            "image" to ImageUrl
+                        )
+
+                        Log.d("FAILURELISTENER",map.toString())
+                        DatabaseRef!!.child(firebaseAuth!!.uid!!).updateChildren(map)
+                        startActivity(Intent(this@UserRegistrationProfile, MainChatScreen::class.java))
+                    }
+                    task.addOnFailureListener { exception ->
+                        Log.d("FAILURELISTENER", exception.toString())
+                    }
                 }
-                task.addOnFailureListener { exception ->
-                    Log.d("FAILURELISTENER", exception.toString())
-                }
-            }
+        }
     }
 
     fun takePicture() {

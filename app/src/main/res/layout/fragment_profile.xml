@@ -4,7 +4,7 @@
     <data>
         <variable
             name="UserModel"
-            type="com.project.messagingapp.UserModel"
+            type="com.project.messagingapp.data.model.UserModel"
             />
 
     </data>
@@ -15,7 +15,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.ProfileFragment"
+    tools:context=".ui.main.view.fragments.ProfileFragment"
     android:background="@color/BackGround">
 
 

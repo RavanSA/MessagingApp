@@ -1,15 +1,12 @@
-package com.project.messagingapp.adapter
+package com.project.messagingapp.ui.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.project.messagingapp.Fragments.SettingsFragment
+import com.project.messagingapp.ui.main.view.fragments.SettingsFragment
 import com.project.messagingapp.R
-import com.project.messagingapp.viewmodel.SettingsViewModel
+import com.project.messagingapp.ui.main.viewmodel.SettingsViewModel
 import com.project.messagingapp.databinding.SettingListBinding
 
 class CustomSettingsAdapter(private val context: SettingsFragment,

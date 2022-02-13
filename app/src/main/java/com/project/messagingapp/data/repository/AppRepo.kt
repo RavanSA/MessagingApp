@@ -1,10 +1,10 @@
-package com.project.messagingapp.Repository
+package com.project.messagingapp.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.*
-import com.project.messagingapp.UserModel
-import com.project.messagingapp.Utils.AppUtil
+import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.utils.AppUtil
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
