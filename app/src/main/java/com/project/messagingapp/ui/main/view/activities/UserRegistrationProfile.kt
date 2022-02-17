@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -20,9 +21,11 @@ import com.example.awesomedialog.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.BuildConfig
+import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
+import kotlinx.coroutines.Job
 import java.io.File
-
+import kotlin.coroutines.CoroutineContext
 
 class UserRegistrationProfile : AppCompatActivity() {
 
@@ -49,8 +52,9 @@ class UserRegistrationProfile : AppCompatActivity() {
     private var firebaseAuth: FirebaseAuth? = null
     private var storageRef: StorageReference? = null
     private lateinit var ImageUrl: String
-    private var IMAGEuri: String = "not changed"
-    private lateinit var CropActivityResultLauncher: ActivityResultLauncher<Any?>
+    private lateinit var userViewModel: UserRegistrationViewModel
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,30 +63,22 @@ class UserRegistrationProfile : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         DatabaseRef = FirebaseDatabase.getInstance().getReference("Users")
         storageRef = FirebaseStorage.getInstance().reference
-//        CropActivityResultLauncher = registerForActivityResult(CropActivityResultContract) {
-//
-//            it?.let { originalUri ->
-//                temp_prof_image.setImageURI(originalUri)
-//                image = originalUri
-//                Log.d("LAUNCHER WORKED", originalUri.toString())
-//            }
-//        }
+        userViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            .create(UserRegistrationViewModel::class.java)
 
-            imgPickImage.setOnClickListener {
-//                CropActivityResultLauncher.launch(null)
-//                pickImages.launch("image/*")
-//                takePicture()
+
+        imgPickImage.setOnClickListener {
                 SelectPicture()
-                Log.d("LAUNCHERRRRR OM", image.toString())
             }
 
             UserProfileSave.setOnClickListener {
                 if (CheckUserData()) {
                     Log.d("INCHECKUSER", image.toString())
-                    UploadData(username, status, image!!)
+                    image?.let { it1 -> userViewModel.UploadData(username,status, it1) }
+                    startActivity(Intent(this@UserRegistrationProfile,
+                        MainChatScreen::class.java))
                 }
             }
-
         }
 
     private fun SelectPicture() {
@@ -109,9 +105,6 @@ class UserRegistrationProfile : AppCompatActivity() {
         username = edtProfileName.text.toString().trim()
         status = edtProfileStatus.text.toString().trim()
 
-        Log.d("USERNAME:", username)
-        Log.d("STATUS:", status)
-        Log.d("IMAGE:", image.toString())
         if (username.isEmpty()) {
             edtProfileName.error = "Username cannot be empty"
             return false
@@ -137,9 +130,10 @@ class UserRegistrationProfile : AppCompatActivity() {
                             "image" to ImageUrl
                         )
 
-                        Log.d("FAILURELISTENER",map.toString())
                         DatabaseRef!!.child(firebaseAuth!!.uid!!).updateChildren(map)
-                        startActivity(Intent(this@UserRegistrationProfile, MainChatScreen::class.java))
+
+                        startActivity(Intent(this@UserRegistrationProfile,
+                            MainChatScreen::class.java))
                     }
                     task.addOnFailureListener { exception ->
                         Log.d("FAILURELISTENER", exception.toString())
@@ -179,22 +173,4 @@ class UserRegistrationProfile : AppCompatActivity() {
         }
     }
 
-
-//    fun takePicture() {
-//        val root =
-//            File(Environment.getExternalStorageDirectory(), BuildConfig.APPLICATION_ID + File.separator)
-//        root.mkdirs()
-//        val fname = "img_" + System.currentTimeMillis() + ".jpg"
-//        val file = File(root, fname)
-//        image  = FileProvider.getUriForFile(requireContext(), context?.applicationContext?.packageName + ".provider", file)
-//
-//        takePicture.launch(image)
-//    }
-//
-//    val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-//        if (success) {
-//            // The image was saved into the given Uri -> do something with it
-//            Glide.with(this).load(image).into(temp_prof_image)
-//        }
-//    }
 }

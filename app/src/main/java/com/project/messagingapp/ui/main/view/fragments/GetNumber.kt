@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.view.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -33,11 +34,8 @@ class GetNumber : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-//        country_code_picker!!.setOnCountryChangeListener(this)
-//        country_code_picker!!.setOnCountryChangeListener(this)
-//        //to set default country code as Japan
-//        countryCode = country_code_picker!!.selectedCountryCode
+
+
         val progressDialog = ProgressDialog(requireActivity())
         progressDialog.setTitle("Please wait")
         progressDialog.setMessage("We sending code, please wait")
@@ -48,6 +46,7 @@ class GetNumber : Fragment() {
                 progressDialog.show()
             }
         }
+
         mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
             @SuppressLint("CommitPrefEdits")
             override fun onVerificationCompleted(p0: PhoneAuthCredential) {
@@ -59,7 +58,6 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.currentUser!!.phoneNumber!!,
                                 firebaseAuth!!.uid!!
                             )
-
 
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
                         startActivity(Intent(context, UserRegistrationProfile::class.java))
@@ -94,10 +92,10 @@ class GetNumber : Fragment() {
 
     private fun sendOneTimePassword(number: String?) {
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber(number!!)       // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(requireActivity())                 // Activity (for callback binding)
-            .setCallbacks(mCallBack!!)          // OnVerificationStateChangedCallbacks
+            .setPhoneNumber(number!!)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(mCallBack!!)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
 
@@ -106,19 +104,23 @@ class GetNumber : Fragment() {
     private fun checkNumber(): Boolean {
         number =requireView().country_code_picker.selectedCountryCodeWithPlus+ requireView().edtPhone.text.toString().trim()
         Log.d("NUMBER:", number!!)
-        if(number!!.isEmpty()){
-            requireView().edtPhone?.error ="Field is reqiured"
-            return false
-        } else if (number!!.length<10){
-            requireView().edtPhone?.error ="Invalid length"
-            return false
-        } else {
-            val sharedPref: SharedPreferences = context!!.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            number?.let { Log.d("PHONENUMBER,", it) }
-            editor.putString("PhoneNumber",number?.let { it })
-            editor.apply()
-            return true
+        return when {
+            number!!.isEmpty() -> {
+                requireView().edtPhone?.error ="Field is reqiured"
+                false
+            }
+            number!!.length<10 -> {
+                requireView().edtPhone?.error ="Invalid length"
+                false
+            }
+            else -> {
+                val sharedPref: SharedPreferences = context!!.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                number?.let { Log.d("PHONENUMBER,", it) }
+                editor.putString("PhoneNumber",number?.let { it })
+                editor.apply()
+                true
+            }
         }
     }
 }

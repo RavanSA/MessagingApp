@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.project.messagingapp.data.model.SettingList
+import com.project.messagingapp.ui.main.adapter.CustomSettingsAdapter
 
 class SettingsViewModel : ViewModel {
 
@@ -14,6 +15,8 @@ class SettingsViewModel : ViewModel {
     var title=""
     var imageSettings = ""
     var settingDesc = ""
+
+
     constructor():super()
 
     constructor(setting: SettingList) : super() {
@@ -25,7 +28,7 @@ class SettingsViewModel : ViewModel {
 
     var arrlistMutableLiveData = MutableLiveData<ArrayList<SettingsViewModel>>()
 
-    var arrlist = ArrayList<SettingsViewModel>()
+    var arrlist: ArrayList<SettingsViewModel> = ArrayList<SettingsViewModel>()
 
 
     fun getArrayList() : MutableLiveData<ArrayList<SettingsViewModel>>{

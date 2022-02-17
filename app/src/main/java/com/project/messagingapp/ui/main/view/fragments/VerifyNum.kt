@@ -59,10 +59,6 @@ class VerifyNum : Fragment() {
                     firebaseAuth!!.uid!!
                 )
                 databaseReference!!.child(firebaseAuth?.uid!!).setValue(userModel)
-//                requireActivity().supportFragmentManager
-//                    .beginTransaction()
-//                    .replace(R.id.main_container, GetUserData())
-//                    .commit()
 
                 startActivity(Intent(context, UserRegistrationProfile::class.java))
                 requireActivity().finish()

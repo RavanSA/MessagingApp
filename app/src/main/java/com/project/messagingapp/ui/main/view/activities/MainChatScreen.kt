@@ -21,9 +21,6 @@ class MainChatScreen : AppCompatActivity() {
         toolbar.setNavigationOnClickListener{
             Toast.makeText(applicationContext,"Navigation Clicked",Toast.LENGTH_LONG).show()
         }
-//        toolbar.setOverflowicon(getDrawable(R.id.redIcon))
-//        val d: Drawable = "R.drawable.ic_baseline_person_add_24"
-//        toolbar.setOv
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

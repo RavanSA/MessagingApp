@@ -4,6 +4,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://schemas.android.com/apk/res-auto">
     <data class="SettingListBinding">
+        <import type="android.content.Context"/>
+
+        <variable
+            name="item"
+            type="com.project.messagingapp.data.model.SettingList"/>
+
+        <variable
+            name="clickListener"
+            type="com.project.messagingapp.ui.main.view.fragments.SettingsFragment"/>
+
         <variable
             name="settingsView"
             type="com.project.messagingapp.ui.main.viewmodel.SettingsViewModel"
@@ -11,15 +21,34 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/clickLinear"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="vertical"
         android:gravity="fill_vertical"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         >
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        >
 
 
         <ImageView
@@ -38,13 +67,13 @@
             android:id="@+id/setting_recycler_title"
             android:layout_width="182dp"
             android:layout_height="28dp"
-            android:layout_marginEnd="132dp"
+            android:layout_marginEnd="88dp"
             android:text="@{settingsView.title}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.307" />
+            app:layout_constraintVertical_bias="0.285" />
 
         <TextView
             android:id="@+id/textView2"
@@ -54,12 +83,12 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.11"
+            app:layout_constraintHorizontal_bias="0.247"
             app:layout_constraintStart_toEndOf="@+id/setting_imageView"
             app:layout_constraintTop_toBottomOf="@+id/setting_recycler_title"
-            app:layout_constraintVertical_bias="0.238" />
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </androidx.cardview.widget.CardView>
         <!--        app:drawableStartCompat="@{settingsView.imageURL}"-->
 <!--        <ImageView-->
 <!--        android:id="@+id/imageView"-->
