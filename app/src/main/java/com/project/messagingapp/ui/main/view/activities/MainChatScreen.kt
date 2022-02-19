@@ -21,6 +21,8 @@ class MainChatScreen : AppCompatActivity() {
         toolbar.setNavigationOnClickListener{
             Toast.makeText(applicationContext,"Navigation Clicked",Toast.LENGTH_LONG).show()
         }
+
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.black))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

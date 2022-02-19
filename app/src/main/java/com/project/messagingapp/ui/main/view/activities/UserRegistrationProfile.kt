@@ -81,7 +81,7 @@ class UserRegistrationProfile : AppCompatActivity() {
             }
         }
 
-    private fun SelectPicture() {
+    fun SelectPicture() {
         AwesomeDialog.build(this)
             .title(
                 "Choose Profile Picture",
@@ -117,31 +117,6 @@ class UserRegistrationProfile : AppCompatActivity() {
         } else return true
     }
 
-    private fun UploadData(username: String, status: String, image: Uri) = kotlin.run {
-        firebaseAuth!!.uid?.let {
-            storageRef!!.child(AppConstants.Path).child(it).putFile(image)
-                .addOnSuccessListener {
-                    val task = it.storage.downloadUrl
-                    task.addOnCompleteListener { uri ->
-                        ImageUrl = uri.result.toString()
-                        val map = mapOf(
-                            "name" to username,
-                            "status" to status,
-                            "image" to ImageUrl
-                        )
-
-                        DatabaseRef!!.child(firebaseAuth!!.uid!!).updateChildren(map)
-
-                        startActivity(Intent(this@UserRegistrationProfile,
-                            MainChatScreen::class.java))
-                    }
-                    task.addOnFailureListener { exception ->
-                        Log.d("FAILURELISTENER", exception.toString())
-                    }
-                }
-        }
-    }
-
     fun takePicture() {
         val root =
             File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), BuildConfig.APPLICATION_ID + File.separator)
@@ -168,7 +143,6 @@ class UserRegistrationProfile : AppCompatActivity() {
 
         uri?.let { it ->
             image=it
-            Log.d("IMAGEINFILES", image.toString())
             Glide.with(this).load(it).into(temp_prof_image)
         }
     }

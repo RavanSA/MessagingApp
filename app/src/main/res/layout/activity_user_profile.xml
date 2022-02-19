@@ -8,7 +8,7 @@
         <variable
             name="clickHandler"
             type="com.project.messagingapp.utils.OnClickInterface"
-        />
+            />
 
         <variable
             name="UserModel"

@@ -74,6 +74,17 @@ class AppRepo {
         val map : Map<String, Any> = mapOf(
             "status" to status
          )
+
+
+        appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!)
+            .updateChildren(map)
+    }
+
+    fun updateName(name: String) {
+        val map : Map<String, Any> = mapOf(
+            "name" to name
+        )
+
         appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!)
             .updateChildren(map)
     }

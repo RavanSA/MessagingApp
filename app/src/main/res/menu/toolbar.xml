@@ -14,7 +14,8 @@
         android:id="@+id/profilepic"
         android:icon="@drawable/ic_baseline_person_add_24"
         android:title="@string/profile_picture"
-        app:showAsAction="never">
+        app:showAsAction="never"
+        >
     </item>
 
     <item
@@ -22,6 +23,7 @@
         android:title="@string/settings"
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="never"
+
         >
     </item>
 

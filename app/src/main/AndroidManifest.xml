@@ -16,13 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessagingApp">
         <activity
-            android:name="com.project.messagingapp.ui.main.view.activities.Settings"
-            android:exported="false" />
-        <activity android:name="com.project.messagingapp.ui.main.view.activities.UserRegistrationProfile" />
-        <activity android:name="com.canhub.cropper.CropImageActivity" />
-        <activity android:name="com.project.messagingapp.ui.main.view.activities.MainChatScreen" />
+            android:name=".ui.main.view.activities.UserProfile"
+            android:exported="false"
+            android:label="@string/title_activity_user_profile"
+            android:theme="@style/Theme.MessagingApp.NoActionBar" />
         <activity
-            android:name="com.project.messagingapp.ui.main.view.activities.SplashScreen"
+            android:name=".ui.main.view.activities.Settings"
+            android:exported="false" />
+        <activity android:name=".ui.main.view.activities.UserRegistrationProfile" />
+        <activity android:name=".ui.main.view.activities.MainChatScreen" />
+        <activity
+            android:name=".ui.main.view.activities.SplashScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
@@ -33,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.project.messagingapp.ui.main.view.activities.RegistrationActivity"
+            android:name=".ui.main.view.activities.RegistrationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 

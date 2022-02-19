@@ -75,6 +75,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'

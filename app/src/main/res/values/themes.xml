@@ -1,6 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.MessagingApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+    <style name="Theme.MessagingApp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/purple_500</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <!--        <item name="android:textColor">@color/black</item>-->
+
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/teal_200</item>
@@ -8,8 +12,30 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="actionMenuTextAppearance">@style/App.ToolbarMenuItem</item>
     </style>
+
+    <style name="App.ToolbarMenuItem" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="OverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_baseline_person_add_24</item>
     </style>
+
+    <style name="toolbar">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Theme.MessagingApp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MessagingApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MessagingApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
