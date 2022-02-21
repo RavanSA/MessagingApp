@@ -88,4 +88,25 @@ class AppRepo {
         appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!)
             .updateChildren(map)
     }
+
+    fun updateImage(imageURI: Uri?) {
+        val databaseRef = appUtil.getDatabaseReferenceUsers().
+        child(appUtil.getUID()!!)
+
+        appUtil.getUID()!!.let { it ->
+            appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(imageURI!!)
+                .addOnSuccessListener { it ->
+                    val task = it.storage.downloadUrl
+                    task.addOnCompleteListener { uri ->
+                        val imageUrl = uri.result.toString()
+                        val map = mapOf(
+                            "image" to imageUrl
+                        )
+                        Log.d("ımageURL",imageUrl)
+                        Log.d("ımageURI", imageURI.toString())
+                        databaseRef.updateChildren(map)
+                    }
+                }
+        }
+    }
 }

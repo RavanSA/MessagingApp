@@ -42,9 +42,6 @@ class MainChatScreen : AppCompatActivity() {
                      ))
                      Toast.makeText(applicationContext,"CLICK",Toast.LENGTH_LONG).show()
                 }
-//                supportFragmentManager.beginTransaction()
-//                    .add(R.id.chat_container, ProfileFragment())
-//                    .commit()
 
             R.id.searchuser -> Toast.makeText(applicationContext,"Search User",Toast.LENGTH_LONG).show()
         }

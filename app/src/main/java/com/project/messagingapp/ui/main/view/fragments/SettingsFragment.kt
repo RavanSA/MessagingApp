@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.project.messagingapp.R
 import com.project.messagingapp.ui.main.adapter.CustomSettingsAdapter
-import com.project.messagingapp.ui.main.view.activities.MainChatScreen
 import com.project.messagingapp.ui.main.view.activities.UserProfile
 import com.project.messagingapp.ui.main.view.activities.UserRegistrationProfile
 import com.project.messagingapp.ui.main.viewmodel.SettingsViewModel
@@ -53,11 +52,6 @@ class SettingsFragment : Fragment(), SettingRecyclerClickListener {
     override fun onRecyclerViewItemClick(view: View, settingList: SettingsViewModel) {
           when(settingList.title){
             "Account" -> {
-//                requireActivity()
-//                    .supportFragmentManager
-//                    .beginTransaction()
-//                    .replace(R.id.setting_container, ProfileFragment())
-//                    .commit()
 
                 startActivity(Intent(context, UserProfile::class.java))
                 requireActivity().finish()

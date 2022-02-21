@@ -23,8 +23,6 @@ class UserRegistration : Fragment() {
         userViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
             .create(UserRegistrationViewModel::class.java)
 
-
-
     }
 
     override fun onCreateView(

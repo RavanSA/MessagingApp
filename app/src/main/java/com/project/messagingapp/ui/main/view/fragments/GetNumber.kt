@@ -1,7 +1,6 @@
 package com.project.messagingapp.ui.main.view.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -29,7 +28,6 @@ class GetNumber : Fragment() {
     private var firebaseAuth: FirebaseAuth? = null
     private var databaseReference: DatabaseReference? = null
     private var mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
-    private var countryCode:String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,6 +74,8 @@ class GetNumber : Fragment() {
                                 .newInstance(p0)
                         ).commit()
             }
+
+
             override fun onVerificationFailed(p0: FirebaseException) {
                 progressDialog.cancel()
                 progressDialog.dismiss()
@@ -86,6 +86,7 @@ class GetNumber : Fragment() {
                 else Toast.makeText(context, " " + p0.message, Toast.LENGTH_SHORT).show()
 
             }
+
         }
         return view
     }
@@ -114,7 +115,10 @@ class GetNumber : Fragment() {
                 false
             }
             else -> {
-                val sharedPref: SharedPreferences = context!!.getSharedPreferences("com.project.messaginapp.phonenumber",Context.MODE_PRIVATE)
+                val sharedPref: SharedPreferences = context!!
+                    .getSharedPreferences("com.project.messaginapp.phonenumber",
+                        Context.MODE_PRIVATE)
+
                 val editor = sharedPref.edit()
                 number?.let { Log.d("PHONENUMBER,", it) }
                 editor.putString("PhoneNumber",number?.let { it })
@@ -123,4 +127,5 @@ class GetNumber : Fragment() {
             }
         }
     }
+
 }

@@ -24,6 +24,7 @@ class WelcomeFragment : Fragment() {
                 .replace(R.id.main_container, GetNumber())
                 .commit()
         }
+
         return view
     }
 

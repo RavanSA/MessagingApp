@@ -16,7 +16,6 @@ class SplashScreen : AppCompatActivity() {
 
     private lateinit var splashViewModel: SplashViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         super.onCreate(savedInstanceState)
         val actionBar: ActionBar? = supportActionBar
@@ -25,6 +24,7 @@ class SplashScreen : AppCompatActivity() {
 
         splashViewModel = ViewModelProvider(this)[SplashViewModel::class.java]
         splashViewModel.prepareTime()
+
         splashViewModel.openAct.observe(this,
             {
                 redirectUserTo()
@@ -36,6 +36,7 @@ class SplashScreen : AppCompatActivity() {
             this@SplashScreen,
             RegistrationActivity::class.java
         )
+
         val registratedUser = Intent(
             this@SplashScreen,
             MainChatScreen::class.java

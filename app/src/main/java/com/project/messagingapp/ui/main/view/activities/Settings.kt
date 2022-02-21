@@ -28,21 +28,4 @@ class Settings : AppCompatActivity() {
 
     }
 
-//    override fun onWeatherSelected(settingList: SettingList) {
-//        Log.d("CLICKLISTENER","QQQQQQQQ")
-//        Log.d("TESTTTTT",settingList.toString())
-//        Log.d("TESTTTdsczxczxcTT", settingList.id)
-//        Log.d("TEdasTdsczxczxcTT",settingList.title)
-//        when(settingList.title){
-//            "Account" -> {
-//                Toast.makeText(this@Settings,"ACCOUNT", Toast.LENGTH_LONG).show()
-//            }
-//            "Chat" -> {
-//                Toast.makeText(this@Settings,"CHAT", Toast.LENGTH_LONG).show()
-//            }
-//            "Help" -> {
-//                Toast.makeText(this@Settings,"HELP", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//    }
 }

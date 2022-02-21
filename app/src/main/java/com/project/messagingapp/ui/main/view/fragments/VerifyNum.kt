@@ -36,9 +36,7 @@ class VerifyNum : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_verify_num, container, false)
-//        VerifyAddNum.setOnClickListener {
-//            VerifyAddNum.text = "Verify $p0"
-//        }
+
         firebaseAuth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().getReference("Users")
         view.OTPPinSend.setOnClickListener {
