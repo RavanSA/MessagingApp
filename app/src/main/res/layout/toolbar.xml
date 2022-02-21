@@ -8,12 +8,12 @@
     android:fitsSystemWindows="true"
     >
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/SecondColor"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:titleTextColor="@color/WHITE"
         app:title="@string/AppName"
         app:titleMarginStart="40dp"
         app:logo="@drawable/ic_baseline_phone_android_24"
