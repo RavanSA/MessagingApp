@@ -8,6 +8,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.project.messagingapp.R
+import com.project.messagingapp.ui.main.view.fragments.ContactFragment
+import com.project.messagingapp.ui.main.view.fragments.WelcomeFragment
+import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 class MainChatScreen : AppCompatActivity() {
@@ -20,6 +23,12 @@ class MainChatScreen : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener{
             Toast.makeText(applicationContext,"Navigation Clicked",Toast.LENGTH_LONG).show()
+        }
+
+        contactFab.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.chat_container, ContactFragment())
+                .commit()
         }
 
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.black))

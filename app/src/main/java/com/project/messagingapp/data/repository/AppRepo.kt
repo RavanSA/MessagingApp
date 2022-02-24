@@ -2,16 +2,21 @@ package com.project.messagingapp.data.repository
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
 import com.project.messagingapp.utils.AppUtil
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
+    private var appContacts: MutableLiveData<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
 
@@ -109,4 +114,45 @@ class AppRepo {
                 }
         }
     }
+
+   suspend fun getAppContact(mobileContact: ArrayList<UserModel>): MutableLiveData<UserModel>? {
+        if(appContacts == null) {
+            Log.d("APPCONTACT", appContacts.toString())
+            val phoneNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
+            Log.d("PHONENUMBER", phoneNumber.toString())
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+            Log.d("DATABASEREF", databaseReference.toString())
+            val query = databaseReference.orderByChild("number")
+            Log.d("QUERY", query.toString())
+            Log.d("APPCONTACT", appContacts.toString())
+            appContacts = MutableLiveData()
+            //----------------------------------
+            query.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d("SNAPSHOT", snapshot.toString())
+                    Log.d("APPCONTACT", appContacts.toString())
+                    if (snapshot.exists()) {
+                        Log.d("PHONENUMBER", phoneNumber.toString())
+                        for (data in snapshot.children) {
+                            Log.d("APPCONTACT", appContacts.toString())
+                            val number = data.child("number").value.toString()
+                            for (mobileModel in mobileContact) {
+                                if (mobileModel.number == number && number != phoneNumber) {
+                                    val userModel = data.getValue(UserModel::class.java)
+                                    appContacts!!.postValue(userModel!!)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("APPERROR", error.toString())
+                }
+            })
+        }
+        return appContacts
+    }
+
+
 }
