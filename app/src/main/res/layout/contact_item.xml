@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="userModel"
+            name="contactItem"
             type="com.project.messagingapp.data.model.UserModel" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp">
@@ -42,7 +42,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
-                    android:text="@{userModel.name , default=Nothing}"
+                    android:text="@{contactItem.name , default=Llllllllllllllllllllllllloading}"
                     android:textColor="@color/white"
                     android:textSize="15dp"
                     android:textStyle="bold" />
@@ -54,7 +54,7 @@
                     android:layout_below="@id/txtContactName"
                     android:layout_alignStart="@+id/txtContactName"
                     android:layout_marginTop="8dp"
-                    android:text="@{userModel.status , default=Nothing}"
+                    android:text="@{contactItem.status , default=Loading}"
                     android:textColor="@color/white"
                     android:textSize="13dp"
                     android:textStyle="bold" />

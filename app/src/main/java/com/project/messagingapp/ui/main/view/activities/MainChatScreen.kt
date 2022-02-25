@@ -26,9 +26,11 @@ class MainChatScreen : AppCompatActivity() {
         }
 
         contactFab.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.chat_container, ContactFragment())
-                .commit()
+            val contactActivity = Intent(
+                this@MainChatScreen,
+                UserContacts::class.java
+            )
+            startActivity(contactActivity)
         }
 
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.black))

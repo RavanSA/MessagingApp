@@ -16,7 +16,7 @@ import com.project.messagingapp.utils.AppUtil
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
-    private var appContacts: MutableLiveData<UserModel>? = null
+    private var appContacts: List<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
 
@@ -115,31 +115,31 @@ class AppRepo {
         }
     }
 
-   suspend fun getAppContact(mobileContact: ArrayList<UserModel>): MutableLiveData<UserModel>? {
+   fun getAppContact(mobileContact: ArrayList<UserModel>): List<UserModel> {
         if(appContacts == null) {
-            Log.d("APPCONTACT", appContacts.toString())
+            Log.d("APPCONTACT1", appContacts.toString())
             val phoneNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
-            Log.d("PHONENUMBER", phoneNumber.toString())
+            Log.d("PHONENUMBER1", phoneNumber.toString())
             val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-            Log.d("DATABASEREF", databaseReference.toString())
+            Log.d("DATABASEREF1", databaseReference.toString())
             val query = databaseReference.orderByChild("number")
-            Log.d("QUERY", query.toString())
-            Log.d("APPCONTACT", appContacts.toString())
-            appContacts = MutableLiveData()
+            Log.d("QUERY1", query.toString())
+            Log.d("APPCONTACT2", appContacts.toString())
+            appContacts = mutableListOf<UserModel>()
             //----------------------------------
             query.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d("SNAPSHOT", snapshot.toString())
-                    Log.d("APPCONTACT", appContacts.toString())
+                    Log.d("SNAPSHOT1", snapshot.toString())
+                    Log.d("APPCONTACT3", appContacts.toString())
                     if (snapshot.exists()) {
                         Log.d("PHONENUMBER", phoneNumber.toString())
                         for (data in snapshot.children) {
-                            Log.d("APPCONTACT", appContacts.toString())
+                            Log.d("APPCONTACT4", appContacts.toString())
                             val number = data.child("number").value.toString()
                             for (mobileModel in mobileContact) {
                                 if (mobileModel.number == number && number != phoneNumber) {
                                     val userModel = data.getValue(UserModel::class.java)
-                                    appContacts!!.postValue(userModel!!)
+                                    (appContacts as MutableList<UserModel>).add(userModel!!)
                                 }
                             }
                         }
@@ -151,8 +151,10 @@ class AppRepo {
                 }
             })
         }
-        return appContacts
+       Log.d("APPCONTACTQWEQEW",appContacts.toString())
+        return appContacts!! as List<UserModel>
     }
+
 
 
 }
