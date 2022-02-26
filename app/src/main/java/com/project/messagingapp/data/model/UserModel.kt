@@ -1,10 +1,10 @@
 package com.project.messagingapp.data.model
 
 data class UserModel (
-    val name: String? = null,
+    var name: String? = null,
     val status: String?= "",
     val image: String? = "",
-    val number: String? = "",
+    var number: String? = "",
     val UID: String? = ""
 )
 {
