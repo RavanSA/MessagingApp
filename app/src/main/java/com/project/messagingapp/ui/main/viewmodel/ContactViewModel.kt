@@ -19,7 +19,6 @@ class ContactViewModel
         appContact()
     }
 
-
     fun appContact() {
 
         viewModelScope.launch {
@@ -28,13 +27,8 @@ class ContactViewModel
                 Log.d("VIEWMODEL", contactData.toString())
 
         }
-//        val contactLiveData = liveData(Dispatchers.IO) {
-//            emit(appRepo.getAppContact(mobileContact))
-//        }
-//        return contactLiveData
-//        appRepo.getAppContact(mobileContact)!!.observeForever{ contactList ->
-//            mutableData!!.value = contactList
         }
+
     }
 
 

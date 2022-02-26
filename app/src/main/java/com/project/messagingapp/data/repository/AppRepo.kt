@@ -16,6 +16,7 @@ import com.project.messagingapp.utils.AppUtil
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
+    private var contactUserData: MutableLiveData<UserModel>? = null
     private var appContacts: MutableList<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
@@ -159,6 +160,26 @@ class AppRepo {
         return appContacts!! as List<UserModel>
     }
 
+    fun getContactUID(UID: String) :LiveData<UserModel>{
+        if (contactUserData == null){
+            contactUserData = MutableLiveData()
+            appUtil.getDatabaseReferenceUsers().child(UID)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            val userModel = snapshot.getValue(UserModel::class.java)
+                            contactUserData!!.postValue(userModel!!)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        }
+        return contactUserData!!
+    }
 
 
 }

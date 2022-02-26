@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessagingApp">
         <activity
+            android:name=".ui.main.view.activities.ContactUserInfo"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.view.activities.UserContacts"
             android:exported="false" />
         <activity

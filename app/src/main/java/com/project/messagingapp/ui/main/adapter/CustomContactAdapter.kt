@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.adapter
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
@@ -10,6 +11,8 @@ import com.project.messagingapp.R
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ContactItemBinding
 import androidx.databinding.library.baseAdapters.BR
+import com.project.messagingapp.ui.main.view.activities.ContactUserInfo
+import com.project.messagingapp.ui.main.view.fragments.VerifyNum
 
 class CustomContactAdapter :
     RecyclerView.Adapter<CustomContactAdapter.CustomContactView>() {
@@ -27,9 +30,16 @@ class CustomContactAdapter :
     }
 
     override fun onBindViewHolder(holder: CustomContactAdapter.CustomContactView, position: Int) {
-//        val userModel = appContacts[position]
-//        holder.item.contactItem = userModel
+        val userModel = appContacts[position]
+
         holder.item.contactItem = appContacts[position]
+
+        holder.item.imgContactInfo.setOnClickListener {
+
+            val intent = Intent(it.context, ContactUserInfo::class.java)
+            intent.putExtra("UID", userModel.uid)
+            it.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {

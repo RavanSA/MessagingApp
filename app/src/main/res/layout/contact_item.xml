@@ -60,13 +60,13 @@
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imgContact"
+                    android:id="@+id/imgContactInfo"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_baseline_person_outline_24" />
+                    android:src="@drawable/ic_baseline_info_24" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
