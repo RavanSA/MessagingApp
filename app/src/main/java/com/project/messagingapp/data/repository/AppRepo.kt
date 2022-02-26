@@ -16,7 +16,7 @@ import com.project.messagingapp.utils.AppUtil
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
-    private var appContacts: List<UserModel>? = null
+    private var appContacts: MutableList<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
 
@@ -125,7 +125,7 @@ class AppRepo {
             val query = databaseReference.orderByChild("number")
             Log.d("QUERY1", query.toString())
             Log.d("APPCONTACT2", appContacts.toString())
-            appContacts = mutableListOf<UserModel>()
+            appContacts = arrayListOf<UserModel>()
             //----------------------------------
             query.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -139,10 +139,14 @@ class AppRepo {
                             for (mobileModel in mobileContact) {
                                 if (mobileModel.number == number && number != phoneNumber) {
                                     val userModel = data.getValue(UserModel::class.java)
-                                    (appContacts as MutableList<UserModel>).add(userModel!!)
+                                    Log.d("APPCONTACT5", appContacts.toString())
+                                    if (userModel != null) {
+                                        (appContacts)!!.add(userModel)
+                                    }
                                 }
                             }
                         }
+                        appContacts!!.removeAt(1)
                     }
                 }
 
