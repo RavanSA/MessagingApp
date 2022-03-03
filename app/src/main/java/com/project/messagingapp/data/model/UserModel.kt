@@ -5,7 +5,7 @@ data class UserModel (
     val status: String?= "",
     val image: String? = "",
     var number: String? = "",
-    val UID: String? = ""
+    val uid: String? = ""
 )
 {
 

@@ -6,50 +6,79 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
+import android.view.View
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ActivityUserContactsBinding
-import com.project.messagingapp.databinding.FragmentContactBinding
 import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModelFactory
 import com.project.messagingapp.utils.ContactPermission
-import kotlinx.android.synthetic.main.contact_item.*
 
 class UserContacts : AppCompatActivity() {
     private lateinit var contactBinding: ActivityUserContactsBinding
     private lateinit var phoneNumber: String
     private var contactAdapter: CustomContactAdapter? = null
-    private lateinit var contactViewModel: ContactViewModel
+    private lateinit var contactViewModel:ContactViewModel
     private var contactPermission: ContactPermission = ContactPermission()
     private lateinit var mobileContact: ArrayList<UserModel>
 
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         contactBinding = ActivityUserContactsBinding.inflate(layoutInflater)
 
         setContentView(contactBinding.root)
-        if(contactPermission.isContactOk(this)) {
-            mobileContact = getMobileContact()
 
-            contactViewModel = ViewModelProvider(this,
+        if (contactPermission.isContactOk(this)) {
+            mobileContact = getMobileContact()
+            contactViewModel = ViewModelProvider(
+                this,
                 ContactViewModelFactory(getMobileContact())
             )[ContactViewModel::class.java]
-            contactBinding.lifecycleOwner = this
-            contactBinding.contactViewModel=contactViewModel
-//            txtContactName.text= contactViewModel.data.
-//                contactBinding.recyclerViewContact.apply {
-//                layoutManager = LinearLayoutManager(context)
-//                setHasFixedSize(true)
-//                contactAdapter = CustomContactAdapter()
-//                adapter = contactAdapter
-//            }
-            Log.d("TESTTT",contactViewModel.data.toString())
-        }   else contactPermission.requestContactPermission(this)
+            loadUsers()
+        } else contactPermission.requestContactPermission(this)
 
+        contactBinding.swipeContact.setOnRefreshListener {
+            loadUsers()
+            contactBinding.swipeContact.isRefreshing = false
+
+        }
+
+        searchingContact(
+            contactBinding.contactSearchView
+        )
+
+    }
+
+    private fun searchingContact(search: SearchView) {
+        search.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(contactAdapter != null) {
+                    contactAdapter!!.filter.filter(newText)
+                    contactBinding.recyclerViewContact.adapter = contactAdapter
+                    contactAdapter!!.notifyDataSetChanged()
+
+                    if (newText != null) {
+                        Log.d("NEWTEXT",newText)
+                    }
+                    Log.d("ADAPTER",contactAdapter.toString())
+                    Log.d("ADAPTERFILTER", contactAdapter!!.filter.filter(newText).toString())
+                }
+                return false
+            }
+    })
     }
 
     @SuppressLint("Range")
@@ -101,6 +130,20 @@ class UserContacts : AppCompatActivity() {
         return mobileContacts
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun loadUsers(){
+        contactViewModel.appContact().observe(this, Observer { data ->
+            for(user in data){
+                Log.d("USERS DATA OBSERVER", user.toString())
+            }
+            Log.d("Data",data.toString())
+                contactAdapter = CustomContactAdapter(data)
+                contactBinding.recyclerViewContact.adapter = contactAdapter
+                contactAdapter!!.notifyDataSetChanged()
+        })
+
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -115,4 +158,5 @@ class UserContacts : AppCompatActivity() {
             }
         }
     }
+
 }
