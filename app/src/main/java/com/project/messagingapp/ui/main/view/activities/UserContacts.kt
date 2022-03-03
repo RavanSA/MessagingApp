@@ -47,10 +47,12 @@ class UserContacts : AppCompatActivity() {
         contactBinding.swipeContact.setOnRefreshListener {
             loadUsers()
             contactBinding.swipeContact.isRefreshing = false
-            searchingContact(
-                contactBinding.contactSearchView
-            )
+
         }
+
+        searchingContact(
+            contactBinding.contactSearchView
+        )
 
     }
 
@@ -61,8 +63,19 @@ class UserContacts : AppCompatActivity() {
                 return false
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
-                contactAdapter!!.filter.filter(newText)
+                if(contactAdapter != null) {
+                    contactAdapter!!.filter.filter(newText)
+                    contactBinding.recyclerViewContact.adapter = contactAdapter
+                    contactAdapter!!.notifyDataSetChanged()
+
+                    if (newText != null) {
+                        Log.d("NEWTEXT",newText)
+                    }
+                    Log.d("ADAPTER",contactAdapter.toString())
+                    Log.d("ADAPTERFILTER", contactAdapter!!.filter.filter(newText).toString())
+                }
                 return false
             }
     })
@@ -128,7 +141,6 @@ class UserContacts : AppCompatActivity() {
                 contactBinding.recyclerViewContact.adapter = contactAdapter
                 contactAdapter!!.notifyDataSetChanged()
         })
-
 
     }
 

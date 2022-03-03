@@ -94,7 +94,7 @@ class CustomContactAdapter(
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 allContact = results!!.values as List<UserModel>
                 Log.d("PUBLISHRESULT",allContact.toString())
-                notifyDataSetChanged()
+                updateItems(allContact)
             }
 
         }
