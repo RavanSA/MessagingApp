@@ -2,8 +2,12 @@ package com.project.messagingapp.ui.main.adapter
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.text.method.TextKeyListener.clear
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,17 +17,22 @@ import com.project.messagingapp.databinding.ContactItemBinding
 import androidx.databinding.library.baseAdapters.BR
 import com.project.messagingapp.ui.main.view.activities.ContactUserInfo
 import com.project.messagingapp.ui.main.view.fragments.VerifyNum
+import java.util.*
+import kotlin.collections.ArrayList
 
-class CustomContactAdapter :
-    RecyclerView.Adapter<CustomContactAdapter.CustomContactView>() {
+class CustomContactAdapter(
+    appUserContacts: List<UserModel>
+) :
+    RecyclerView.Adapter<CustomContactAdapter.CustomContactView>(),Filterable {
 
-    var appContacts: List<UserModel> = emptyList()
+    var appContacts: List<UserModel> = appUserContacts
+    private var allContact: List<UserModel> = appContacts
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
             CustomContactAdapter.CustomContactView {
-        val layoutinflater = LayoutInflater.from(parent.context)
+        val layoutInflater = LayoutInflater.from(parent.context)
 
-        val contactItemBinding: ContactItemBinding = DataBindingUtil.inflate(layoutinflater,
+        val contactItemBinding: ContactItemBinding = DataBindingUtil.inflate(layoutInflater,
             R.layout.contact_item, parent,false)
 
         return CustomContactView(contactItemBinding)
@@ -39,6 +48,10 @@ class CustomContactAdapter :
             val intent = Intent(it.context, ContactUserInfo::class.java)
             intent.putExtra("UID", userModel.uid)
             it.context.startActivity(intent)
+//            it.context.startActivity(intent)
+            userModel.uid?.let { it1 -> Log.d("UIDTEST", it1) }
+            Log.d("POSITION",position.toString())
+            Log.d("USERMODEL",appContacts[position].toString())
         }
     }
 
@@ -48,28 +61,42 @@ class CustomContactAdapter :
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateItems(items: List<UserModel>?) {
-        appContacts = items ?: emptyList()
+        (items ?: emptyList()).also { appContacts = it }
         notifyDataSetChanged()
     }
 
     inner class CustomContactView(val item: ContactItemBinding) : RecyclerView.ViewHolder(item.root)
-}
 
-object ContactRecyclerAdapter  {
-            @JvmStatic
-            @BindingAdapter("contactItem")
-            fun bindContactItem(recyclerView: RecyclerView, contactItem: List<UserModel>?) {
-                val adapter = getOrCreateAdapter(recyclerView)
-                adapter.updateItems(contactItem)
-            }
-
-            private fun getOrCreateAdapter(recyclerView: RecyclerView): CustomContactAdapter {
-                return if (recyclerView.adapter != null && recyclerView.adapter is CustomContactAdapter) {
-                    recyclerView.adapter as CustomContactAdapter
-                } else {
-                    val bindableRecyclerAdapter = CustomContactAdapter()
-                    recyclerView.adapter = bindableRecyclerAdapter
-                    bindableRecyclerAdapter
+    override fun getFilter(): Filter {
+        return object :Filter(){
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val contactSearch = constraint.toString()
+                if(contactSearch.isEmpty()){
+                    allContact = appContacts
+                    Log.d("ALLCONTACTFILTER",allContact.toString())
+                } else{
+                    val filterContact = ArrayList<UserModel>()
+                    for(friends in appContacts){
+                        if (friends.name!!.toLowerCase(Locale.ROOT).trim()
+                                .contains(contactSearch.toLowerCase(Locale.ROOT).trim()))
+                                    filterContact.add(friends)
+                    }
+                    allContact = filterContact
+                    Log.d("ALLCONTACTELSE",allContact.toString())
                 }
+                val filterResult = FilterResults()
+                filterResult.values = allContact
+                Log.d("FilterResult",filterResult.toString())
+                return filterResult
             }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                allContact = results!!.values as List<UserModel>
+                Log.d("PUBLISHRESULT",allContact.toString())
+                notifyDataSetChanged()
+            }
+
+        }
     }
+}

@@ -46,8 +46,6 @@ android {
 }
 
 dependencies {
-    implementation "androidx.fragment:fragment-ktx:1.5.0-alpha02"
-    implementation "androidx.activity:activity-ktx:1.5.0-alpha02"
     implementation "androidx.preference:preference:1.2.0"
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.31'
@@ -58,6 +56,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
 
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
     //New Material Design
     implementation 'com.google.android.material:material:1.6.0-alpha02'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
@@ -75,8 +74,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
