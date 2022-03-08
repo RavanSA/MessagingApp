@@ -1,9 +1,8 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.project.messagingapp.data.repository.AppRepo
+import com.project.messagingapp.data.repository.remote.AppRepo
 
 class UserRegistrationViewModel : ViewModel(){
     private var appRepo = AppRepo.SingletonStatic.getInstance()

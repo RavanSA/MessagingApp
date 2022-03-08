@@ -1,19 +1,14 @@
-package com.project.messagingapp.data.repository
+package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.utils.AppUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
@@ -25,7 +20,7 @@ class AppRepo {
 
     object SingletonStatic{
         private var instance: AppRepo? = null
-            fun getInstance(): AppRepo{
+            fun getInstance(): AppRepo {
                 if(instance == null)
                     instance = AppRepo()
 
@@ -189,5 +184,7 @@ class AppRepo {
 
         return contactUserData
     }
+
+
 
 }

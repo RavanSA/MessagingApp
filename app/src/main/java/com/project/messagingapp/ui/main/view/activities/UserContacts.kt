@@ -18,6 +18,8 @@ import com.project.messagingapp.ui.main.viewmodel.ContactViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModelFactory
 import com.project.messagingapp.utils.ContactPermission
 
+//TODO("Dealing with data state")
+//TODO("whether the data is currently loading, has loaded successfully or failed.")
 class UserContacts : AppCompatActivity() {
     private lateinit var contactBinding: ActivityUserContactsBinding
     private lateinit var phoneNumber: String

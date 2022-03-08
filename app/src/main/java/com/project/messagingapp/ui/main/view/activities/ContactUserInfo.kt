@@ -24,6 +24,7 @@ class ContactUserInfo : AppCompatActivity() {
         Log.d("testUID", UID.toString())
 
 
+
          ctUserViewModel.getContactUID(UID).observe(this,androidx.lifecycle.Observer { data ->
              Log.d("testUIDinOBSERVE", UID.toString())
              if(data == null){

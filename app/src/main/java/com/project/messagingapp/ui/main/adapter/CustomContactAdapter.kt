@@ -16,6 +16,7 @@ import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ContactItemBinding
 import androidx.databinding.library.baseAdapters.BR
 import com.project.messagingapp.ui.main.view.activities.ContactUserInfo
+import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.view.fragments.VerifyNum
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,10 +49,13 @@ class CustomContactAdapter(
             val intent = Intent(it.context, ContactUserInfo::class.java)
             intent.putExtra("UID", userModel.uid)
             it.context.startActivity(intent)
-//            it.context.startActivity(intent)
-            userModel.uid?.let { it1 -> Log.d("UIDTEST", it1) }
-            Log.d("POSITION",position.toString())
-            Log.d("USERMODEL",appContacts[position].toString())
+        }
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(it.context,MessageActivity::class.java)
+            intent.putExtra("id_receiver",userModel.uid)
+//            intent.putExtra("image_receiver",userModel.image)
+            it.context.startActivity(intent)
         }
     }
 

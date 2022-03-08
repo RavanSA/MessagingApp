@@ -3,7 +3,7 @@ package com.project.messagingapp.ui.main.viewmodel
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.project.messagingapp.data.repository.AppRepo
+import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.data.model.UserModel
 
 class ProfileViewModel: ViewModel() {

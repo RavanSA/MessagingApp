@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.messagingapp.data.model.UserModel
-import com.project.messagingapp.data.repository.AppRepo
+import com.project.messagingapp.data.repository.remote.AppRepo
 
 class ContactInfoViewModel: ViewModel() {
 
