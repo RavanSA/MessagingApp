@@ -7,14 +7,14 @@ import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.Response
+import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.databinding.ActivityMessageBinding
 import com.project.messagingapp.ui.main.viewmodel.MessageViewModel
 import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
 import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
-
-
-
 
 class MessageActivity : AppCompatActivity() {
     //    private var receiverImage: String? = null
@@ -46,9 +46,17 @@ class MessageActivity : AppCompatActivity() {
 //            is Response.Success -> conversationID
 //            is Response.Error -> Log.d("ERRORACTIVITY", additionResponse.message.toString())
 //        }
-        msgViewModel.checkChat(receiverID!!).observe(this, androidx.lifecycle.Observer { boolean ->
-            conversationID = boolean.toString()
-        })
+
+//        msgViewModel.checkChat(receiverID!!).observe(this, androidx.lifecycle.Observer { boolean ->
+//            conversationID = boolean.toString()
+//            Log.d("MESSAGEBOOLEAN",boolean.toString())
+//        })
+        messageBinding.btnSend.setOnClickListener {
+            GlobalScope.launch {
+                msgViewModel.sendMessage("TEST", receiverID!!,"asd")
+                Log.d("SENDMESSAGE", "SENDMESSAGE")
+            }
+        }
 
         Log.d("TEST", conversationID.toString())
     }

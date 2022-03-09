@@ -6,10 +6,10 @@ import com.project.messagingapp.data.model.Response
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun createChat(message: String, UID: String,receiverID: String): Flow<Any>
+    suspend fun createChat(message: String, UID: String,receiverID: String)
 
     suspend fun checkChat(receiverID: String): Boolean
 
-    suspend fun sendMessage(message: String, receiverID: String,conversationID: String): Flow<Any>
+    suspend fun sendMessage(message: String, receiverID: String,conversationID: String)
 
 }

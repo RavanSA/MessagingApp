@@ -22,32 +22,35 @@ class ChatRepositoryImpl: ChatRepository {
         message: String,
         UID: String,
         receiverID: String)
-    = flow {
+    {
         try {
-            emit(Response.Loading)
-            var databaseReference = FirebaseDatabase.getInstance().getReference("ChatList").child(UID)
-            var chatID = databaseReference.push().key
+//            emit(Response.Loading)
+            var databaseReference = FirebaseDatabase.getInstance().getReference("ChatList")
+                .child(UID)
+            val chatID = databaseReference.push().key
 
             val chatListMode =
                 ChatListModel(chatID!!, message, System.currentTimeMillis().toString(), receiverID)
+            databaseReference.child(chatID!!).setValue(chatListMode)
 
-            databaseReference.child(chatID).setValue(chatListMode)
-
-            databaseReference = FirebaseDatabase.getInstance().getReference("ChatList").child(receiverID)
+            databaseReference = FirebaseDatabase.getInstance().getReference("ChatList")
+                .child(receiverID)
 
             val chatList =
-                ChatListModel(chatID, message, System.currentTimeMillis().toString(), UID)
+                ChatListModel(chatID!!, message, System.currentTimeMillis().toString(), UID)
 
             databaseReference.child(chatID).setValue(chatList)
 
             databaseReference = FirebaseDatabase.getInstance().getReference("Chat").child(chatID)
 
             val messageModel = MessageModel(UID, receiverID, message, type = "text")
-           val createChat = databaseReference.push().setValue(messageModel)
-            emit(Response.Success(createChat))
+           databaseReference.push().setValue(messageModel)
+//            emit(Response.Success(createChat))
+            Log.d("chatcreated","TRUE")
         } catch (e: Exception){
-            emit(Error(e.message ?: e.toString()))
+            Log.d("error",e.message ?: e.toString())
         }
+
     }
 
 
@@ -55,8 +58,10 @@ class ChatRepositoryImpl: ChatRepository {
         var checkChat: Boolean
         if(receiverID == member) {
             checkChat = true
+            Log.d("CHECKCHAT",checkChat.toString())
         } else {
             checkChat = false
+            Log.d("CHECKCHAT",checkChat.toString())
         }
         return checkChat
     }
@@ -74,11 +79,15 @@ class ChatRepositoryImpl: ChatRepository {
         var conversationID: String? = null
         val listener = object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val items = snapshot.children.map { ds ->
+                Log.d("SNAPSHOT","ONDATACHANGE")
+                snapshot.children.map { ds ->
+                        Log.d("DSCHECKCHAT", ds.toString())
                         val member = ds.child("member").value.toString()
                          testMethod = testMethod(receiverID, member)
+                            Log.d("TESTMETHOD",testMethod.toString())
 //                        if(receiverID == member){
-//                            conversationID = ds.key.toString()
+                            conversationID = ds.key.toString()
+                            getConversationID(conversationID!!)
 //                            chechChatBoolean = true
 //                        }
 //                    if(conversationID!!.isNotEmpty()){
@@ -94,7 +103,7 @@ class ChatRepositoryImpl: ChatRepository {
         }
 
         val UID = AppUtil().getUID()
-        val data = FirebaseDatabase.getInstance().getReference("ChatList")
+        FirebaseDatabase.getInstance().getReference("ChatList")
             .child(UID!!).orderByChild("member").equalTo(receiverID)
             .addValueEventListener(listener)
 
@@ -102,19 +111,24 @@ class ChatRepositoryImpl: ChatRepository {
         return testMethod
     }
 
+    private fun getConversationID(conversationID: String): String? {
+        return conversationID
+    }
+
     //TODO if(checkChat == null) createChat else sendMessage
     override suspend fun sendMessage(
         message: String,
         receiverID: String,
         conversationID: String
-    )= flow {
+    ) {
         try{
-            emit(Response.Loading)
+//            emit(Response.Loading)
             var databaseReference =
-                FirebaseDatabase.getInstance().getReference("Chat").child(receiverID)
+                FirebaseDatabase.getInstance().getReference("Chat").child(conversationID)
 
             val messageModel =
-                MessageModel(AppUtil().getUID()!!, receiverID, message, System.currentTimeMillis().toString(), "text")
+                MessageModel(AppUtil().getUID()!!, receiverID, message,
+                    System.currentTimeMillis().toString(), "text")
 
             databaseReference.push().setValue(messageModel)
 
@@ -133,10 +147,11 @@ class ChatRepositoryImpl: ChatRepository {
                 FirebaseDatabase.getInstance().getReference("ChatList").child(receiverID)
                     .child(conversationID)
 
-            var sendMessage = databaseReference.updateChildren(map)
-            emit(Response.Success(sendMessage))
-        }catch (e: Exception){
-            emit(Error(e.message ?: e.toString()))
+            databaseReference.updateChildren(map)
+//            emit(Response.Success(sendMessage))
+        } catch (e: Exception){
+//            emit(Error(e.message ?: e.toString()))
+            Log.d("exceptıonsendMESSAGE",e.message ?: e.toString())
         }
     }
 
