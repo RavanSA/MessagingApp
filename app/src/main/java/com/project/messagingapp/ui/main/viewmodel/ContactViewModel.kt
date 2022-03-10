@@ -16,7 +16,6 @@ constructor (private val mobileContact: ArrayList<UserModel>): ViewModel() {
     fun appContact(): MutableLiveData<List<UserModel>> {
          val contactData = appRepo.getAppContact(mobileContact)
             _data.postValue(contactData)
-            Log.d("VIEWMODEL", contactData.toString())
 
         return _data
     }

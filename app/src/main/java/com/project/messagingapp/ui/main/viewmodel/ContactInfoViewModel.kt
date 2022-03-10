@@ -18,8 +18,6 @@ class ContactInfoViewModel: ViewModel() {
     fun getContactUID(UID: String?) : MutableLiveData<UserModel>{
         val appRepoUID = appRepo.getContactUID(UID!!)
         _theDate.postValue(appRepoUID)
-        Log.d("INVIEWMODEL",_theDate.toString())
-        Log.d("INVIEWMODELAPPREPO",appRepoUID.name.toString())
         return _theDate
     }
 }

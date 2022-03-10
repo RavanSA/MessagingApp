@@ -6,9 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.messagingapp.data.model.ChatListModel
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
-import com.project.messagingapp.data.use_case.CheckChat
-import com.project.messagingapp.data.use_case.CreateChat
-import com.project.messagingapp.data.use_case.UseCases
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.launch
 

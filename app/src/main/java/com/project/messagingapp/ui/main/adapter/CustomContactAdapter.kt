@@ -23,8 +23,7 @@ import kotlin.collections.ArrayList
 
 class CustomContactAdapter(
     appUserContacts: List<UserModel>
-) :
-    RecyclerView.Adapter<CustomContactAdapter.CustomContactView>(),Filterable {
+) : RecyclerView.Adapter<CustomContactAdapter.CustomContactView>(),Filterable {
 
     var appContacts: List<UserModel> = appUserContacts
     private var allContact: List<UserModel> = appContacts
@@ -54,7 +53,6 @@ class CustomContactAdapter(
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context,MessageActivity::class.java)
             intent.putExtra("id_receiver",userModel.uid)
-//            intent.putExtra("image_receiver",userModel.image)
             it.context.startActivity(intent)
         }
     }
@@ -86,18 +84,15 @@ class CustomContactAdapter(
                                     filterContact.add(friends)
                     }
                     allContact = filterContact
-                    Log.d("ALLCONTACTELSE",allContact.toString())
                 }
                 val filterResult = FilterResults()
                 filterResult.values = allContact
-                Log.d("FilterResult",filterResult.toString())
                 return filterResult
             }
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 allContact = results!!.values as List<UserModel>
-                Log.d("PUBLISHRESULT",allContact.toString())
                 updateItems(allContact)
             }
 

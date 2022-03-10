@@ -20,23 +20,5 @@ class RegistrationActivity : AppCompatActivity() {
             .add(R.id.main_container, WelcomeFragment())
             .commit()
 
-//        val ClassGetUserData = GetUserData()
-
-
-//        val fm: FragmentManager = supportFragmentManager
-//        Fragment frag = fm.findFragmentById(R.id.UserProfile)
-//
-//
-//
-//        GetUserData f = (GetUserData) getSupportFragmentManager().findFragmentById(R.id.UserProfile);
-//        if(f instanceof ClassGetUserData){
-//            UserProfileSave.setOnClickListener {
-//                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                ClassGetUserData.CropActivityResultLauncher.launch(takePictureIntent)
-//            }
-//        }
-
-
     }
-
 }

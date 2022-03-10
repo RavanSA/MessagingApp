@@ -9,7 +9,5 @@ class UserRegistrationViewModel : ViewModel(){
 
     fun UploadData(username: String,status: String,image: Uri){
         appRepo.UploadData(username,status,image)
-//            Log.d("USERVIEWMODEL","FAIL!!!!")
-
     }
 }
