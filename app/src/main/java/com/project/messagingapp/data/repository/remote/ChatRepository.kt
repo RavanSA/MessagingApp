@@ -10,6 +10,6 @@ interface ChatRepository {
 
     suspend fun checkChat(receiverID: String): Boolean
 
-    suspend fun sendMessage(message: String, receiverID: String,conversationID: String)
+    suspend fun sendMessage(message: String, receiverID: String)
 
 }

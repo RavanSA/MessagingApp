@@ -15,14 +15,13 @@ import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
 class ChatRepositoryImpl: ChatRepository {
-    private var chechChatBoolean: Boolean = false
-
+    private lateinit var conversationID: String
 
     override suspend fun createChat(
         message: String,
         UID: String,
-        receiverID: String)
-    {
+        receiverID: String
+    ) {
         try {
 //            emit(Response.Loading)
             var databaseReference = FirebaseDatabase.getInstance().getReference("ChatList")
@@ -76,7 +75,6 @@ class ChatRepositoryImpl: ChatRepository {
         var testMethod = false
 
 //            this@flow.emit(Response.Loading)
-        var conversationID: String? = null
         val listener = object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.d("SNAPSHOT","ONDATACHANGE")
@@ -87,7 +85,7 @@ class ChatRepositoryImpl: ChatRepository {
                             Log.d("TESTMETHOD",testMethod.toString())
 //                        if(receiverID == member){
                             conversationID = ds.key.toString()
-                            getConversationID(conversationID!!)
+                            getConversationID(conversationID)
 //                            chechChatBoolean = true
 //                        }
 //                    if(conversationID!!.isNotEmpty()){
@@ -118,26 +116,27 @@ class ChatRepositoryImpl: ChatRepository {
     //TODO if(checkChat == null) createChat else sendMessage
     override suspend fun sendMessage(
         message: String,
-        receiverID: String,
-        conversationID: String
+        receiverID: String
     ) {
-        try{
+        try {
 //            emit(Response.Loading)
-            var databaseReference =
-                FirebaseDatabase.getInstance().getReference("Chat").child(conversationID)
-
-            val messageModel =
-                MessageModel(AppUtil().getUID()!!, receiverID, message,
-                    System.currentTimeMillis().toString(), "text")
-
-            databaseReference.push().setValue(messageModel)
+//            var databaseReference =
+//                FirebaseDatabase.getInstance().getReference("Chat").child(conversationID)
+//
+//            val messageModel =
+//                MessageModel(AppUtil().getUID()!!, receiverID, message,
+//                    System.currentTimeMillis().toString(), "text")
+//
+//            databaseReference.push().setValue(messageModel)
 
             val map: MutableMap<String, Any> = HashMap()
 
             map["lastMessage"] = message
             map["date"] = System.currentTimeMillis().toString()
 
-            databaseReference =
+            Log.d("GETUID",AppUtil().getUID()!!)
+
+            var databaseReference =
                 FirebaseDatabase.getInstance().getReference("ChatList")
                     .child(AppUtil().getUID()!!).child(conversationID)
 

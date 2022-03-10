@@ -3,6 +3,7 @@ package com.project.messagingapp.ui.main.view.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.project.messagingapp.R
@@ -52,9 +53,12 @@ class MessageActivity : AppCompatActivity() {
 //            Log.d("MESSAGEBOOLEAN",boolean.toString())
 //        })
         messageBinding.btnSend.setOnClickListener {
-            GlobalScope.launch {
-                msgViewModel.sendMessage("TEST", receiverID!!,"asd")
-                Log.d("SENDMESSAGE", "SENDMESSAGE")
+            var msgText = messageBinding.msgText.text.toString()
+            if(msgText.isNotEmpty()){
+                GlobalScope.launch {
+                    msgViewModel.sendMessage(msgText, receiverID!!)
+                    Log.d("SENDMESSAGE", "SENDMESSAGE")
+                }
             }
         }
 

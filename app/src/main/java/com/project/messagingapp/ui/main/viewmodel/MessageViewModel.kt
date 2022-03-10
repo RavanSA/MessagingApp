@@ -9,6 +9,7 @@ import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.data.use_case.CheckChat
 import com.project.messagingapp.data.use_case.CreateChat
 import com.project.messagingapp.data.use_case.UseCases
+import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.launch
 
 
@@ -48,13 +49,13 @@ class MessageViewModel:ViewModel() {
             return _isChatChecked
         }
 
-        suspend fun sendMessage(message: String, receiverID: String, conversationID: String) =
+        suspend fun sendMessage(message: String, receiverID: String) =
             if(!(chatRepo.checkChat(receiverID))){
-                chatRepo.createChat(message, receiverID,receiverID)
-                chatRepo.sendMessage(message,receiverID,conversationID)
+                chatRepo.createChat(message, AppUtil().getUID()!!,receiverID)
+                chatRepo.sendMessage(message,receiverID)
                 Log.d("CHATREPO","TESTED")
             } else {
-                chatRepo.sendMessage(message,receiverID,conversationID)
+                chatRepo.sendMessage(message,receiverID)
                 Log.d("SENDMESSAGE","EXECUTED")
             }
     }
