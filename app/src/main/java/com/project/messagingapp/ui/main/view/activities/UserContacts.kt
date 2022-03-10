@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -18,6 +17,8 @@ import com.project.messagingapp.ui.main.viewmodel.ContactViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModelFactory
 import com.project.messagingapp.utils.ContactPermission
 
+//TODO("Dealing with data state")
+//TODO("whether the data is currently loading, has loaded successfully or failed.")
 class UserContacts : AppCompatActivity() {
     private lateinit var contactBinding: ActivityUserContactsBinding
     private lateinit var phoneNumber: String
@@ -69,12 +70,6 @@ class UserContacts : AppCompatActivity() {
                     contactAdapter!!.filter.filter(newText)
                     contactBinding.recyclerViewContact.adapter = contactAdapter
                     contactAdapter!!.notifyDataSetChanged()
-
-                    if (newText != null) {
-                        Log.d("NEWTEXT",newText)
-                    }
-                    Log.d("ADAPTER",contactAdapter.toString())
-                    Log.d("ADAPTERFILTER", contactAdapter!!.filter.filter(newText).toString())
                 }
                 return false
             }
@@ -124,8 +119,6 @@ class UserContacts : AppCompatActivity() {
 
             cursor.close()
 
-
-
         }
         return mobileContacts
     }
@@ -133,10 +126,6 @@ class UserContacts : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     fun loadUsers(){
         contactViewModel.appContact().observe(this, Observer { data ->
-            for(user in data){
-                Log.d("USERS DATA OBSERVER", user.toString())
-            }
-            Log.d("Data",data.toString())
                 contactAdapter = CustomContactAdapter(data)
                 contactBinding.recyclerViewContact.adapter = contactAdapter
                 contactAdapter!!.notifyDataSetChanged()

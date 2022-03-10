@@ -14,8 +14,8 @@ import com.project.messagingapp.ui.main.view.fragments.SettingRecyclerClickListe
 class CustomSettingsAdapter(
     private val context: SettingsFragment,
     private val listener: SettingRecyclerClickListener,
-    private val arrayList: ArrayList<SettingsViewModel>)
-    :RecyclerView.Adapter<CustomSettingsAdapter.CustomSettingView>()
+    private val arrayList: ArrayList<SettingsViewModel>
+    ) : RecyclerView.Adapter<CustomSettingsAdapter.CustomSettingView>()
 
 {
 

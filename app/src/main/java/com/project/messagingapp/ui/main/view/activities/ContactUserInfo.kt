@@ -12,7 +12,6 @@ class ContactUserInfo : AppCompatActivity() {
     private lateinit var contactUserInfoBinding: ActivityContactUserInfoBinding
     private var UID: String? = null
     private lateinit var ctUserViewModel: ContactInfoViewModel
-    private var reload = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,15 +20,11 @@ class ContactUserInfo : AppCompatActivity() {
 
         ctUserViewModel = ViewModelProvider(this)[ContactInfoViewModel::class.java]
         UID = intent.getStringExtra("UID")
-        Log.d("testUID", UID.toString())
-
 
          ctUserViewModel.getContactUID(UID).observe(this,androidx.lifecycle.Observer { data ->
-             Log.d("testUIDinOBSERVE", UID.toString())
              if(data == null){
                  loadContactUserInfo()
              }else contactUserInfoBinding.userModel= data
-            Log.d("testData",data.toString())
         })
     }
 

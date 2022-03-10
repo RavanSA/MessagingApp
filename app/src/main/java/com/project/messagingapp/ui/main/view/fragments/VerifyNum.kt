@@ -18,10 +18,13 @@ import com.project.messagingapp.data.model.UserModel
 import kotlinx.android.synthetic.main.fragment_verify_num.view.*
 
 class VerifyNum : Fragment() {
+
     private var p0: String? = null
     private var pin: String? = null
     private var firebaseAuth: FirebaseAuth? = null
     private var databaseReference: DatabaseReference? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,7 +37,7 @@ class VerifyNum : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_verify_num, container, false)
 
         firebaseAuth = FirebaseAuth.getInstance()

@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.messagingapp.data.model.UserModel
-import com.project.messagingapp.data.repository.AppRepo
+import com.project.messagingapp.data.repository.remote.AppRepo
 
 class ContactInfoViewModel: ViewModel() {
 
@@ -18,8 +18,6 @@ class ContactInfoViewModel: ViewModel() {
     fun getContactUID(UID: String?) : MutableLiveData<UserModel>{
         val appRepoUID = appRepo.getContactUID(UID!!)
         _theDate.postValue(appRepoUID)
-        Log.d("INVIEWMODEL",_theDate.toString())
-        Log.d("INVIEWMODELAPPREPO",appRepoUID.name.toString())
         return _theDate
     }
 }

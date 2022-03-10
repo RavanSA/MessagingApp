@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
-import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.R
 import com.example.awesomedialog.*
 import com.google.firebase.database.FirebaseDatabase
@@ -23,27 +21,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
-import kotlinx.coroutines.Job
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 class UserRegistrationProfile : AppCompatActivity() {
-
-//    private val CropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
-//        override fun createIntent(context: Context, input: Any?): Intent {
-//            Toast.makeText(context, "TESTING CONTRACT", Toast.LENGTH_LONG).show()
-//
-//            return CropImage
-//                .activity()
-//                .getIntent(this@UserRegistrationProfile)
-//        }
-//
-//        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-//            Toast.makeText(this@UserRegistrationProfile, "TESTING PARSE RESULT ",Toast.LENGTH_LONG).show()
-//            return CropImage.getActivityResult(intent)?.originalUri
-//
-//        }
-//    }
 
     private var image: Uri? = null
     private lateinit var username: String
@@ -53,8 +33,6 @@ class UserRegistrationProfile : AppCompatActivity() {
     private var storageRef: StorageReference? = null
     private lateinit var ImageUrl: String
     private lateinit var userViewModel: UserRegistrationViewModel
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,9 +101,6 @@ class UserRegistrationProfile : AppCompatActivity() {
         root.mkdirs()
         val fname = "img_" + System.currentTimeMillis() + ".jpg"
         val sdImageMainDirectory = File(root, fname)
-//        val packageName = this@UserRegistrationProfile.applicationContext?.packageName
-//        image = FileProvider.getUriForFile(this@UserRegistrationProfile,
-//            "$packageName.provider", sdImageMainDirectory)
         image = FileProvider.getUriForFile(this@UserRegistrationProfile, "com.project.messagingapp.provider",
             sdImageMainDirectory)
         Log.d("IMAGEINCAMERA", image.toString())

@@ -16,14 +16,14 @@ import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ContactItemBinding
 import androidx.databinding.library.baseAdapters.BR
 import com.project.messagingapp.ui.main.view.activities.ContactUserInfo
+import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.view.fragments.VerifyNum
 import java.util.*
 import kotlin.collections.ArrayList
 
 class CustomContactAdapter(
     appUserContacts: List<UserModel>
-) :
-    RecyclerView.Adapter<CustomContactAdapter.CustomContactView>(),Filterable {
+) : RecyclerView.Adapter<CustomContactAdapter.CustomContactView>(),Filterable {
 
     var appContacts: List<UserModel> = appUserContacts
     private var allContact: List<UserModel> = appContacts
@@ -48,10 +48,12 @@ class CustomContactAdapter(
             val intent = Intent(it.context, ContactUserInfo::class.java)
             intent.putExtra("UID", userModel.uid)
             it.context.startActivity(intent)
-//            it.context.startActivity(intent)
-            userModel.uid?.let { it1 -> Log.d("UIDTEST", it1) }
-            Log.d("POSITION",position.toString())
-            Log.d("USERMODEL",appContacts[position].toString())
+        }
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(it.context,MessageActivity::class.java)
+            intent.putExtra("id_receiver",userModel.uid)
+            it.context.startActivity(intent)
         }
     }
 
@@ -82,18 +84,15 @@ class CustomContactAdapter(
                                     filterContact.add(friends)
                     }
                     allContact = filterContact
-                    Log.d("ALLCONTACTELSE",allContact.toString())
                 }
                 val filterResult = FilterResults()
                 filterResult.values = allContact
-                Log.d("FilterResult",filterResult.toString())
                 return filterResult
             }
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 allContact = results!!.values as List<UserModel>
-                Log.d("PUBLISHRESULT",allContact.toString())
                 updateItems(allContact)
             }
 

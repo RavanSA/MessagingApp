@@ -1,19 +1,14 @@
-package com.project.messagingapp.data.repository
+package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.utils.AppUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class AppRepo {
     private var liveData: MutableLiveData<UserModel>? = null
@@ -21,16 +16,16 @@ class AppRepo {
     private var appContacts: MutableList<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
-    private var contactSnapshot: List<UserModel>? = emptyList()
 
     object SingletonStatic{
         private var instance: AppRepo? = null
-            fun getInstance(): AppRepo{
+
+            fun getInstance(): AppRepo {
                 if(instance == null)
                     instance = AppRepo()
-
                 return instance!!
             }
+
     }
 
 
@@ -39,6 +34,7 @@ class AppRepo {
             liveData = MutableLiveData()
             appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!)
                 .addValueEventListener(object : ValueEventListener {
+
                 override fun onDataChange(snapshot: DataSnapshot) {
                  if(snapshot.exists()){
                      val userModel = snapshot.getValue(UserModel::class.java)
@@ -47,19 +43,23 @@ class AppRepo {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("ERROR",error.toString())
                 }
-
             })
         }
+
         return liveData!!
     }
 
-     fun UploadData(username: String, status: String, image: Uri) {
+     fun UploadData(
+         username: String,
+         status: String,
+         image: Uri
+     ) {
          val currentUserReference = appUtil.getDatabaseReferenceUsers().
          child(appUtil.getUID()!!)
-
          userUploadData = MutableLiveData()
+
             appUtil.getUID()!!.let {
             appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(image)
                 .addOnSuccessListener {
@@ -73,16 +73,15 @@ class AppRepo {
                             "image" to imageUrl
                         )
                         currentUserReference.updateChildren(map)
-                        }
-                }
+                    }
                 }
             }
+     }
 
     fun updateStatus(status: String) {
         val map : Map<String, Any> = mapOf(
             "status" to status
          )
-
 
         appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!)
             .updateChildren(map)
@@ -110,26 +109,22 @@ class AppRepo {
                         val map = mapOf(
                             "image" to imageUrl
                         )
-                        Log.d("ımageURL",imageUrl)
-                        Log.d("ımageURI", imageURI.toString())
                         databaseRef.updateChildren(map)
                     }
                 }
         }
     }
 
-    fun getAppContact(mobileContact: ArrayList<UserModel>): List<UserModel> {
+    fun getAppContact(
+        mobileContact: ArrayList<UserModel>
+    ): List<UserModel> {
         if(appContacts == null) {
-            Log.d("APPCONTACT1", appContacts.toString())
+
             val phoneNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
-            Log.d("PHONENUMBER1", phoneNumber.toString())
             val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-            Log.d("DATABASEREF1", databaseReference.toString())
             val query = databaseReference.orderByChild("number")
-            Log.d("QUERY1", query.toString())
-            Log.d("APPCONTACT2", appContacts.toString())
             appContacts = arrayListOf<UserModel>()
-            //----------------------------------
+
             query.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.d("SNAPSHOT1", snapshot.toString())
@@ -155,17 +150,11 @@ class AppRepo {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("APPERROR", error.toString())
+                    Log.d("ERROR", error.toString())
                 }
             })
         }
-        Log.d("APPCONTACTQWEQEW",appContacts.toString())
         return appContacts!! as List<UserModel>
-    }
-
-
-    fun getCurrentUserNumber(): String? {
-        return FirebaseAuth.getInstance().currentUser?.phoneNumber
     }
 
     fun getContactUID(UID: String?): UserModel {
@@ -175,19 +164,16 @@ class AppRepo {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
                                 val userModel = snapshot.getValue(UserModel::class.java)
-                                Log.d("INREPOSITORY", userModel.toString())
                                 contactUserData = userModel!!
                             }
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
+                            Log.d("Error",error.toString())
                         }
-
                     })
             }
 
         return contactUserData
     }
-
 }

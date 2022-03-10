@@ -16,7 +16,6 @@ class SettingsViewModel : ViewModel {
     var imageSettings = ""
     var settingDesc = ""
 
-
     constructor():super()
 
     constructor(setting: SettingList) : super() {
@@ -29,7 +28,6 @@ class SettingsViewModel : ViewModel {
     var arrlistMutableLiveData = MutableLiveData<ArrayList<SettingsViewModel>>()
 
     var arrlist: ArrayList<SettingsViewModel> = ArrayList<SettingsViewModel>()
-
 
     fun getArrayList() : MutableLiveData<ArrayList<SettingsViewModel>>{
         val editprofile = SettingList("1","Account","ic_baseline_manage_accounts_24","Privacy, Account,Settings")
@@ -55,7 +53,6 @@ object ImageBindingAdapter{
     @JvmStatic
     @BindingAdapter("imageUrl")
     fun setImageURL(view: ImageView, url: String){
-//        Glide.with(view.context).load(url).placeholder(R.drawable.ic_baseline_person_add_24).into(view)
         Log.d("IMAGERESOURCES",url)
         Glide.with(view.context)
             .load(view.context.resources

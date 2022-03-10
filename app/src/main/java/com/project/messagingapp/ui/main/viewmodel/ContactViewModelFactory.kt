@@ -10,8 +10,4 @@ class ContactViewModelFactory(private val mobileContact:ArrayList<UserModel>) :
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ContactViewModel(mobileContact) as T
     }
-//        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//            return UserViewModel(context) as T
-//        }
-
     }
