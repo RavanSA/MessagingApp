@@ -1,6 +1,6 @@
 package com.project.messagingapp.data.model
 
-class ChatListModel(
+data class ChatListModel(
     var chatId: String = "",
     var lastMessage: String = "",
     var date: String = "",

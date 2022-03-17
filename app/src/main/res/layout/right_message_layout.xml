@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="messageImage"
+            type="String" />
+
+        <variable
+            name="messageModel"
+            type="com.project.messagingapp.data.model.MessageModel" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgMessageImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignBottom="@id/rightLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="2dp" />
+
+        <LinearLayout
+            android:id="@+id/rightLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/imgMessageImage"
+            android:background="@drawable/right_message_background"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txtMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:maxWidth="250dp"
+                android:singleLine="false"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:text="test"
+                android:textStyle="bold"/>
+<!--                android:visibility="@{message.type.equals(`text`)?View.VISIBLE:View.GONE}" />-->
+
+<!--            <ImageView-->
+
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:src="@drawable/ic_launcher_background"/>-->
+<!--                android:visibility="@{message.type.equals(`text`)?View.GONE:View.VISIBLE}" />-->
+<!--            imageMessage="@{message.message}"-->
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

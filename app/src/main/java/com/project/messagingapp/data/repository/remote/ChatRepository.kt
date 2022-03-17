@@ -1,9 +1,9 @@
 package com.project.messagingapp.data.repository.remote
 
-import com.google.firebase.database.ValueEventListener
+import androidx.lifecycle.MutableLiveData
 import com.project.messagingapp.data.model.ChatListModel
+import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.data.model.Response
-import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
     suspend fun createChat(message: String, UID: String,receiverID: String)
@@ -12,4 +12,9 @@ interface ChatRepository {
 
     suspend fun sendMessage(message: String, receiverID: String)
 
+    fun readMessages (allMessages: List<ChatListModel>) : MutableLiveData<Response>
+
+    suspend fun getConversationUID(receiverID: String): ArrayList<String>
+
+    fun getChatID(receiverID: String): MutableLiveData<Response>
 }
