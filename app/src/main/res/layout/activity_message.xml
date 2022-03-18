@@ -55,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
-                    android:background="@drawable/ic_baseline_phone_android_24"
                     android:hint="Write message.."
                     android:inputType="textMultiLine"
                     android:padding="8dp"

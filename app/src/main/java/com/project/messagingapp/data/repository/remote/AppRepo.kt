@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.project.messagingapp.constants.AppConstants
+import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.utils.AppUtil
 
@@ -16,6 +17,7 @@ class AppRepo {
     private var appContacts: MutableList<UserModel>? = null
     private var appUtil = AppUtil()
     private var userUploadData: MutableLiveData<FirebaseDatabase>? = null
+    private var messages: MutableList<MessageModel>? = null
 
     object SingletonStatic{
         private var instance: AppRepo? = null
@@ -175,5 +177,26 @@ class AppRepo {
             }
 
         return contactUserData
+    }
+
+    fun getMessages(conversationID: String): MutableList<MessageModel>? {
+        val query = FirebaseDatabase.getInstance().getReference("Chat")
+            .child(conversationID)
+
+        query.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val messageModel = snapshot.getValue(MessageModel::class.java)
+                    messages!!.add(messageModel!!)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("ERROR", error.toString())
+            }
+
+        })
+
+        return messages
     }
 }
