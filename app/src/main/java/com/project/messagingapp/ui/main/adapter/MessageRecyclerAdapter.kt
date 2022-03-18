@@ -54,7 +54,7 @@ class MessageRecyclerAdapter(
     override fun getItemViewType(position: Int): Int {
         //CHECK cast expression
         val messageModel: MessageModel = getItem(position) as MessageModel
-        Log.d("MESSAGESRECYCLER", messages.toString())
+//        Log.d("MESSAGESRECYCLER", messages.toString())
         return if (messageModel.senderId == AppUtil().getUID()!!) 0 else 1
     }
 
@@ -71,11 +71,11 @@ class MessageRecyclerAdapter(
     ) {
         if (getItemViewType(position) == 0) {
             (holder as MessageViewHolderRight).bind(messages!![position])
-            Log.d("TEST123","TEST123")
+//            Log.d("TEST123","TEST123")
         }
 
         if (getItemViewType(position) == 1) {
-                Log.d("test1","TEST1")
+//                Log.d("test1","TEST1")
             (holder as MessageViewHolderLeft).bind(messages!![position])
         }
     }
@@ -83,7 +83,7 @@ class MessageRecyclerAdapter(
     inner class MessageViewHolderRight(var rightDataBinding: RightMessageLayoutBinding) :
         RecyclerView.ViewHolder(rightDataBinding.root){
             fun bind(messages: MessageModel){
-                Log.d("MESSAGGESBIND",messages.message)
+//                Log.d("MESSAGGESBIND",messages.message)
                 rightDataBinding.txtMessage.text = messages.message
             }
         }

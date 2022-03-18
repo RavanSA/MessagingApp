@@ -12,7 +12,7 @@ interface ChatRepository {
 
     suspend fun sendMessage(message: String, receiverID: String)
 
-    fun readMessages (allMessages: List<ChatListModel>) : MutableLiveData<Response>
+    fun readMessages (allMessages: List<ChatListModel>) : MutableList<MessageModel>
 
     suspend fun getConversationUID(receiverID: String): ArrayList<String>
 

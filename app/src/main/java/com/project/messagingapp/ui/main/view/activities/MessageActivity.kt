@@ -82,7 +82,7 @@ class MessageActivity : AppCompatActivity() {
             withContext(Dispatchers.Main){
                 msgViewModel.getChatID(receiverID).observe(this@MessageActivity,{ data ->
                     readMessage(data.chatList!!)
-                //            Log.d("CHATLIST", it.)
+                    Log.d("CHATLIST", data.chatList!!.size.toString())
                 })
             }
         }
@@ -90,9 +90,12 @@ class MessageActivity : AppCompatActivity() {
 
     fun readMessage(allMessages: List<ChatListModel>){
         lifecycleScope.launch {
-            msgViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
-                data.messageList?.let { callAdapter(it) }
-            })
+//            msgViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
+//                data.messageList?.let { callAdapter(it) }
+//                Log.d("MESSAGESLIST", data.messageList.toString())
+//            })
+            val adapterInput = msgViewModel.readMessages(allMessages)
+            callAdapter(adapterInput)
         }
     }
 

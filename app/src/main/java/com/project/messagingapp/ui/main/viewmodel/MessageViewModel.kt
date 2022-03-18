@@ -70,26 +70,9 @@ class MessageViewModel:ViewModel() {
                 Log.d("SENDMESSAGE","EXECUTED")
             }
 
-        fun readMessages(allMessages: List<ChatListModel>): LiveData<Response> {
+        fun readMessages(allMessages: List<ChatListModel>): MutableList<MessageModel> {
             return chatRepo.readMessages(allMessages)
         }
-
-//        suspend fun getConvUID(receiverID: String): ArrayList<String>? {
-//            var messageList: ArrayList<String>? = null
-//            GlobalScope.launch {
-//                suspend {
-//                    Log.d("coroutineScope1", "#runs on ${Thread.currentThread().name}")
-//                    delay(10000)
-//                    withContext(Dispatchers.Main) {
-//                        messageList = chatRepo.getConversationUID(receiverID)
-//                        Log.d("coroutineScope2", "#runs on ${Thread.currentThread().name}")
-//                    }
-//                }.invoke()
-//            }
-//
-//            Log.d("VİEWMODELMESSAGELIST",messageList.toString())
-//            return messageList
-//        }
 
         fun getChatID(receiverID: String):LiveData<Response>{
             return chatRepo.getChatID(receiverID)

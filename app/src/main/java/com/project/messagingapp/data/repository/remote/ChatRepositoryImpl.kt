@@ -6,13 +6,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.getValue
 import com.project.messagingapp.data.model.ChatListModel
 import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.data.model.Response
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
 import java.lang.Exception
-//TODO CHECK CHECKCHAT FUNC, CONVERSATIONID
+
+
 class ChatRepositoryImpl: ChatRepository {
     private lateinit var conversationID: String
     private var messages: MutableList<MessageModel>? = null
@@ -51,41 +53,54 @@ class ChatRepositoryImpl: ChatRepository {
          }
     }
 
-    override fun readMessages(allMessages: List<ChatListModel>) : MutableLiveData<Response> {
+    override fun readMessages(allMessages: List<ChatListModel>) : MutableList<MessageModel> {
             val messagesLiveData = MutableLiveData<Response>()
-            val query = FirebaseDatabase.getInstance().getReference("Chat")
+        val listOfMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
 
-            for(i in 1..allMessages.size) {
-                query.child(allMessages[i-1].chatId).get().addOnCompleteListener { task ->
+        val query = FirebaseDatabase.getInstance().getReference("Chat")
+
+                query.get().addOnCompleteListener { task ->
                     val response = Response()
-                    if(task.isSuccessful){
+                    if(task.isSuccessful) {
                         val result = task.result
+//                        result?.let {
+//                            //ADD MESSAGE LIST
+//                            response.messageList= result.children.map { snapshot ->
+//                                snapshot.getValue(MessageModel::class.java)!!
+//                            }
+//                            val test1 = response.messageList
+
+//                        }
                         result?.let {
-                            response.messageList = result.children.map { snapshot ->
-                                snapshot.getValue(MessageModel::class.java)!!
-                            }
+
+                            result.children.map { snapshot ->
+//                            snapshot.children
+                                val messageListFirebase = snapshot.getValue(MessageModel::class.java)
+                                Log.d("FIREBASEMESSAGELIST",messageListFirebase.toString())
+//                            messages?.add(messageList!!)
+//                                response.messageList?.add(messageListFirebase!!)
+                                Log.d("RESPONSE MESSAGELIST", response.messageList.toString())
+                                Log.d("SNAPSHOT",snapshot.key.toString())
+//                                Log.d("ALLMESSAGES",allMessag)
+                                for(i in 1..allMessages.size) {
+                                    if(snapshot.key == allMessages[i-1].chatId){
+                                        response.messageList = snapshot.children.map { childSnap ->
+                                            childSnap.getValue(MessageModel::class.java)!!
+                                        }
+                                        listOfMessages.addAll(response.messageList!!)
+                                    }
+                                }
+                                Log.d("TESTCHAT",listOfMessages.toString())
                         }
-                    } else {
+                    }
+                } else {
                         response.exception = task.exception
                     }
                     messagesLiveData.value = response
                 }
-//                query.child(allMessages[i-1].chatId).addValueEventListener(object : ValueEventListener {
-//                    override fun onDataChange(snapshot: DataSnapshot) {
-//                        if (snapshot.exists()) {
-//                            val messageModel = snapshot.getValue(MessageModel::class.java)
-//                            messages?.add(messageModel!!)
-//                            Log.d("MESSAGESINQUERY", messages.toString())
-//                        }
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {
-//                        Log.d("ERROR", error.toString())
-//                    }
-//
-//                })
-            }
-        return messagesLiveData
+        Log.d("TEST", messagesLiveData.toString())
+        Log.d("TEST2", messagesLiveData.value.toString())
+        return listOfMessages
     }
 
 
