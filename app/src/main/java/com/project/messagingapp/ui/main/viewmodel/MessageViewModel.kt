@@ -43,7 +43,6 @@ class MessageViewModel:ViewModel() {
             viewModelScope.launch {
                 createChatVal = chatRepo.createChat(message,UID,receiverID)
     //            _isChatChecked.postValue(testCheckChat)
-                Log.d("TESTVIEWMODEL",_isChatChecked.value.toString())
             }
         }
 
@@ -78,4 +77,4 @@ class MessageViewModel:ViewModel() {
             return chatRepo.getChatID(receiverID)
         }
 
-    }
+}

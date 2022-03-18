@@ -17,10 +17,8 @@ import java.lang.Exception
 
 class ChatRepositoryImpl: ChatRepository {
     private lateinit var conversationID: String
-    private var messages: MutableList<MessageModel>? = null
     private var chatIDList:ArrayList<String> = ArrayList<String>()
     private var chatID: String? = null
-    private lateinit var job: Job
 
     override suspend fun createChat(
         message: String,
@@ -54,7 +52,7 @@ class ChatRepositoryImpl: ChatRepository {
     }
 
     override fun readMessages(allMessages: List<ChatListModel>) : MutableList<MessageModel> {
-            val messagesLiveData = MutableLiveData<Response>()
+            val messagesLiveData = MutableLiveData<MutableList<MessageModel>>()
         val listOfMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
 
         val query = FirebaseDatabase.getInstance().getReference("Chat")
@@ -63,25 +61,8 @@ class ChatRepositoryImpl: ChatRepository {
                     val response = Response()
                     if(task.isSuccessful) {
                         val result = task.result
-//                        result?.let {
-//                            //ADD MESSAGE LIST
-//                            response.messageList= result.children.map { snapshot ->
-//                                snapshot.getValue(MessageModel::class.java)!!
-//                            }
-//                            val test1 = response.messageList
-
-//                        }
                         result?.let {
-
                             result.children.map { snapshot ->
-//                            snapshot.children
-                                val messageListFirebase = snapshot.getValue(MessageModel::class.java)
-                                Log.d("FIREBASEMESSAGELIST",messageListFirebase.toString())
-//                            messages?.add(messageList!!)
-//                                response.messageList?.add(messageListFirebase!!)
-                                Log.d("RESPONSE MESSAGELIST", response.messageList.toString())
-                                Log.d("SNAPSHOT",snapshot.key.toString())
-//                                Log.d("ALLMESSAGES",allMessag)
                                 for(i in 1..allMessages.size) {
                                     if(snapshot.key == allMessages[i-1].chatId){
                                         response.messageList = snapshot.children.map { childSnap ->
@@ -90,16 +71,15 @@ class ChatRepositoryImpl: ChatRepository {
                                         listOfMessages.addAll(response.messageList!!)
                                     }
                                 }
-                                Log.d("TESTCHAT",listOfMessages.toString())
+                            }
                         }
-                    }
-                } else {
+                    } else {
                         response.exception = task.exception
                     }
-                    messagesLiveData.value = response
                 }
-        Log.d("TEST", messagesLiveData.toString())
-        Log.d("TEST2", messagesLiveData.value.toString())
+        //TODO FIX LIVEDATA
+        messagesLiveData.plusAssign(listOfMessages)
+        Log.d("MESSAGESLIVEDATA",messagesLiveData.value.toString())
         return listOfMessages
     }
 
@@ -126,12 +106,7 @@ class ChatRepositoryImpl: ChatRepository {
                 snapshot.children.map { ds ->
                         val member = ds.child("member").value.toString()
                          testMethod = testMethod(receiverID, member)
-                            Log.d("TESTMETHOD",testMethod.toString())
                             conversationID = ds.key!!
-                            Log.d("CHECKCHATCONVESATIONID",conversationID)
-                        GlobalScope.launch {
-//                            readMessages(receiverID)
-                        }
                 }
             }
 
@@ -142,64 +117,6 @@ class ChatRepositoryImpl: ChatRepository {
 
         chatQuery.addValueEventListener(listener)
         return testMethod
-    }
-
-    override suspend fun getConversationUID(receiverID: String): ArrayList<String> {
-        withContext(Dispatchers.Main) {
-            val databaseRef =
-                FirebaseDatabase.getInstance().getReference("ChatList").child(AppUtil().getUID()!!)
-            val chatQuery = databaseRef.orderByChild("member").equalTo(receiverID)
-//            .child(receiverID).orderByChild("member").equalTo(receiverID)
-//        Log.d("CONVESATIONID","CONVERID")
-            var conversationIDCHAT: String? = null
-            chatQuery.addValueEventListener(
-                object : ValueEventListener {
-                    //TODO
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            for (ds in snapshot.children) {
-                                val member = ds.child("member").value.toString()
-                                if (member == receiverID) {
-                                    conversationIDCHAT = ds.key
-//                                    conversationIDCHAT?.let { readMessages(it) }
-                                    Log.d("CHATIDLIST", chatIDList.toString())
-//                                    GlobalScope.launch {
-//                                        suspend {
-//                                            Log.d("coroutineScope1", "#runs on ${Thread.currentThread().name}")
-//                                            delay(10000)
-//                                            withContext(Dispatchers.Main) {
-//                                                conversationIDCHAT?.let { chatIDList.add(it) }
-//                                                Log.d("coroutineScope2", "#runs on ${Thread.currentThread().name}")
-//                                            }
-//                                        }.invoke()
-//                                    }
-                                }
-                            }
-                        }
-////                Log.d("SNAPCONVID",snapshot.toString())
-//                        snapshot.children.map { ds ->
-////                    Log.d("TEST","TEST")
-//                            val member = ds.key
-////                    Log.d("MEMBER",member)
-//                            conversationIDCHAT = member
-//                            chatID = member
-//                            Log.d("CONVERSATIONIDCHAT1", conversationIDCHAT.toString())
-//                            Log.d("CONVERSATIONIDCHAT2", chatID.toString())
-//                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.d("Error", error.toString())
-                    }
-
-                })
-
-//        chatQuery.addValueEventListener(listener)
-            Log.d("LASTCALLCHATID", chatID.toString())
-            Log.d("OUTSIDECHATIDLIST", chatIDList.toString())
-
-        }
-            return chatIDList
     }
 
     override fun getChatID(receiverID: String): MutableLiveData<Response> {
@@ -237,8 +154,6 @@ class ChatRepositoryImpl: ChatRepository {
             map["lastMessage"] = message
             map["date"] = System.currentTimeMillis().toString()
 
-            Log.d("GETUID",AppUtil().getUID()!!)
-
             var databaseReference =
                 FirebaseDatabase.getInstance().getReference("ChatList")
                     .child(AppUtil().getUID()!!).child(conversationID)
@@ -255,5 +170,11 @@ class ChatRepositoryImpl: ChatRepository {
         }
     }
 
+
+    operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: MutableList<T>) {
+        val value = this.value ?: mutableListOf()
+        value.addAll(values)
+        this.value = value
+    }
 
 }

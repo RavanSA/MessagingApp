@@ -58,23 +58,7 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-//        var data: MutableLiveData<List<MessageModel>> = msgViewModel.readMessages()
-//
-//        messageAdapter = MessageRecyclerAdapter(data)
-//        contactBinding.recyclerViewContact.adapter = contactAdapter
-//        contactAdapter!!.notifyDataSetChanged()
-//        lifecycleScope.launch {
-//            withContext(Dispatchers.Main){
-//                msgViewModel.readMessages(receiverID!!).observe( this@MessageActivity, Observer { data ->
-//                    Log.d("REPOVIEWMODEL",data.toString())
-//                    messageAdapter = MessageRecyclerAdapter(data)
-//                    messageBinding.messageRecyclerView.adapter = messageAdapter
-//                    messageAdapter!!.notifyDataSetChanged()
-//                })
-//            }
-//        }
         getChatID(receiverID!!)
-//        chatList2?.let { readMessage(it) }
     }
 
     fun getChatID(receiverID:String) {
@@ -91,8 +75,8 @@ class MessageActivity : AppCompatActivity() {
     fun readMessage(allMessages: List<ChatListModel>){
         lifecycleScope.launch {
 //            msgViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
-//                data.messageList?.let { callAdapter(it) }
-//                Log.d("MESSAGESLIST", data.messageList.toString())
+//                data.let { callAdapter(it) }
+//                Log.d("MESSAGESLIST", data.toString())
 //            })
             val adapterInput = msgViewModel.readMessages(allMessages)
             callAdapter(adapterInput)
@@ -106,4 +90,3 @@ class MessageActivity : AppCompatActivity() {
         messageAdapter!!.notifyDataSetChanged()
     }
 }
-

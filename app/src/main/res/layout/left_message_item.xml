@@ -51,8 +51,8 @@
 <!--            android:text="@{message.message}"-->
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_launcher_background"/>
 <!--                imageMessage="@{message.message}"-->

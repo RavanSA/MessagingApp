@@ -26,7 +26,6 @@ class MessageRecyclerAdapter(
                     parent,
                     false
                 )
-//                return MessageViewHolderRight(dataBinding)
             }
 
         if(viewType == 1){
@@ -35,47 +34,30 @@ class MessageRecyclerAdapter(
                 parent,
                 false
             )
-//            return MessageViewHolderLeft(dataBindingLeft)
         }
 
         return if (viewType == 0) MessageViewHolderRight(dataBindingRight)
         else MessageViewHolderLeft(dataBindingLeft)
     }
 
-
-//    override fun onBindViewHolder(
-//        holder: MessageViewHolder,
-//        position: Int,
-//        messageModel: MessageModel
-//    ) {
-//        super.onBindViewHolder(holder, position, messageModel)
-//    }
-
     override fun getItemViewType(position: Int): Int {
-        //CHECK cast expression
         val messageModel: MessageModel = getItem(position) as MessageModel
-//        Log.d("MESSAGESRECYCLER", messages.toString())
         return if (messageModel.senderId == AppUtil().getUID()!!) 0 else 1
     }
 
-    //CHECK override getItem fun from Adapter
     fun getItem(position: Int): Any {
         return messages!![position]
     }
 
-
-    //CHECK pass messageModel as parameter
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int
     ) {
         if (getItemViewType(position) == 0) {
             (holder as MessageViewHolderRight).bind(messages!![position])
-//            Log.d("TEST123","TEST123")
         }
 
         if (getItemViewType(position) == 1) {
-//                Log.d("test1","TEST1")
             (holder as MessageViewHolderLeft).bind(messages!![position])
         }
     }
@@ -83,7 +65,6 @@ class MessageRecyclerAdapter(
     inner class MessageViewHolderRight(var rightDataBinding: RightMessageLayoutBinding) :
         RecyclerView.ViewHolder(rightDataBinding.root){
             fun bind(messages: MessageModel){
-//                Log.d("MESSAGGESBIND",messages.message)
                 rightDataBinding.txtMessage.text = messages.message
             }
         }
@@ -98,9 +79,5 @@ class MessageRecyclerAdapter(
     override fun getItemCount(): Int {
         return messages!!.size
     }
-
-//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        TODO("Not yet implemented")
-//    }
 
 }
