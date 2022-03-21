@@ -7,18 +7,19 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
-import com.project.messagingapp.data.model.ChatListModel
-import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.data.model.Response
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.lang.Exception
+import javax.xml.transform.Source
 
 
 class ChatRepositoryImpl: ChatRepository {
     private lateinit var conversationID: String
     private var chatIDList:ArrayList<String> = ArrayList<String>()
     private var chatID: String? = null
+    private var chatModelList: MutableList<ChatModel>? = mutableListOf()
 
     override suspend fun createChat(
         message: String,
@@ -51,7 +52,73 @@ class ChatRepositoryImpl: ChatRepository {
          }
     }
 
-    override fun readMessages(allMessages: List<ChatListModel>) : MutableList<MessageModel> {
+    override suspend fun getCurrentUserChatList(): ChatListResponse {
+        val response = ChatListResponse()
+
+        val query = FirebaseDatabase.getInstance().getReference("ChatList")
+            .child(AppUtil().getUID()!!)
+
+        try {
+            response.mainChatList = query.get().await().children.map { snapshot ->
+                snapshot.getValue(ChatListModel::class.java)!!
+            }
+        } catch (e: Exception){
+            response.exception = e
+        }
+
+        return response
+    }
+
+    override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ChatModel>? {
+        lateinit var chatModel: ChatModel
+        lateinit var userModel: UserModel
+
+        try {
+            for(chat in chatList) {
+                val query = FirebaseDatabase.getInstance().getReference("Users")
+                    .child(chat.member)
+
+                Log.d("CHATMEMBER",chat.member)
+                //TODO FIX
+
+                userModel = query.get().await().getValue(UserModel::class.java)!!
+//                { snapshot ->
+//                    Log.d("SNAPSHOT1",snapshot.toString())
+//                    Log.d("SNAPSHOT2",snapshot.key.toString())
+//                    Log.d("SNAPSHOT3",snapshot.value.toString())
+//                    userModel = snapshot.getValue(UserModel::class.java)!!
+//                }
+
+                Log.d("USERMODEL",userModel.toString())
+
+                Log.d("CHATID",chat.chatId)
+                Log.d("CHATLASTMESSAGE",chat.lastMessage)
+                chatModel = ChatModel(
+                    chat.chatId,
+                    userModel.name,
+                    chat.lastMessage
+                )
+
+                chatModelList?.add(chatModel)
+            }
+
+        }catch (e: Exception){
+            Log.d("ERROR",e.toString())
+        }
+
+        return chatModelList
+    }
+
+    //                val date = AppUtil().getTimeAgo(chatList.date.toLong())
+
+//                val chatModel = ChatModel(
+//                    chatList.chatId,
+//                    userModel?.name,
+//                    chatList.lastMessage,
+//                    date
+//                )
+
+    override fun readMessages(allMessages: List<ChatListModel>) : MutableLiveData<MutableList<MessageModel>> {
             val messagesLiveData = MutableLiveData<MutableList<MessageModel>>()
         val listOfMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
 
@@ -76,11 +143,12 @@ class ChatRepositoryImpl: ChatRepository {
                     } else {
                         response.exception = task.exception
                     }
+                    messagesLiveData.value = listOfMessages
                 }
         //TODO FIX LIVEDATA
         messagesLiveData.plusAssign(listOfMessages)
         Log.d("MESSAGESLIVEDATA",messagesLiveData.value.toString())
-        return listOfMessages
+        return messagesLiveData
     }
 
 

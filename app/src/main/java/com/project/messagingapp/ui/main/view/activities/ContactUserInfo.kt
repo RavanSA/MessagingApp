@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.project.messagingapp.databinding.ActivityContactUserInfoBinding
 import com.project.messagingapp.ui.main.viewmodel.ContactInfoViewModel
+import com.project.messagingapp.utils.AppUtil
 import kotlinx.android.synthetic.main.activity_contact_user_info.*
 
 class ContactUserInfo : AppCompatActivity() {
@@ -36,4 +37,15 @@ class ContactUserInfo : AppCompatActivity() {
             contactUserInfoBinding.userModel= data
         })
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        AppUtil().updateOnlineStatus("offline")
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        AppUtil().updateOnlineStatus("online")
+//    }
+
 }

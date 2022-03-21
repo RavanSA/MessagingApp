@@ -69,7 +69,7 @@ class MessageViewModel:ViewModel() {
                 Log.d("SENDMESSAGE","EXECUTED")
             }
 
-        fun readMessages(allMessages: List<ChatListModel>): MutableList<MessageModel> {
+        fun readMessages(allMessages: List<ChatListModel>): MutableLiveData<MutableList<MessageModel>> {
             return chatRepo.readMessages(allMessages)
         }
 

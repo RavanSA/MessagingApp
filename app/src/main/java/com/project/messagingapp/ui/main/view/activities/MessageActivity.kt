@@ -73,20 +73,25 @@ class MessageActivity : AppCompatActivity() {
     }
 
     fun readMessage(allMessages: List<ChatListModel>){
-        lifecycleScope.launch {
-//            msgViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
-//                data.let { callAdapter(it) }
-//                Log.d("MESSAGESLIST", data.toString())
-//            })
-            val adapterInput = msgViewModel.readMessages(allMessages)
-            callAdapter(adapterInput)
-        }
+            msgViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
+                callAdapter(data)
+            })
     }
 
-    fun callAdapter (data: List<MessageModel>){
+    fun callAdapter (data: MutableList<MessageModel>){
         messageBinding.messageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         messageAdapter = MessageRecyclerAdapter(data)
         messageBinding.messageRecyclerView.adapter = messageAdapter
         messageAdapter!!.notifyDataSetChanged()
     }
+
+//    override fun onPause() {
+//        super.onPause()
+//        AppUtil().updateOnlineStatus("offline")
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        AppUtil().updateOnlineStatus("online")
+//    }
 }

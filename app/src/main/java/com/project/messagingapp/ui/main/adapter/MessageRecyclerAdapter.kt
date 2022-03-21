@@ -13,7 +13,7 @@ import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter.*
 import com.project.messagingapp.utils.AppUtil
 
 class MessageRecyclerAdapter(
-    private val messages: List<MessageModel>?
+    private val messages: MutableList<MessageModel>?
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
