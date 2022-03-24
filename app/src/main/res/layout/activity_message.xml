@@ -2,8 +2,10 @@
 <layout xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
-
+        <variable
+            name="online"
+            type="String"
+            />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,7 +16,9 @@
 
         <include
             android:id="@+id/messageToolbar"
-            layout="@layout/toolbar_message" />
+            layout="@layout/toolbar_message"
+            bind:online="@{online}"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageRecyclerView"
@@ -22,8 +26,19 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/messageToolbar" />
 
-        <LinearLayout
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimation"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/msgData"
+            android:layout_marginStart="5dp"
+            android:visibility="invisible"
+            bind:lottie_autoPlay="true"
+            bind:lottie_loop="true"
+            bind:lottie_rawRes="@raw/typing_animation"
+            bind:lottie_repeatCount="20" />
 
+        <LinearLayout
             android:id="@+id/msgData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
-                    android:hint="Write message.."
+                    android:hint="Message"
                     android:inputType="textMultiLine"
                     android:padding="8dp"
                     android:scrollbars="vertical"

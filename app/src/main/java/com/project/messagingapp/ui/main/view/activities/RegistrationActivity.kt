@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatDelegate
 import com.project.messagingapp.ui.main.view.fragments.WelcomeFragment
 import com.project.messagingapp.R
+import com.project.messagingapp.utils.AppUtil
 
 class RegistrationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,4 +22,5 @@ class RegistrationActivity : AppCompatActivity() {
             .commit()
 
     }
+
 }

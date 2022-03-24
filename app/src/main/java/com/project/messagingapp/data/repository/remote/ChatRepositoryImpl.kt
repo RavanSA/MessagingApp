@@ -84,7 +84,8 @@ class ChatRepositoryImpl: ChatRepository {
                 chatModel = ChatModel(
                     chat.chatId,
                     userModel.name,
-                    chat.lastMessage
+                    chat.lastMessage,
+                    userModel.online
                 )
 
                 chatModelList?.add(chatModel)
@@ -95,6 +96,29 @@ class ChatRepositoryImpl: ChatRepository {
         }
 
         return chatModelList
+    }
+
+    override suspend fun checkOnlineStatus(receiverID: String): UserModel {
+        val onlineStatusQuery = FirebaseDatabase.getInstance(). getReference("Users")
+        var onlineStatus: String = ""
+        var userModel: UserModel? = null
+        try {
+          onlineStatusQuery.get().await().children.map { snapshot ->
+              userModel = snapshot.getValue(UserModel::class.java)
+//              onlineStatus = userModel?.online.toString()
+          }
+        } catch (e: Exception){
+            Log.d("ERROR",e.toString())
+        }
+        return userModel!!
+    }
+
+    override fun typingStatus(typing: String) {
+        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+            .child(AppUtil().getUID()!!)
+        val map = HashMap<String,Any>()
+        map["typing"] = typing
+        databaseRef.updateChildren(map)
     }
 
     override fun readMessages(allMessages: List<ChatListModel>) : MutableLiveData<MutableList<MessageModel>> {

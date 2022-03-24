@@ -85,6 +85,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
     implementation 'com.firebaseui:firebase-ui-database:4.3.2'
     implementation 'com.hbb20:ccp:2.2.2'
+    implementation "com.airbnb.android:lottie:5.0.3"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

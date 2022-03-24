@@ -38,14 +38,14 @@ class ContactUserInfo : AppCompatActivity() {
         })
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        AppUtil().updateOnlineStatus("offline")
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        AppUtil().updateOnlineStatus("online")
-//    }
+    override fun onResume() {
+        super.onResume()
+        AppUtil().updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppUtil().updateOnlineStatus("offline")
+    }
 
 }

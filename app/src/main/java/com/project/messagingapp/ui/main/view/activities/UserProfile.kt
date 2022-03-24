@@ -19,6 +19,7 @@ import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.R
 import com.project.messagingapp.databinding.ActivityUserProfileBinding
 import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
+import com.project.messagingapp.utils.AppUtil
 import com.project.messagingapp.utils.OnClickInterface
 import kotlinx.android.synthetic.main.dialog_layout.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -174,6 +175,16 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         Log.d("IMAGEINCAMERA", image.toString())
 
         return image
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppUtil().updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppUtil().updateOnlineStatus("offline")
     }
 
 }

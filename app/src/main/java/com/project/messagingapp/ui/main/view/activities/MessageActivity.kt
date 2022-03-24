@@ -21,8 +21,10 @@ import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
 import kotlin.properties.Delegates
 import android.os.Looper
-
-
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import androidx.core.widget.addTextChangedListener
 
 
 class MessageActivity : AppCompatActivity() {
@@ -49,13 +51,6 @@ class MessageActivity : AppCompatActivity() {
 
         Log.d("CHECKCHATBOOL1",checkChatBool.toString())
 
-
-
-//        msgViewModel =
-//            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
-//                .getInstance(application))[MessageViewModel::class.java]
-
-//        checkChatBool = checkChatCreated(receiverID!!)
         messageBinding = ActivityMessageBinding.inflate(layoutInflater)
         setContentView(messageBinding.root)
 
@@ -66,7 +61,27 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
+        messageBinding.msgText.addTextChangedListener { object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(s.toString().isEmpty())
+                    typingStatus("false")
+                else
+                    typingStatus(receiverID!!)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+
+        } 
+        }
+
         getChatID(receiverID!!)
+        checkOnlineStatus(receiverID!!  )
     }
 
     private fun getChatID(receiverID:String) {
@@ -90,6 +105,11 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun readMessage(allMessages: List<ChatListModel>){
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.Main) {
+//                checkChatBool = checkChatCreated(receiverID!!)
+//            }
+//        }
             messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
                 callAdapter(data)
             })
@@ -117,24 +137,55 @@ class MessageActivity : AppCompatActivity() {
 
     private fun sendMessageObserve(message: String, receiverID: String) {
         lifecycleScope.launch {
-                Log.d("ACTIVITYCHECKCHAT", checkChatBool.toString())
-            var bool = !checkChatCreated(receiverID).isNullOrEmpty()
+            Log.d("ACTIVITYCHECKCHAT", checkChatBool.toString())
+                val bool = !checkChatCreated(receiverID).isNullOrEmpty()
+
                 if (bool) {
                     Log.d("IFACTVIITYCHECKCHAT", checkChatBool.toString())
-                    sendMessage(message,receiverID)
+                    sendMessage(message, receiverID)
                 } else {
                     createChat(message, receiverID)
                 }
-            }
+
+        }
     }
 
-//    override fun onPause() {
-//        super.onPause()
-//        AppUtil().updateOnlineStatus("offline")
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        AppUtil().updateOnlineStatus("online")
-//    }
+    private fun checkOnlineStatus( receiverID: String) {
+       lifecycleScope.launch {
+           messageViewModel.checkOnlineStatus(receiverID).observe(this@MessageActivity, Observer {
+               messageBinding.online = it.online
+
+               val typing = it.typing
+
+               if( typing == AppUtil().getUID()){
+                   messageBinding.lottieAnimation.visibility = View.VISIBLE
+                   messageBinding.lottieAnimation.playAnimation()
+               } else {
+                   messageBinding.lottieAnimation.visibility = View.INVISIBLE
+                   messageBinding.lottieAnimation.cancelAnimation()
+               }
+           })
+       }
+    }
+
+    private fun typingStatus(typing: String){
+        lifecycleScope.launch {
+            messageViewModel.typingStatus(typing).observe(this@MessageActivity, {
+
+            })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppUtil().updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppUtil().updateOnlineStatus("offline")
+    }
+
+//    private fun typing
+
 }

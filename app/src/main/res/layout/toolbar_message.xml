@@ -2,7 +2,14 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="chatModel"
+            type="com.project.messagingapp.data.model.ChatModel"
+            />
+        
+        <variable
+            name="online"
+            type="String" />
 
     </data>
 
@@ -31,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true">
 
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/msgImage"
                     android:layout_width="35dp"
@@ -38,15 +46,19 @@
                     android:layout_margin="10dp"
                     android:src="@drawable/ic_launcher_background" />
 
+
                 <ImageView
                     android:id="@+id/msgOnlineStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_anchor="@id/msgImage"
+                    android:layout_marginTop="40dp"
+                    android:src="@{online.equals(`online`)? @drawable/ic_baseline_circle_24 : @drawable/ic_baseline_red_circle_24}"
                     app:layout_anchorGravity="end|center" />
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <ImageView
                 android:id="@+id/msgInfo"

@@ -19,4 +19,8 @@ interface ChatRepository {
 
     suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ChatModel>?
 
+    suspend fun checkOnlineStatus(receiverID: String): UserModel
+
+    fun typingStatus(typing: String)
+
 }

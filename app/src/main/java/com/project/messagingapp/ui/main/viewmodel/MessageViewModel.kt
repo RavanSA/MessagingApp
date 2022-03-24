@@ -2,10 +2,7 @@ package com.project.messagingapp.ui.main.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.project.messagingapp.data.model.ChatListModel
-import com.project.messagingapp.data.model.ChatModel
-import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.data.model.Response
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
@@ -63,6 +60,23 @@ class MessageViewModel:ViewModel() {
 
         val response = liveData(Dispatchers.IO) {
             emit(chatRepo.checkChatCreated(receiverID))
+        }
+
+        return response
+    }
+
+    suspend fun checkOnlineStatus(receiverID: String): LiveData<UserModel> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.checkOnlineStatus(receiverID))
+        }
+
+        return response
+    }
+
+    fun typingStatus(typing: String) : LiveData<Unit> {
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.typingStatus(typing))
         }
 
         return response
