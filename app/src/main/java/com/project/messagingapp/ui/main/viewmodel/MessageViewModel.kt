@@ -1,13 +1,8 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.project.messagingapp.data.model.ChatListModel
-import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.data.model.Response
+import androidx.lifecycle.*
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
@@ -39,42 +34,52 @@ class MessageViewModel:ViewModel() {
 
     var createChatVal: Unit? = null
 
-        suspend fun createChat(message: String, UID: String, receiverID: String) {
-            viewModelScope.launch {
-                createChatVal = chatRepo.createChat(message,UID,receiverID)
-    //            _isChatChecked.postValue(testCheckChat)
+        suspend fun createChat(message: String, receiverID: String): LiveData<Unit> {
+            val response = liveData(Dispatchers.IO) {
+                emit(chatRepo.createChat(message,receiverID))
             }
+            return response
         }
 
-        fun checkChat(receiverID: String): MutableLiveData<Boolean> {
-            viewModelScope.launch {
-
-               val testCheckChat = chatRepo.checkChat(receiverID)
-                _isChatChecked.postValue(testCheckChat)
-                Log.d("TESTVIEWMODEL",_isChatChecked.value.toString())
+        suspend fun sendMessage(message: String, receiverID: String): LiveData<Unit> {
+            val response = liveData(Dispatchers.IO) {
+                emit(chatRepo.sendMessage(message,receiverID))
             }
-            return _isChatChecked
+            return response
         }
 
-        suspend fun sendMessage(message: String, receiverID: String) =
-            if(!chatRepo.checkChat(receiverID)){
-                chatRepo.createChat(message, AppUtil().getUID()!!,receiverID)
-                chatRepo.sendMessage(message,receiverID)
-
-//                chatRepo.readMessages(receiverID)
-                Log.d("CHATREPO","TESTED")
-                Log.d("CHECKCHAT", chatRepo.checkChat(receiverID).toString())
-            } else {
-                chatRepo.sendMessage(message,receiverID)
-                Log.d("SENDMESSAGE","EXECUTED")
-            }
-
-        fun readMessages(allMessages: List<ChatListModel>): MutableList<MessageModel> {
+        fun readMessages(allMessages: List<ChatListModel>): MutableLiveData<MutableList<MessageModel>> {
             return chatRepo.readMessages(allMessages)
         }
 
         fun getChatID(receiverID: String):LiveData<Response>{
             return chatRepo.getChatID(receiverID)
         }
+
+        suspend fun checkChatCreated(receiverID: String): LiveData<String?> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.checkChatCreated(receiverID))
+        }
+
+        return response
+    }
+
+    suspend fun checkOnlineStatus(receiverID: String): LiveData<UserModel> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.checkOnlineStatus(receiverID))
+        }
+
+        return response
+    }
+
+    fun typingStatus(typing: String) : LiveData<Unit> {
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.typingStatus(typing))
+        }
+
+        return response
+    }
 
 }

@@ -29,4 +29,16 @@ class AppUtil {
             .child(conversationID)
     }
 
+    fun updateOnlineStatus( status: String){
+        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
+            .getReference("Users")
+        val map = HashMap<String, Any>()
+        map["online"] = status
+        databaseRef.updateChildren(map)
+    }
+
+    fun getTimeAgo(date: Long): String{
+        return date.toString()
+    }
+
 }

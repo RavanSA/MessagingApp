@@ -20,4 +20,6 @@ class ContactInfoViewModel: ViewModel() {
         _theDate.postValue(appRepoUID)
         return _theDate
     }
+
+
 }

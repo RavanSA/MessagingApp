@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.project.messagingapp.ui.main.view.fragments.SettingsFragment
 import com.project.messagingapp.R
+import com.project.messagingapp.utils.AppUtil
 
 class Settings : AppCompatActivity() {
 
@@ -16,4 +17,15 @@ class Settings : AppCompatActivity() {
             .commit()
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        AppUtil().updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppUtil().updateOnlineStatus("offline")
+    }
+
 }

@@ -15,6 +15,7 @@ import com.project.messagingapp.databinding.ActivityUserContactsBinding
 import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModelFactory
+import com.project.messagingapp.utils.AppUtil
 import com.project.messagingapp.utils.ContactPermission
 
 //TODO("Dealing with data state")
@@ -146,6 +147,17 @@ class UserContacts : AppCompatActivity() {
                 else Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        AppUtil().updateOnlineStatus("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppUtil().updateOnlineStatus("offline")
     }
 
 }

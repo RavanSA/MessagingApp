@@ -25,7 +25,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="@color/WHITE"
+            app:cardBackgroundColor="@color/BackGround"
             app:cardCornerRadius="10dp"
             app:cardElevation="10dp">
 

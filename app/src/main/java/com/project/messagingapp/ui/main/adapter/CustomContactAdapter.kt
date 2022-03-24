@@ -70,7 +70,7 @@ class CustomContactAdapter(
     inner class CustomContactView(val item: ContactItemBinding) : RecyclerView.ViewHolder(item.root)
 
     override fun getFilter(): Filter {
-        return object :Filter(){
+        return object :Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val contactSearch = constraint.toString()
                 if(contactSearch.isEmpty()){
