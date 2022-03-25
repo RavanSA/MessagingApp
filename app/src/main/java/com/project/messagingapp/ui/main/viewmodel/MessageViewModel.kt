@@ -2,10 +2,12 @@ package com.project.messagingapp.ui.main.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
+import org.json.JSONObject
 
 
 class MessageViewModel:ViewModel() {
@@ -77,6 +79,28 @@ class MessageViewModel:ViewModel() {
     fun typingStatus(typing: String) : LiveData<Unit> {
         val response = liveData(Dispatchers.IO) {
             emit(chatRepo.typingStatus(typing))
+        }
+
+        return response
+    }
+
+    fun getToken(
+        message: String,
+        receiverID: String,
+        name: String
+    ): LiveData<JSONObject> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.getToken(message,receiverID,name))
+        }
+
+        return response
+    }
+
+    fun sendNotification(to: JSONObject): LiveData<JsonObjectRequest> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.sendNotification(to))
         }
 
         return response

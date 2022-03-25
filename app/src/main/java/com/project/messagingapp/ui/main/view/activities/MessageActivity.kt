@@ -25,15 +25,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 
 class MessageActivity : AppCompatActivity() {
     private lateinit var messageBinding: ActivityMessageBinding
     private var receiverID: String? = null
-//    private lateinit var msgViewModel: MessageViewModel
     private lateinit var messageViewModel: MessageViewModel
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
+    private var userName: String? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +92,6 @@ class MessageActivity : AppCompatActivity() {
             withContext(Dispatchers.Main){
                 messageViewModel.getChatID(receiverID).observe(this@MessageActivity,{ data ->
                     readMessage(data.chatList!!)
-                    Log.d("CHATLIST", data.chatList!!.size.toString())
                 })
             }
         }
@@ -98,18 +100,12 @@ class MessageActivity : AppCompatActivity() {
     private suspend fun checkChatCreated(receiverID: String): String? {
             messageViewModel.checkChatCreated(receiverID)
                 .observe(this@MessageActivity, Observer { data ->
-                    Log.d("CHECKCHATCREATED", data.toString())
                     checkChatBool = data
                 })
         return checkChatBool
     }
 
     private fun readMessage(allMessages: List<ChatListModel>){
-//        lifecycleScope.launch {
-//            withContext(Dispatchers.Main) {
-//                checkChatBool = checkChatCreated(receiverID!!)
-//            }
-//        }
             messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
                 callAdapter(data)
             })
@@ -141,8 +137,8 @@ class MessageActivity : AppCompatActivity() {
                 val bool = !checkChatCreated(receiverID).isNullOrEmpty()
 
                 if (bool) {
-                    Log.d("IFACTVIITYCHECKCHAT", checkChatBool.toString())
                     sendMessage(message, receiverID)
+                    getToken(message,receiverID,userName!!)
                 } else {
                     createChat(message, receiverID)
                 }
@@ -156,6 +152,7 @@ class MessageActivity : AppCompatActivity() {
                messageBinding.online = it.online
 
                val typing = it.typing
+               userName = it.name
 
                if( typing == AppUtil().getUID()){
                    messageBinding.lottieAnimation.visibility = View.VISIBLE
@@ -186,6 +183,27 @@ class MessageActivity : AppCompatActivity() {
         AppUtil().updateOnlineStatus("offline")
     }
 
-//    private fun typing
+    private fun getToken(
+        message: String,
+        receiverID: String,
+        name: String
+    ){
+        messageViewModel.getToken(message,receiverID,name).observe(this@MessageActivity, Observer {
+            sendNotification(it)
+        })
+    }
+
+    private fun sendNotification(to: JSONObject?) {
+        messageViewModel.sendNotification(to!!).observe(this@MessageActivity, Observer {
+        val requestQueue = Volley.newRequestQueue(this)
+        it.retryPolicy = DefaultRetryPolicy(
+            30000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        requestQueue.add(it)
+        })
+    }
+
 
 }

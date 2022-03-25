@@ -7,8 +7,15 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.database.FirebaseDatabase
 import com.project.messagingapp.R
 import com.project.messagingapp.ui.main.viewmodel.SplashViewModel
+import com.google.firebase.iid.FirebaseInstanceIdReceiver
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessaging.getInstance
+import com.project.messagingapp.utils.AppUtil
 
 
 class SplashScreen : AppCompatActivity() {
@@ -47,6 +54,21 @@ class SplashScreen : AppCompatActivity() {
         val number = sharedPref.getString("PhoneNumber",null )
 
         if (number !== null){
+
+            FirebaseMessaging.getInstance().token
+                .addOnCompleteListener(OnCompleteListener {
+                    if (it.isSuccessful) {
+                        val token = it.result
+                        val databaseReference =
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                .child(AppUtil().getUID()!!)
+
+                        val map: MutableMap<String, Any> = HashMap()
+                        map["token"] = token!!
+                        databaseReference.updateChildren(map)
+                    }
+                })
+
             startActivity(registratedUser)
         } else {
             startActivity(notRegistratedUser)

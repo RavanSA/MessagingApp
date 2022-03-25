@@ -1,7 +1,9 @@
 package com.project.messagingapp.data.repository.remote
 
 import androidx.lifecycle.MutableLiveData
+import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.model.*
+import org.json.JSONObject
 
 interface ChatRepository {
     suspend fun createChat(message: String,receiverID: String)
@@ -23,4 +25,7 @@ interface ChatRepository {
 
     fun typingStatus(typing: String)
 
+    suspend fun getToken(message: String,receiverID: String,name: String) : JSONObject
+
+    fun sendNotification(to: JSONObject) : JsonObjectRequest
 }
