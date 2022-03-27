@@ -15,3 +15,8 @@ data class UserChatList(
     var userChatList: List<ChatModel>? = null,
     var exception: Exception? = null
 )
+
+data class UserContactList(
+    var userCOntactList: List<UserModel>? = mutableListOf(),
+    var exception: Exception? = null
+)

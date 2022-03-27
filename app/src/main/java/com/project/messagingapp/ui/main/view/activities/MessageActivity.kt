@@ -84,7 +84,7 @@ class MessageActivity : AppCompatActivity() {
         }
 
         getChatID(receiverID!!)
-        checkOnlineStatus(receiverID!!  )
+        checkOnlineStatus(receiverID!!)
     }
 
     private fun getChatID(receiverID:String) {
@@ -187,8 +187,9 @@ class MessageActivity : AppCompatActivity() {
         message: String,
         receiverID: String,
         name: String
-    ){
+    ) {
         messageViewModel.getToken(message,receiverID,name).observe(this@MessageActivity, Observer {
+            Log.d("TOKEN", it.toString())
             sendNotification(it)
         })
     }
@@ -201,6 +202,7 @@ class MessageActivity : AppCompatActivity() {
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
+            Log.d("SENDNOTIFICATION", it.toString())
         requestQueue.add(it)
         })
     }

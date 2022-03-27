@@ -62,8 +62,8 @@ class AppRepo {
          child(appUtil.getUID()!!)
          userUploadData = MutableLiveData()
 
-            appUtil.getUID()!!.let {
-            appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(image)
+            appUtil.getUID()!!.let { it ->
+                appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(image)
                 .addOnSuccessListener {
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
@@ -104,7 +104,7 @@ class AppRepo {
 
         appUtil.getUID()!!.let { it ->
             appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(imageURI!!)
-                .addOnSuccessListener { it ->
+                .addOnSuccessListener {
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
                         val imageUrl = uri.result.toString()
@@ -119,44 +119,37 @@ class AppRepo {
 
     fun getAppContact(
         mobileContact: ArrayList<UserModel>
-    ): List<UserModel> {
+    ): MutableList<UserModel>? {
         if(appContacts == null) {
-
             val phoneNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
             val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
             val query = databaseReference.orderByChild("number")
-            appContacts = arrayListOf<UserModel>()
+            appContacts = ArrayList<UserModel>()
 
-            query.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d("SNAPSHOT1", snapshot.toString())
-                    Log.d("APPCONTACT3", appContacts.toString())
-                    if (snapshot.exists()) {
-                        Log.d("PHONENUMBER", phoneNumber.toString())
-                        for (data in snapshot.children) {
-                            Log.d("APPCONTACT4", appContacts.toString())
-                            val number = data.child("number").value.toString()
+            query.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val result = task.result
+                    result?.let {
+                        result.children.forEach { snapshot ->
+                            val number = snapshot.child("number").value.toString()
                             for (mobileModel in mobileContact) {
                                 if (mobileModel.number == number && number != phoneNumber) {
-                                    val userModel = data.getValue(UserModel::class.java)
-                                    Log.d("APPCONTACT5", appContacts.toString())
-                                    if (userModel != null) {
-                                        (appContacts)!!.add(userModel)
-
+                                    val userModel = snapshot.getValue(UserModel::class.java)
+                                    if (userModel != null ) {
+                                        if(userModel !in appContacts as ArrayList<UserModel>){
+                                            appContacts?.add(userModel)
+                                        }
                                     }
                                 }
                             }
                         }
-                        appContacts!!.removeAt(1)
                     }
+                } else {
+                    Log.d("ERROR", task.exception.toString())
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d("ERROR", error.toString())
-                }
-            })
+            }
         }
-        return appContacts!! as List<UserModel>
+        return appContacts
     }
 
     fun getContactUID(UID: String?): UserModel {
@@ -179,24 +172,9 @@ class AppRepo {
         return contactUserData
     }
 
-    fun getMessages(conversationID: String): MutableList<MessageModel>? {
-        val query = FirebaseDatabase.getInstance().getReference("Chat")
-            .child(conversationID)
-
-        query.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    val messageModel = snapshot.getValue(MessageModel::class.java)
-                    messages!!.add(messageModel!!)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("ERROR", error.toString())
-            }
-
-        })
-
-        return messages
+    operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: MutableList<T>) {
+        val value = this.value ?: mutableListOf()
+        value.addAll(values)
+        this.value = value
     }
 }

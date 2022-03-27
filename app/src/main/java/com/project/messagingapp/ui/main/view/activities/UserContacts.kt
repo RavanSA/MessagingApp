@@ -10,6 +10,8 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ActivityUserContactsBinding
 import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
@@ -17,6 +19,9 @@ import com.project.messagingapp.ui.main.viewmodel.ContactViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactViewModelFactory
 import com.project.messagingapp.utils.AppUtil
 import com.project.messagingapp.utils.ContactPermission
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 //TODO("Dealing with data state")
 //TODO("whether the data is currently loading, has loaded successfully or failed.")
@@ -43,11 +48,11 @@ class UserContacts : AppCompatActivity() {
                 this,
                 ContactViewModelFactory(getMobileContact())
             )[ContactViewModel::class.java]
-            loadUsers()
+                loadUsers()
         } else contactPermission.requestContactPermission(this)
 
         contactBinding.swipeContact.setOnRefreshListener {
-            loadUsers()
+                loadUsers()
             contactBinding.swipeContact.isRefreshing = false
 
         }
@@ -75,6 +80,7 @@ class UserContacts : AppCompatActivity() {
                 return false
             }
     })
+
     }
 
     @SuppressLint("Range")
@@ -126,11 +132,14 @@ class UserContacts : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun loadUsers(){
-        contactViewModel.appContact().observe(this, Observer { data ->
-                contactAdapter = CustomContactAdapter(data)
+            contactViewModel.appContact().observe(this@UserContacts, Observer { data ->
+                Log.d("ACTIVITYDATA", data.toString())
+                contactBinding.recyclerViewContact.layoutManager =
+                    LinearLayoutManager(this@UserContacts, LinearLayoutManager.VERTICAL, false)
+                contactAdapter = data?.let { CustomContactAdapter(it) }
                 contactBinding.recyclerViewContact.adapter = contactAdapter
                 contactAdapter!!.notifyDataSetChanged()
-        })
+            })
 
     }
 

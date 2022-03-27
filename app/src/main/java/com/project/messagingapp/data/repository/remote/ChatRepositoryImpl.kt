@@ -242,26 +242,29 @@ class ChatRepositoryImpl: ChatRepository {
 
         val to = JSONObject()
         val data = JSONObject()
+        var token: String? = null
 
         try {
             databaseRef.get().await().children.map { snapshot ->
-                val token = snapshot.child("token").value.toString()
-
-
-
-                data.put("receiverID",receiverID)
-                data.put("message",message)
-                data.put("conversationID",conversationID)
-                data.put("title",name)
-
-                to.put("to",token)
-                to.put("data",data)
+                Log.d("SNAPSHOTTOKEN", snapshot.toString())
+                token = snapshot.child("token").value.toString()
+                Log.d("INTOKENNOTIFICATION", token.toString())
 
             }
+
+            Log.d("TOKENNOTIFICATION", token.toString())
+            data.put("receiverID",receiverID)
+            data.put("message",message)
+            data.put("conversationID",conversationID)
+            data.put("title",name)
+
+            to.put("to",token)
+            to.put("data",data)
+    
         } catch (e: Exception){
             Log.d("ERROR",e.toString())
         }
-
+        Log.d("TONOTIFICATION", to.toString())
 
         return to
     }
@@ -274,11 +277,11 @@ class ChatRepositoryImpl: ChatRepository {
             to,
             com.android.volley.Response.Listener { response: JSONObject ->
 
-                Log.d("TAG", "onResponse: $response")
+                Log.d("SENDNOTICATIONREPO", "onResponse: $response")
             },
             com.android.volley.Response.ErrorListener {
 
-                Log.d("TAG", "onError: $it")
+                Log.d("ERRORSENDNOTIDICATIO", "onError: $it")
             }) {
             override fun getHeaders(): MutableMap<String, String> {
                 val map: MutableMap<String, String> = HashMap()
