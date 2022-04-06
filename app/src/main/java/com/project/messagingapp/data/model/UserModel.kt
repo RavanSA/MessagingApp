@@ -6,8 +6,9 @@ data class UserModel (
     val image: String? = "",
     var number: String? = "",
     val uid: String? = "",
-    val online: String = "offline",
-    val typing: String = "false"
+    var online: String = "offline",
+    var typing: String = "false",
+    val token: String = ""
 )
 {
 

@@ -3,13 +3,18 @@ package com.project.messagingapp.ui.main.viewmodel
 import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.project.messagingapp.data.model.SettingList
+import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.ui.main.adapter.CustomSettingsAdapter
 
 class SettingsViewModel : ViewModel {
+
+    private var appRepo = AppRepo.SingletonStatic.getInstance()
 
     var id = ""
     var title=""
@@ -28,6 +33,10 @@ class SettingsViewModel : ViewModel {
     var arrlistMutableLiveData = MutableLiveData<ArrayList<SettingsViewModel>>()
 
     var arrlist: ArrayList<SettingsViewModel> = ArrayList<SettingsViewModel>()
+
+    fun getUserName() : LiveData<UserModel> {
+        return appRepo.getUser()
+    }
 
     fun getArrayList() : MutableLiveData<ArrayList<SettingsViewModel>>{
         val editprofile = SettingList("1","Account","ic_baseline_manage_accounts_24","Privacy, Account,Settings")

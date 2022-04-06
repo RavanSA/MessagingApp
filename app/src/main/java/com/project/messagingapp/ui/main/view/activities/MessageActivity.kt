@@ -1,11 +1,13 @@
 package com.project.messagingapp.ui.main.view.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,27 +15,31 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.data.model.ChatListModel
 import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.databinding.ActivityMessageBinding
-import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
 import com.project.messagingapp.ui.main.viewmodel.MessageViewModel
-import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
-import kotlin.properties.Delegates
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_main_chat_screen.*
+import kotlinx.android.synthetic.main.activity_message.*
+import kotlinx.android.synthetic.main.toolbar_message.*
+import org.json.JSONObject
 
 
 class MessageActivity : AppCompatActivity() {
     private lateinit var messageBinding: ActivityMessageBinding
     private var receiverID: String? = null
-//    private lateinit var msgViewModel: MessageViewModel
     private lateinit var messageViewModel: MessageViewModel
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
+    private var userName: String? = null
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +61,12 @@ class MessageActivity : AppCompatActivity() {
         setContentView(messageBinding.root)
 
         messageBinding.btnSend.setOnClickListener {
-            val msgText = messageBinding.msgText.text.toString()
-            if(msgText.isNotEmpty()){
-                    sendMessageObserve(msgText,receiverID!!)
+            val msgTextString = messageBinding.msgText.text.toString()
+            if(msgTextString.isNotEmpty()){
+
+                    sendMessageObserve(msgTextString,receiverID!!)
+                    msgText.setText("")
+                    getChatID(receiverID!!)
             }
         }
 
@@ -80,8 +89,24 @@ class MessageActivity : AppCompatActivity() {
         } 
         }
 
-        getChatID(receiverID!!)
-        checkOnlineStatus(receiverID!!  )
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main){
+                getChatID(receiverID!!)
+            }
+        }
+
+
+        msgBack.setOnClickListener {
+                val contactActivity = Intent(
+                    this@MessageActivity,
+                    UserContacts::class.java
+                )
+                startActivity(contactActivity)
+        }
+
+
+        checkOnlineStatus(receiverID!!)
     }
 
     private fun getChatID(receiverID:String) {
@@ -89,7 +114,6 @@ class MessageActivity : AppCompatActivity() {
             withContext(Dispatchers.Main){
                 messageViewModel.getChatID(receiverID).observe(this@MessageActivity,{ data ->
                     readMessage(data.chatList!!)
-                    Log.d("CHATLIST", data.chatList!!.size.toString())
                 })
             }
         }
@@ -98,27 +122,28 @@ class MessageActivity : AppCompatActivity() {
     private suspend fun checkChatCreated(receiverID: String): String? {
             messageViewModel.checkChatCreated(receiverID)
                 .observe(this@MessageActivity, Observer { data ->
-                    Log.d("CHECKCHATCREATED", data.toString())
                     checkChatBool = data
                 })
         return checkChatBool
     }
 
     private fun readMessage(allMessages: List<ChatListModel>){
-//        lifecycleScope.launch {
-//            withContext(Dispatchers.Main) {
-//                checkChatBool = checkChatCreated(receiverID!!)
-//            }
-//        }
             messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
                 callAdapter(data)
             })
+//        val data = messageViewModel.readMessages(allMessages)
+//        callAdapter(data)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun callAdapter (data: MutableList<MessageModel>) {
         messageBinding.messageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         messageAdapter = MessageRecyclerAdapter(data)
         messageBinding.messageRecyclerView.adapter = messageAdapter
+        messageBinding.messageRecyclerView.postDelayed({
+            messageBinding.messageRecyclerView.scrollToPosition(
+                (messageBinding.messageRecyclerView.adapter?.itemCount?.minus(1)!!))
+        }, 100)
         messageAdapter!!.notifyDataSetChanged()
     }
 
@@ -141,8 +166,8 @@ class MessageActivity : AppCompatActivity() {
                 val bool = !checkChatCreated(receiverID).isNullOrEmpty()
 
                 if (bool) {
-                    Log.d("IFACTVIITYCHECKCHAT", checkChatBool.toString())
                     sendMessage(message, receiverID)
+                    getToken(message,receiverID,userName!!)
                 } else {
                     createChat(message, receiverID)
                 }
@@ -156,6 +181,7 @@ class MessageActivity : AppCompatActivity() {
                messageBinding.online = it.online
 
                val typing = it.typing
+               userName = it.name
 
                if( typing == AppUtil().getUID()){
                    messageBinding.lottieAnimation.visibility = View.VISIBLE
@@ -186,6 +212,28 @@ class MessageActivity : AppCompatActivity() {
         AppUtil().updateOnlineStatus("offline")
     }
 
-//    private fun typing
+    private fun getToken(
+        message: String,
+        receiverID: String,
+        name: String
+    ) {
+        messageViewModel.getToken(message,receiverID,name).observe(this@MessageActivity, Observer { data ->
+            Log.d("TOKEN1", data.toString())
+            sendNotification(data)
+        })
+    }
+
+    private fun sendNotification(to: JSONObject) {
+        val sendNotifi = messageViewModel.sendNotification(to)
+        val requestQueue = Volley.newRequestQueue(this)
+        sendNotifi.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+            Log.d("ACTIVISENDNOTIFICATION", sendNotifi.toString())
+        requestQueue.add(sendNotifi)
+
+    }
 
 }

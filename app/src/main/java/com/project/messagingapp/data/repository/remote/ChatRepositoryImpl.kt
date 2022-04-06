@@ -2,19 +2,32 @@ package com.project.messagingapp.data.repository.remote
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.firebase.database.*
+import com.android.volley.Response
+
+import com.google.firebase.firestore.util.Listener
+import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.lang.Exception
+import org.json.JSONException
+
+import com.android.volley.toolbox.HttpHeaderParser
+
+import com.android.volley.NetworkResponse
+import com.android.volley.ServerError
+import java.io.UnsupportedEncodingException
 
 
 class ChatRepositoryImpl: ChatRepository {
     private var conversationID: String? = null
-    private var chatIDList:ArrayList<String> = ArrayList<String>()
-    private var chatID: String? = null
     private var chatModelList: MutableList<ChatModel>? = mutableListOf()
 
     override suspend fun createChat(
@@ -73,19 +86,14 @@ class ChatRepositoryImpl: ChatRepository {
                 val query = FirebaseDatabase.getInstance().getReference("Users")
                     .child(chat.member)
 
-                Log.d("CHATMEMBER",chat.member)
-
                 userModel = query.get().await().getValue(UserModel::class.java)!!
 
-                Log.d("USERMODEL",userModel.toString())
-
-                Log.d("CHATID",chat.chatId)
-                Log.d("CHATLASTMESSAGE",chat.lastMessage)
                 chatModel = ChatModel(
                     chat.chatId,
                     userModel.name,
                     chat.lastMessage,
-                    userModel.online
+                    userModel.online,
+                    chat.member
                 )
 
                 chatModelList?.add(chatModel)
@@ -100,12 +108,10 @@ class ChatRepositoryImpl: ChatRepository {
 
     override suspend fun checkOnlineStatus(receiverID: String): UserModel {
         val onlineStatusQuery = FirebaseDatabase.getInstance(). getReference("Users")
-        var onlineStatus: String = ""
         var userModel: UserModel? = null
         try {
           onlineStatusQuery.get().await().children.map { snapshot ->
               userModel = snapshot.getValue(UserModel::class.java)
-//              onlineStatus = userModel?.online.toString()
           }
         } catch (e: Exception){
             Log.d("ERROR",e.toString())
@@ -128,7 +134,7 @@ class ChatRepositoryImpl: ChatRepository {
         val query = FirebaseDatabase.getInstance().getReference("Chat")
 
                 query.get().addOnCompleteListener { task ->
-                    val response = Response()
+                    val response = ChatResponse()
                     if(task.isSuccessful) {
                         val result = task.result
                         result?.let {
@@ -147,15 +153,13 @@ class ChatRepositoryImpl: ChatRepository {
                     } else {
                         response.exception = task.exception
                     }
-                    messagesLiveData.value = listOfMessages
+                    messagesLiveData.postValue(listOfMessages)
                 }
         messagesLiveData.plusAssign(listOfMessages)
-        Log.d("MESSAGESLIVEDATA",messagesLiveData.value.toString())
         return messagesLiveData
     }
 
     override suspend fun checkChatCreated(receiverID: String): String? {
-//        var checkChatMember: Boolean = false
         var member: String? = null
         val chatQuery = FirebaseDatabase.getInstance().getReference("ChatList")
             .child(AppUtil().getUID()!!).orderByChild("member").equalTo(receiverID)
@@ -169,26 +173,24 @@ class ChatRepositoryImpl: ChatRepository {
                             break
                         }
                     }
-                    Log.d("REPOCHECKCHATCREATED", conversationID.toString())
                 }
             } catch (e: Exception) {
                 Log.d("ERROR", e.toString())
             }
         }
-        Log.d("CONVESATIONID",conversationID.toString())
         return conversationID
     }
 
 
-    override fun getChatID(receiverID: String): MutableLiveData<Response> {
-        val mutableLiveData = MutableLiveData<Response>()
+    override fun getChatID(receiverID: String): MutableLiveData<ChatResponse> {
+        val mutableLiveData = MutableLiveData<ChatResponse>()
         val databaseRef =
             FirebaseDatabase.getInstance().getReference("ChatList").child(AppUtil().getUID()!!)
 
         val chatQuery = databaseRef.orderByChild("member").equalTo(receiverID)
 
         chatQuery.get().addOnCompleteListener{ task ->
-            val response = Response()
+            val response = ChatResponse()
             if(task.isSuccessful){
                 val result = task.result
                 result?.let {
@@ -238,6 +240,88 @@ class ChatRepositoryImpl: ChatRepository {
         } catch (e: Exception){
             Log.d("SENDMESSAGE",e.message ?: e.toString())
         }
+    }
+
+    override fun getToken(
+        message: String,
+        receiverID: String,
+        name: String
+    ): JSONObject {
+
+
+            val to = JSONObject()
+            val data = JSONObject()
+
+                val databaseRef = FirebaseDatabase.getInstance().getReference("Users")
+                    .child(receiverID)
+
+            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val token = snapshot.child("token").value.toString()
+                    Log.d("TOKEN", token)
+
+                    data.put("receiverID", receiverID)
+                    data.put("message", message)
+                    data.put("conversationID", conversationID)
+                    data.put("title", name)
+
+                    to.put("to", token)
+                    to.put("data", data)
+                    Log.d("TOPUT", to.toString())
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("FCMERROR", error.details)
+                }
+
+            })
+
+
+            Log.d("TONOTIFICATION", to.toString())
+
+            return to
+
+    }
+
+    override fun sendNotification(to: JSONObject): JsonObjectRequest {
+        Log.d("TOSEND", to.toString())
+        val request: JsonObjectRequest = object : JsonObjectRequest(
+            Method.POST,
+            AppConstants.NOTIFICATION_URL,
+            to,
+            Response.Listener { response: JSONObject ->
+
+                Log.d("SENDNOTICATIONREPO", "onResponse: $response")
+            },
+            Response.ErrorListener { error ->
+                Log.d("ERRORSENDNOTIDICATIO", "onError: $error")
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val map: MutableMap<String, String> = HashMap()
+
+                map["Authorization"] = "key=" + AppConstants.SERVER_KEY
+                map["Content-type"] = "application/json"
+                return map
+            }
+
+            override fun getBodyContentType(): String {
+                return "application/json"
+            }
+        }
+
+        Log.d("TOKENVIEWMODEL", request.toString())
+
+        return request
+        //TODO RETURN REQUEST
+        //TODO IMPLEMENT REQUEST QUEUE IN VIEW
+//        val requestQueue = Volley.newRequestQueue(this)
+//        request.retryPolicy = DefaultRetryPolicy(
+//            30000,
+//            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+//        )
+//
+//        requestQueue.add(request)
     }
 
 

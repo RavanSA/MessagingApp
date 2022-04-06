@@ -2,35 +2,20 @@ package com.project.messagingapp.ui.main.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
+import org.json.JSONObject
 
 
 class MessageViewModel:ViewModel() {
 
     var chatRepo: ChatRepositoryImpl = ChatRepositoryImpl()
 
-    val isChatChecked: MutableLiveData<Boolean>
-        get() = _isChatChecked
-    private val _isChatChecked= MutableLiveData<Boolean>()
+    val readMessageLive = MutableLiveData<MutableList<MessageModel>>(mutableListOf())
 
-    val isChatAdded: MutableLiveData<List<ChatListModel>>
-        get() = _isChatAdded
-    private val _isChatAdded= MutableLiveData<List<ChatListModel>>(null)
-
-    val isMessageSend: MutableLiveData<List<ChatListModel>>
-        get() = _isMessageSend
-    private val _isMessageSend= MutableLiveData<List<ChatListModel>>(emptyList())
-
-    val messages: MutableLiveData<List<MessageModel>?>
-        get() = _messages
-    private val _messages = MutableLiveData<List<MessageModel>?>(emptyList())
-
-    val conversationList: MutableLiveData<ArrayList<String>?>
-        get() = _conversationList
-    private val _conversationList = MutableLiveData<ArrayList<String>?>()
 
     var createChatVal: Unit? = null
 
@@ -52,7 +37,7 @@ class MessageViewModel:ViewModel() {
             return chatRepo.readMessages(allMessages)
         }
 
-        fun getChatID(receiverID: String):LiveData<Response>{
+        fun getChatID(receiverID: String):LiveData<ChatResponse>{
             return chatRepo.getChatID(receiverID)
         }
 
@@ -80,6 +65,25 @@ class MessageViewModel:ViewModel() {
         }
 
         return response
+    }
+
+    fun getToken(
+        message: String,
+        receiverID: String,
+        name: String
+    ): LiveData<JSONObject> {
+
+        val response = liveData(Dispatchers.IO) {
+            emit(chatRepo.getToken(message,receiverID,name))
+        }
+        Log.d("TOKENVIEWMODEL", response.toString())
+
+        return response
+    }
+
+    fun sendNotification(to: JSONObject): JsonObjectRequest {
+
+        return chatRepo.sendNotification(to)
     }
 
 }

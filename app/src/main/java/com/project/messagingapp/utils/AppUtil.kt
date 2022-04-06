@@ -31,7 +31,7 @@ class AppUtil {
 
     fun updateOnlineStatus( status: String){
         val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
-            .getReference("Users")
+            .getReference("Users").child(getUID()!!)
         val map = HashMap<String, Any>()
         map["online"] = status
         databaseRef.updateChildren(map)

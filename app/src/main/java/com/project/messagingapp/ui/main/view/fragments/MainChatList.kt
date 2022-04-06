@@ -72,4 +72,5 @@ class MainChatList : Fragment() {
         chatBinding.recyclerViewChat.adapter = chatAdapter
         chatAdapter!!.notifyDataSetChanged()
     }
+
 }

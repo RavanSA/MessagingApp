@@ -68,7 +68,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_baseline_settings_24"
-                app:tint="@color/white" />
+                app:tint="@color/WHITE" />
 
         </RelativeLayout>
 

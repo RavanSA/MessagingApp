@@ -76,7 +76,7 @@ class CustomContactAdapter(
                 if(contactSearch.isEmpty()){
                     allContact = appContacts
                     Log.d("ALLCONTACTFILTER",allContact.toString())
-                } else{
+                } else {
                     val filterContact = ArrayList<UserModel>()
                     for(friends in appContacts){
                         if (friends.name!!.toLowerCase(Locale.ROOT).trim()
