@@ -1,11 +1,13 @@
 package com.project.messagingapp.ui.main.view.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,20 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.data.model.ChatListModel
 import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.databinding.ActivityMessageBinding
-import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
 import com.project.messagingapp.ui.main.viewmodel.MessageViewModel
-import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
-import kotlin.properties.Delegates
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_main_chat_screen.*
+import kotlinx.android.synthetic.main.activity_message.*
+import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
 
 
@@ -37,6 +39,7 @@ class MessageActivity : AppCompatActivity() {
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
     private var userName: String? = null
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +61,12 @@ class MessageActivity : AppCompatActivity() {
         setContentView(messageBinding.root)
 
         messageBinding.btnSend.setOnClickListener {
-            val msgText = messageBinding.msgText.text.toString()
-            if(msgText.isNotEmpty()){
-                    sendMessageObserve(msgText,receiverID!!)
+            val msgTextString = messageBinding.msgText.text.toString()
+            if(msgTextString.isNotEmpty()){
+
+                    sendMessageObserve(msgTextString,receiverID!!)
+                    msgText.setText("")
+                    getChatID(receiverID!!)
             }
         }
 
@@ -83,7 +89,23 @@ class MessageActivity : AppCompatActivity() {
         } 
         }
 
-        getChatID(receiverID!!)
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main){
+                getChatID(receiverID!!)
+            }
+        }
+
+
+        msgBack.setOnClickListener {
+                val contactActivity = Intent(
+                    this@MessageActivity,
+                    UserContacts::class.java
+                )
+                startActivity(contactActivity)
+        }
+
+
         checkOnlineStatus(receiverID!!)
     }
 
@@ -109,12 +131,19 @@ class MessageActivity : AppCompatActivity() {
             messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
                 callAdapter(data)
             })
+//        val data = messageViewModel.readMessages(allMessages)
+//        callAdapter(data)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun callAdapter (data: MutableList<MessageModel>) {
         messageBinding.messageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         messageAdapter = MessageRecyclerAdapter(data)
         messageBinding.messageRecyclerView.adapter = messageAdapter
+        messageBinding.messageRecyclerView.postDelayed({
+            messageBinding.messageRecyclerView.scrollToPosition(
+                (messageBinding.messageRecyclerView.adapter?.itemCount?.minus(1)!!))
+        }, 100)
         messageAdapter!!.notifyDataSetChanged()
     }
 
@@ -188,24 +217,23 @@ class MessageActivity : AppCompatActivity() {
         receiverID: String,
         name: String
     ) {
-        messageViewModel.getToken(message,receiverID,name).observe(this@MessageActivity, Observer {
-            Log.d("TOKEN", it.toString())
-            sendNotification(it)
+        messageViewModel.getToken(message,receiverID,name).observe(this@MessageActivity, Observer { data ->
+            Log.d("TOKEN1", data.toString())
+            sendNotification(data)
         })
     }
 
-    private fun sendNotification(to: JSONObject?) {
-        messageViewModel.sendNotification(to!!).observe(this@MessageActivity, Observer {
+    private fun sendNotification(to: JSONObject) {
+        val sendNotifi = messageViewModel.sendNotification(to)
         val requestQueue = Volley.newRequestQueue(this)
-        it.retryPolicy = DefaultRetryPolicy(
-            30000,
+        sendNotifi.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
-            Log.d("SENDNOTIFICATION", it.toString())
-        requestQueue.add(it)
-        })
-    }
+            Log.d("ACTIVISENDNOTIFICATION", sendNotifi.toString())
+        requestQueue.add(sendNotifi)
 
+    }
 
 }

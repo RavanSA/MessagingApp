@@ -8,12 +8,11 @@ import org.json.JSONObject
 interface ChatRepository {
     suspend fun createChat(message: String,receiverID: String)
 
-
     suspend fun sendMessage(message: String, receiverID: String)
 
     fun readMessages (allMessages: List<ChatListModel>) : MutableLiveData<MutableList<MessageModel>>
 
-    fun getChatID(receiverID: String): MutableLiveData<Response>
+    fun getChatID(receiverID: String): MutableLiveData<ChatResponse>
 
     suspend fun getCurrentUserChatList() : ChatListResponse
 
@@ -25,7 +24,8 @@ interface ChatRepository {
 
     fun typingStatus(typing: String)
 
-    suspend fun getToken(message: String,receiverID: String,name: String) : JSONObject
+    fun getToken(message: String,receiverID: String,name: String) : JSONObject
 
     fun sendNotification(to: JSONObject) : JsonObjectRequest
+
 }

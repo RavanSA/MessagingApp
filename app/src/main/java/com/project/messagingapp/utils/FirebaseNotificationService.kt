@@ -58,7 +58,7 @@ class FirebaseNotificationService: FirebaseMessagingService() {
     private fun createNormalNotification(
         name: String,
         message: String,
-        receiveID: String,
+        receiverID: String,
         conversationID: String
     ) {
 
@@ -75,8 +75,8 @@ class FirebaseNotificationService: FirebaseMessagingService() {
 
         val intent = Intent(this, MessageActivity::class.java)
 
-        intent.putExtra("receiveID", receiveID)
-        intent.putExtra("convesationID", conversationID)
+        intent.putExtra("receiverID", receiverID)
+        intent.putExtra("conversationID", conversationID)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)

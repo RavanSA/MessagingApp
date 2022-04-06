@@ -6,6 +6,8 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.firebase.database.*
+import com.android.volley.Response
+
 import com.google.firebase.firestore.util.Listener
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.*
@@ -15,6 +17,13 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
+import org.json.JSONException
+
+import com.android.volley.toolbox.HttpHeaderParser
+
+import com.android.volley.NetworkResponse
+import com.android.volley.ServerError
+import java.io.UnsupportedEncodingException
 
 
 class ChatRepositoryImpl: ChatRepository {
@@ -83,7 +92,8 @@ class ChatRepositoryImpl: ChatRepository {
                     chat.chatId,
                     userModel.name,
                     chat.lastMessage,
-                    userModel.online
+                    userModel.online,
+                    chat.member
                 )
 
                 chatModelList?.add(chatModel)
@@ -124,7 +134,7 @@ class ChatRepositoryImpl: ChatRepository {
         val query = FirebaseDatabase.getInstance().getReference("Chat")
 
                 query.get().addOnCompleteListener { task ->
-                    val response = Response()
+                    val response = ChatResponse()
                     if(task.isSuccessful) {
                         val result = task.result
                         result?.let {
@@ -143,7 +153,7 @@ class ChatRepositoryImpl: ChatRepository {
                     } else {
                         response.exception = task.exception
                     }
-                    messagesLiveData.value = listOfMessages
+                    messagesLiveData.postValue(listOfMessages)
                 }
         messagesLiveData.plusAssign(listOfMessages)
         return messagesLiveData
@@ -172,15 +182,15 @@ class ChatRepositoryImpl: ChatRepository {
     }
 
 
-    override fun getChatID(receiverID: String): MutableLiveData<Response> {
-        val mutableLiveData = MutableLiveData<Response>()
+    override fun getChatID(receiverID: String): MutableLiveData<ChatResponse> {
+        val mutableLiveData = MutableLiveData<ChatResponse>()
         val databaseRef =
             FirebaseDatabase.getInstance().getReference("ChatList").child(AppUtil().getUID()!!)
 
         val chatQuery = databaseRef.orderByChild("member").equalTo(receiverID)
 
         chatQuery.get().addOnCompleteListener{ task ->
-            val response = Response()
+            val response = ChatResponse()
             if(task.isSuccessful){
                 val result = task.result
                 result?.let {
@@ -232,56 +242,59 @@ class ChatRepositoryImpl: ChatRepository {
         }
     }
 
-    override suspend fun getToken(
+    override fun getToken(
         message: String,
         receiverID: String,
         name: String
     ): JSONObject {
-        val databaseRef = FirebaseDatabase.getInstance().getReference("Users")
-            .child(receiverID)
 
-        val to = JSONObject()
-        val data = JSONObject()
-        var token: String? = null
 
-        try {
-            databaseRef.get().await().children.map { snapshot ->
-                Log.d("SNAPSHOTTOKEN", snapshot.toString())
-                token = snapshot.child("token").value.toString()
-                Log.d("INTOKENNOTIFICATION", token.toString())
+            val to = JSONObject()
+            val data = JSONObject()
 
-            }
+                val databaseRef = FirebaseDatabase.getInstance().getReference("Users")
+                    .child(receiverID)
 
-            Log.d("TOKENNOTIFICATION", token.toString())
-            data.put("receiverID",receiverID)
-            data.put("message",message)
-            data.put("conversationID",conversationID)
-            data.put("title",name)
+            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-            to.put("to",token)
-            to.put("data",data)
-    
-        } catch (e: Exception){
-            Log.d("ERROR",e.toString())
-        }
-        Log.d("TONOTIFICATION", to.toString())
+                    val token = snapshot.child("token").value.toString()
+                    Log.d("TOKEN", token)
 
-        return to
+                    data.put("receiverID", receiverID)
+                    data.put("message", message)
+                    data.put("conversationID", conversationID)
+                    data.put("title", name)
+
+                    to.put("to", token)
+                    to.put("data", data)
+                    Log.d("TOPUT", to.toString())
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("FCMERROR", error.details)
+                }
+
+            })
+
+
+            Log.d("TONOTIFICATION", to.toString())
+
+            return to
+
     }
 
     override fun sendNotification(to: JSONObject): JsonObjectRequest {
-
+        Log.d("TOSEND", to.toString())
         val request: JsonObjectRequest = object : JsonObjectRequest(
             Method.POST,
             AppConstants.NOTIFICATION_URL,
             to,
-            com.android.volley.Response.Listener { response: JSONObject ->
+            Response.Listener { response: JSONObject ->
 
                 Log.d("SENDNOTICATIONREPO", "onResponse: $response")
             },
-            com.android.volley.Response.ErrorListener {
-
-                Log.d("ERRORSENDNOTIDICATIO", "onError: $it")
+            Response.ErrorListener { error ->
+                Log.d("ERRORSENDNOTIDICATIO", "onError: $error")
             }) {
             override fun getHeaders(): MutableMap<String, String> {
                 val map: MutableMap<String, String> = HashMap()
@@ -296,6 +309,7 @@ class ChatRepositoryImpl: ChatRepository {
             }
         }
 
+        Log.d("TOKENVIEWMODEL", request.toString())
 
         return request
         //TODO RETURN REQUEST
@@ -308,7 +322,6 @@ class ChatRepositoryImpl: ChatRepository {
 //        )
 //
 //        requestQueue.add(request)
-
     }
 
 

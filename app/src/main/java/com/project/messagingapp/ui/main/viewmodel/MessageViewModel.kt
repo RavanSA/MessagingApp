@@ -14,25 +14,8 @@ class MessageViewModel:ViewModel() {
 
     var chatRepo: ChatRepositoryImpl = ChatRepositoryImpl()
 
-    val isChatChecked: MutableLiveData<Boolean>
-        get() = _isChatChecked
-    private val _isChatChecked= MutableLiveData<Boolean>()
+    val readMessageLive = MutableLiveData<MutableList<MessageModel>>(mutableListOf())
 
-    val isChatAdded: MutableLiveData<List<ChatListModel>>
-        get() = _isChatAdded
-    private val _isChatAdded= MutableLiveData<List<ChatListModel>>(null)
-
-    val isMessageSend: MutableLiveData<List<ChatListModel>>
-        get() = _isMessageSend
-    private val _isMessageSend= MutableLiveData<List<ChatListModel>>(emptyList())
-
-    val messages: MutableLiveData<List<MessageModel>?>
-        get() = _messages
-    private val _messages = MutableLiveData<List<MessageModel>?>(emptyList())
-
-    val conversationList: MutableLiveData<ArrayList<String>?>
-        get() = _conversationList
-    private val _conversationList = MutableLiveData<ArrayList<String>?>()
 
     var createChatVal: Unit? = null
 
@@ -54,7 +37,7 @@ class MessageViewModel:ViewModel() {
             return chatRepo.readMessages(allMessages)
         }
 
-        fun getChatID(receiverID: String):LiveData<Response>{
+        fun getChatID(receiverID: String):LiveData<ChatResponse>{
             return chatRepo.getChatID(receiverID)
         }
 
@@ -93,17 +76,14 @@ class MessageViewModel:ViewModel() {
         val response = liveData(Dispatchers.IO) {
             emit(chatRepo.getToken(message,receiverID,name))
         }
+        Log.d("TOKENVIEWMODEL", response.toString())
 
         return response
     }
 
-    fun sendNotification(to: JSONObject): LiveData<JsonObjectRequest> {
+    fun sendNotification(to: JSONObject): JsonObjectRequest {
 
-        val response = liveData(Dispatchers.IO) {
-            emit(chatRepo.sendNotification(to))
-        }
-
-        return response
+        return chatRepo.sendNotification(to)
     }
 
 }

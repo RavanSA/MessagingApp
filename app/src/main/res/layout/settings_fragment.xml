@@ -18,19 +18,19 @@
             app:civ_border_color="@color/black"
             app:civ_border_width="2dp"
             app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toStartOf="@+id/textView"
+            app:layout_constraintEnd_toStartOf="@+id/tvSettingUserName"
             app:layout_constraintHorizontal_bias="0.59"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvSettingUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="48dp"
-            android:text="Firstname Lastname"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
