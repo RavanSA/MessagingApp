@@ -26,8 +26,11 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
+import com.project.messagingapp.R
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
+import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
 
@@ -48,6 +51,8 @@ class MessageActivity : AppCompatActivity() {
         receiverID = intent.getStringExtra("id_receiver")
 
         messageViewModel = ViewModelProvider(this)[MessageViewModel::class.java]
+
+
 
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {

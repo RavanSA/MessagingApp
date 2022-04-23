@@ -1,6 +1,8 @@
 package com.project.messagingapp.ui.main.view.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +21,8 @@ import com.example.awesomedialog.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.BuildConfig
+import com.project.messagingapp.data.model.UserRoomModel
+import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
 import java.io.File
@@ -33,7 +37,7 @@ class UserRegistrationProfile : AppCompatActivity() {
     private var storageRef: StorageReference? = null
     private lateinit var ImageUrl: String
     private lateinit var userViewModel: UserRegistrationViewModel
-
+    private lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +48,7 @@ class UserRegistrationProfile : AppCompatActivity() {
         userViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             .create(UserRegistrationViewModel::class.java)
 
+        registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
         imgPickImage.setOnClickListener {
                 SelectPicture()
@@ -53,6 +58,18 @@ class UserRegistrationProfile : AppCompatActivity() {
                 if (CheckUserData()) {
                     Log.d("INCHECKUSER", image.toString())
                     image?.let { it1 -> userViewModel.UploadData(username,status, it1) }
+//                    val sharedPref : SharedPreferences = this@UserRegistrationProfile.
+//                    getSharedPreferences("com.project.messaginapp.phonenumber", Context.MODE_PRIVATE)
+//
+//                    val number = sharedPref.getString("PhoneNumber",null )
+                        val userRoom = UserRoomModel(firebaseAuth!!.uid!!,username
+                            ,firebaseAuth!!.currentUser!!.phoneNumber!!,status, image.toString()
+                        )
+
+//                    registrationViewModel.updateUser(username,status)
+
+                    registrationViewModel.insertUser(userRoom)
+
                     startActivity(Intent(this@UserRegistrationProfile,
                         MainChatScreen::class.java))
                 }
@@ -71,10 +88,10 @@ class UserRegistrationProfile : AppCompatActivity() {
             .background(R.color.BackGround)
             .onPositive(
                 "From Files",
-                buttonBackgroundColor = R.color.WHITE,
+                buttonBackgroundColor = R.color.white,
             ) {  pickImages.launch("image/*")}
             .onNegative( "Take Picture",
-                buttonBackgroundColor = R.color.WHITE,
+                buttonBackgroundColor = R.color.white,
             ){takePicture()}
     }
 

@@ -34,9 +34,9 @@ class SettingsViewModel : ViewModel {
 
     var arrlist: ArrayList<SettingsViewModel> = ArrayList<SettingsViewModel>()
 
-    fun getUserName() : LiveData<UserModel> {
-        return appRepo.getUser()
-    }
+//    fun getUserName() : LiveData<UserModel> {
+//        return appRepo.getUser()
+//    }
 
     fun getArrayList() : MutableLiveData<ArrayList<SettingsViewModel>>{
         val editprofile = SettingList("1","Account","ic_baseline_manage_accounts_24","Privacy, Account,Settings")

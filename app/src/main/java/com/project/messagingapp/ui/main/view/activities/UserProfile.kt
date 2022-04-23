@@ -1,5 +1,6 @@
 package com.project.messagingapp.ui.main.view.activities
 
+import android.Manifest
 import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
@@ -19,11 +20,13 @@ import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.R
 import com.project.messagingapp.databinding.ActivityUserProfileBinding
 import com.project.messagingapp.ui.main.viewmodel.ProfileViewModel
+import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import com.project.messagingapp.utils.AppUtil
 import com.project.messagingapp.utils.OnClickInterface
 import kotlinx.android.synthetic.main.dialog_layout.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.pick_image_dialog.view.*
+import kotlinx.android.synthetic.main.settings_fragment.*
 import java.io.File
 
 class UserProfile : AppCompatActivity(),OnClickInterface {
@@ -31,45 +34,36 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var dialog: AlertDialog
     private lateinit var profileBinding: ActivityUserProfileBinding
-    private lateinit var pickImages: ActivityResultLauncher<String>
-    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var imageURI: Uri? = null
-
+    private lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileBinding = DataBindingUtil.setContentView(this, R.layout.activity_user_profile)
 
+        registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
 
-        profileViewModel.getUser().observe(this, { userModel ->
-            profileBinding.userModel = userModel
-            ProfileFirstName.text = userModel.name
-            ProfilePhone.text =  userModel.number.toString()
-            ProfileStatus.text =  userModel.status
+//        profileViewModel.getUser().observe(this, { userModel ->
+//            profileBinding.userModel = userModel
+//            ProfileFirstName.text = userModel.name
+//            ProfilePhone.text =  userModel.number.toString()
+//            ProfileStatus.text =  userModel.status
+//        })
+
+        registrationViewModel.getUserRoom().observe(this, { user ->
+            ProfileFirstName.text = user.userName
+            ProfilePhone.text =  user.phoneNumber
+            ProfileStatus.text =  user.userStatus
+            val roomUri = Uri.parse(user.profilePhoto)
+            Log.d("USERPROFİLEURI", roomUri.toString())
+            Glide.with(this).load(roomUri).into(UpdateProfilePic)
         })
 
-        pickImages = registerForActivityResult(ActivityResultContracts.GetContent()){ uri: Uri? ->
-            uri?.let { it ->
-                profileViewModel.updateImage(imageURI!!)
-                Glide.with(this).load(it).into(UpdateProfilePic)
-            }
-        }
-
-        imageURI = takePicture()!!
-
-        takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-            Toast.makeText(this, "In Launcher" + imageURI.toString(),Toast.LENGTH_LONG).show()
-            if (success) {
-                profileViewModel.updateImage(imageURI!!)
-                Glide.with(this).load(imageURI).into(UpdateProfilePic)
-            }
-        }
 
         profileBinding.updatePickImage.setOnClickListener {
-            Toast.makeText(this, imageURI.toString(),Toast.LENGTH_LONG).show()
             updateImageDialog()
         }
 
@@ -80,7 +74,6 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
 
 
     private fun updateStatusAlertDialog(){
-        Toast.makeText(this,"DIALOG WORKED", Toast.LENGTH_LONG).show()
 
         val updateDialog = AlertDialog.Builder(this)
         val layout:View = LayoutInflater.from(this).inflate(R.layout.dialog_layout,
@@ -90,6 +83,7 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         layout.btnEdit.setOnClickListener {
             val status: String = layout.updateDialog.text.toString()
             if(status.isNotEmpty()){
+                registrationViewModel.updateUserLocalStatus(status)
                 profileViewModel.updateStatus(status)
                 dialog.dismiss()
             }
@@ -108,6 +102,7 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         layout.btnEdit.setOnClickListener {
             val name: String = layout.updateDialog.text.toString()
             if(name.isNotEmpty()){
+                registrationViewModel.updateUserLocalName(name)
                 profileViewModel.updateName(name)
                 dialog.dismiss()
             }
@@ -124,22 +119,16 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         updateDialog.setView(layout)
 
         layout.imageFromCamera.setOnClickListener {
-
-            pickImages.launch("image/*")
-            Toast.makeText(this,"IN CLICK LSİTENR: $imageURI",Toast.LENGTH_LONG).show()
-            profileViewModel.updateImage(imageURI!!)
+            requestPermissionLauncher.launch(
+                Manifest.permission.CAMERA
+            )
 
             dialog.dismiss()
-
         }
 
         layout.imageFromStorage.setOnClickListener {
-            takePictureLauncher.launch(imageURI!!)
-            Toast.makeText(this,"IN CLCICK LSİTENR: $imageURI",Toast.LENGTH_LONG).show()
-            profileViewModel.updateImage(imageURI!!)
-
+            pickImages.launch("image/*")
             dialog.dismiss()
-
         }
 
         dialog = updateDialog.create()
@@ -163,18 +152,26 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         }
     }
 
-    private fun takePicture(): Uri? {
+    private fun takePicture() {
         val root =
             File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), BuildConfig.APPLICATION_ID + File.separator)
         root.mkdirs()
         val fname = "img_" + System.currentTimeMillis() + ".jpg"
         val sdImageMainDirectory = File(root, fname)
 
-        val image = FileProvider.getUriForFile(this@UserProfile, "com.project.messagingapp.provider",
+        imageURI = FileProvider.getUriForFile(this@UserProfile, "com.project.messagingapp.provider",
             sdImageMainDirectory)
-        Log.d("IMAGEINCAMERA", image.toString())
+        Log.d("IMAGEINCAMERA", imageURI.toString())
+        takePictureLauncher.launch(imageURI)
+    }
 
-        return image
+    val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+        Toast.makeText(this, "In Launcher" + imageURI.toString(),Toast.LENGTH_LONG).show()
+        if (success) {
+            registrationViewModel.updatedUserLocalProfileImage(imageURI.toString())
+            profileViewModel.updateImage(imageURI!!)
+            Glide.with(this).load(imageURI).into(UpdateProfilePic)
+        }
     }
 
     override fun onResume() {
@@ -186,5 +183,25 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         super.onPause()
         AppUtil().updateOnlineStatus("offline")
     }
+
+    val pickImages = registerForActivityResult(ActivityResultContracts.GetContent()){ uri: Uri? ->
+        uri?.let { it ->
+            registrationViewModel.updatedUserLocalProfileImage(it.toString())
+            profileViewModel.updateImage(it)
+            Log.d("PICKIMAGESTORAGE", it.toString())
+            Glide.with(this).load(it).into(UpdateProfilePic)
+        }
+    }
+
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                takePicture()
+            } else {
+                Toast.makeText(this,"GİVE PERMISSION TO THE USER",Toast.LENGTH_SHORT).show()
+            }
+        }
 
 }

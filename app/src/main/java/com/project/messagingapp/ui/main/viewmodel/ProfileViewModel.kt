@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.project.messagingapp.data.repository.remote.AppRepo
@@ -22,6 +23,7 @@ class ProfileViewModel: ViewModel() {
     }
 
     fun updateImage(imageURI: Uri?) {
+        Log.d("UPLOADVIEWMODEL","CALLED")
         appRepo.updateImage(imageURI)
     }
 

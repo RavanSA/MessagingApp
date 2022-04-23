@@ -9,9 +9,9 @@
         android:background="@color/BackGround">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/temp_prof_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/settingProfilePicture"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             android:layout_marginTop="48dp"
             android:src="@drawable/profilepic"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="48dp"
-            android:text=""
+            android:text="username loading.."
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"

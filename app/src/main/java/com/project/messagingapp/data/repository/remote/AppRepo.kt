@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.data.model.UserModel
@@ -99,21 +100,31 @@ class AppRepo {
     }
 
     fun updateImage(imageURI: Uri?) {
-        val databaseRef = appUtil.getDatabaseReferenceUsers().
-        child(appUtil.getUID()!!)
+        val databaseRef = FirebaseDatabase.getInstance()
+            .getReference("Users").child(AppUtil().getUID()!!)
+        Log.d("UPLOADİNG","PICTURE")
+        try {
 
-        appUtil.getUID()!!.let { it ->
-            appUtil.getStorageReference().child(AppConstants.Path).child(it).putFile(imageURI!!)
-                .addOnSuccessListener {
-                    val task = it.storage.downloadUrl
-                    task.addOnCompleteListener { uri ->
-                        val imageUrl = uri.result.toString()
-                        val map = mapOf(
-                            "image" to imageUrl
-                        )
-                        databaseRef.updateChildren(map)
+
+            AppUtil().getUID()!!.let { it ->
+                FirebaseStorage.getInstance().getReference().child(AppConstants.Path).child(it)
+                    .putFile(imageURI!!)
+                    .addOnSuccessListener {
+                        val task = it.storage.downloadUrl
+                        task.addOnCompleteListener { uri ->
+                            Log.d("FIREBASEUPLOAD", uri.toString())
+                            val imageUrl = uri.result.toString()
+                            Log.d("FIREBASDEIMAGEURL",imageUrl)
+                            val map = mapOf(
+                                "image" to imageUrl
+                            )
+                            databaseRef.updateChildren(map)
+                            Log.d("MAP", map.toString())
+                        }
                     }
-                }
+            }
+        } catch (e:Exception){
+            Log.d("UPLOADEXCEPTION",e.toString())
         }
     }
 

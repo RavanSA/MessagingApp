@@ -1,5 +1,6 @@
 package com.project.messagingapp.ui.main.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.project.messagingapp.data.model.UserModel
@@ -11,3 +12,4 @@ class ContactViewModelFactory(private val mobileContact:ArrayList<UserModel>) :
         return ContactViewModel(mobileContact) as T
     }
     }
+
