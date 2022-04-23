@@ -17,8 +17,7 @@
         <include
             android:id="@+id/messageToolbar"
             layout="@layout/toolbar_message"
-            bind:online="@{online}"
-            />
+            bind:online="@{online}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageRecyclerView"

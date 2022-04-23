@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.view.fragments
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
@@ -19,7 +21,11 @@ import com.google.firebase.database.DatabaseReference
 import com.project.messagingapp.ui.main.view.activities.UserRegistrationProfile
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.data.model.UserRoomModel
+import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.fragment_get_number.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 
@@ -28,16 +34,24 @@ class GetNumber : Fragment() {
     private var firebaseAuth: FirebaseAuth? = null
     private var databaseReference: DatabaseReference? = null
     private var mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+    private lateinit var registrationViewModel: RegistrationViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+//        val act = activity?.application!!
+
 
 
         val progressDialog = ProgressDialog(requireActivity())
         progressDialog.setTitle("Please wait")
         progressDialog.setMessage("We sending code, please wait")
         val view = inflater.inflate(R.layout.fragment_get_number, container, false)
+
+        registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
+
         view.otpSendBtn.setOnClickListener {
             if(checkNumber()){
                 sendOneTimePassword(number)
@@ -56,6 +70,16 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.currentUser!!.phoneNumber!!,
                                 firebaseAuth!!.uid!!
                             )
+
+//                        val userRoom = UserRoomModel(firebaseAuth!!.uid!!,"test account"
+//                            ,firebaseAuth!!.currentUser!!.phoneNumber!!,"sadfdsfsafsdfsdf")
+//
+//                        Log.d("RegistrationVIEWMODEL","CALLED")
+//                        try{
+//                            registrationViewModel.insertUser(userRoom)
+//                        } catch (e: Exception){
+//                            Log.d("EXCEPTIONOOCURED",e.toString())
+//                        }
 
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
                         startActivity(Intent(context, UserRegistrationProfile::class.java))
