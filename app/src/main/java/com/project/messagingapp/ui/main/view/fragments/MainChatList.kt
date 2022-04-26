@@ -12,9 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.R
-import com.project.messagingapp.data.model.ChatListModel
-import com.project.messagingapp.data.model.ChatListResponse
-import com.project.messagingapp.data.model.ChatModel
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.databinding.FragmentMainChatListBinding
 import com.project.messagingapp.ui.main.adapter.ChatListRecyclerAdapter
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
@@ -40,11 +38,24 @@ class MainChatList : Fragment() {
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
         getCurrentUserChatList()
 
+        getContactList()
         return chatBinding.root
     }
 
 
-    private fun getCurrentUserChatList(){
+    private fun getChatListRoom(): MutableList<ChatListRoom> {
+        return chatListViewModel.getChatListRoom()
+    }
+
+    private fun getContactList(): MutableList<ContactChatList> {
+        val testContactList = chatListViewModel.getContactListRoom()
+        testContactList.forEach { data ->
+            Log.d("TESTCONTACTLIST", data.toString())
+        }
+        return testContactList
+    }
+
+    private fun getCurrentUserChatList() {
             chatListViewModel.currrentUserChatList.observe(requireActivity(), {
 //                observeChatList(it)
                 Log.d("TESTCURRENTYSERCHAT", it.toString())

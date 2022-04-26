@@ -28,4 +28,13 @@ interface ChatRepository {
 
     fun sendNotification(to: JSONObject) : JsonObjectRequest
 
+    suspend fun createChatIfNotExist(chatList: ChatListRoom)
+
+    suspend fun lastMessageOfChat(lastMessage: String, date: String, conversationID: String)
+
+    suspend fun addNewMessage(chatRoom: ChatRoom)
+
+    fun getAllMessagesOfChat(conversationID: String)
+
+    fun getChatListRoom() : MutableList<ChatListRoom>
 }

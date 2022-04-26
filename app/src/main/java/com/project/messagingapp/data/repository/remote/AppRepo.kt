@@ -8,11 +8,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.constants.AppConstants
-import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.data.daos.ContactListDao
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class AppRepo {
+class AppRepo(
+    private val contactListDao: ContactListDao
+) {
     private var liveData: MutableLiveData<UserModel>? = null
     private var contactUserData: UserModel = UserModel()
     private var appContacts: MutableList<UserModel>? = null
@@ -23,14 +27,22 @@ class AppRepo {
     object SingletonStatic{
         private var instance: AppRepo? = null
 
-            fun getInstance(): AppRepo {
+            fun getInstance(contactListDao: ContactListDao): AppRepo {
                 if(instance == null)
-                    instance = AppRepo()
+                    instance = AppRepo(contactListDao)
                 return instance!!
             }
 
     }
 
+
+    fun getContactListRoom(): MutableList<ContactChatList> {
+        return contactListDao.getAllContactList()
+    }
+
+      fun addReceiverInformation(contactListRoom: ContactListRoom){
+        contactListDao.addReceiverInformation(contactListRoom)
+    }
 
     fun getUser(): LiveData<UserModel> {
         if (liveData == null){
@@ -149,6 +161,12 @@ class AppRepo {
                                     if (userModel != null ) {
                                         if(userModel !in appContacts as ArrayList<UserModel>){
                                             appContacts?.add(userModel)
+                                            val contactListRoom = ContactListRoom(0,
+                                                userModel.uid!!, userModel.name!!,userModel.number!!,
+                                                userModel.status!!,userModel.image!!)
+
+                                                addReceiverInformation(contactListRoom)
+
                                         }
                                     }
                                 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.FirebaseDatabase
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ActivityUserContactsBinding
 import com.project.messagingapp.ui.main.adapter.CustomContactAdapter
@@ -46,7 +47,7 @@ class UserContacts : AppCompatActivity() {
             mobileContact = getMobileContact()
             contactViewModel = ViewModelProvider(
                 this,
-                ContactViewModelFactory(getMobileContact())
+                ContactViewModelFactory(getMobileContact(),application)
             )[ContactViewModel::class.java]
                 loadUsers()
         } else contactPermission.requestContactPermission(this)

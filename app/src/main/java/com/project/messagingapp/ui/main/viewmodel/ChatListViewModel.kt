@@ -1,17 +1,25 @@
 package com.project.messagingapp.ui.main.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import com.project.messagingapp.data.model.ChatListModel
-import com.project.messagingapp.data.model.ChatModel
+import android.app.Application
+import androidx.lifecycle.*
+import com.project.messagingapp.data.ChatDatabase
+import com.project.messagingapp.data.model.*
+import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ChatListViewModel: ViewModel() {
-    var chatRepo: ChatRepositoryImpl = ChatRepositoryImpl()
+class ChatListViewModel(application: Application): AndroidViewModel(application) {
+    var chatRepo: ChatRepositoryImpl
+    var appRepo: AppRepo
+
+    init {
+        val chatListDao = ChatDatabase.getLocalDatabase(application).getChatListRoomDao()
+        val chatDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
+        val contactDao = ChatDatabase.getLocalDatabase(application).getContactListDao()
+        chatRepo = ChatRepositoryImpl(chatListDao, chatDao)
+        appRepo = AppRepo.SingletonStatic.getInstance(contactDao)
+    }
 
     val currrentUserChatList = liveData(Dispatchers.IO){
         emit(chatRepo.getCurrentUserChatList())
@@ -26,4 +34,13 @@ class ChatListViewModel: ViewModel() {
 
         return response
     }
+
+    fun getChatListRoom():MutableList<ChatListRoom>{
+        return chatRepo.getChatListRoom()
+    }
+
+    fun getContactListRoom():MutableList<ContactChatList>{
+        return appRepo.getContactListRoom()
+    }
+
 }
