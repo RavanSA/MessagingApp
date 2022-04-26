@@ -10,7 +10,7 @@ package com.project.messagingapp.data.model
 //        ForeignKey(entity = ChatListRoom::class, parentColumns = ["receiverID"], childColumns = ["receiverID"])
 //    ]
 //)
-class ContactChatList(
+data class ContactChatList(
     val contact_id: String = "",
     val receiver_id: String = "",
     val receiver_Name: String = "",
