@@ -11,7 +11,6 @@ package com.project.messagingapp.data.model
 //    ]
 //)
 data class ContactChatList(
-    val contact_id: String = "",
     val receiver_id: String = "",
     val receiver_Name: String = "",
     val receiver_phone_number: String = "",

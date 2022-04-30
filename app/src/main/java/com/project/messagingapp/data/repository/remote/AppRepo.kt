@@ -161,8 +161,7 @@ class AppRepo(
                                     if (userModel != null ) {
                                         if(userModel !in appContacts as ArrayList<UserModel>){
                                             appContacts?.add(userModel)
-                                            val contactListRoom = ContactListRoom(0,
-                                                userModel.uid!!, userModel.name!!,userModel.number!!,
+                                            val contactListRoom = ContactListRoom(userModel.uid!!, userModel.name!!,userModel.number!!,
                                                 userModel.status!!,userModel.image!!)
 
                                                 addReceiverInformation(contactListRoom)

@@ -10,10 +10,9 @@ import androidx.room.PrimaryKey
         Index(value = arrayOf("receiver_id"), unique = true)
     ])
 data class ContactListRoom(
-    @PrimaryKey(autoGenerate = true)
-    val contact_id: Int = 0,
-    @ColumnInfo(name = "receiver_id")
-    val receiverID: String = "",
+
+    @PrimaryKey(autoGenerate = false)
+    val receiver_id: String = "",
     @ColumnInfo(name = "receiver_Name")
     val name: String = "",
     @ColumnInfo(name = "receiver_phone_number")
@@ -25,5 +24,5 @@ data class ContactListRoom(
 
 ) {
     constructor()
-            : this(0, "", "", "","","")
+            : this("", "", "","","")
 }
