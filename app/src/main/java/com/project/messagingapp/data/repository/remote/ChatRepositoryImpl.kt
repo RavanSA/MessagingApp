@@ -23,8 +23,12 @@ class ChatRepositoryImpl(
     private val chatRoomDao: ChatRoomDao
 ): ChatRepository {
     private var conversationID: String? = null
-    private var chatModelList: MutableList<ChatModel>? = mutableListOf()
+    private var chatModelList: MutableList<ContactChatList>? = mutableListOf()
 
+
+    override fun deleteChatList() {
+        chatListDao.deleteChatList()
+    }
 
     override suspend fun createChatIfNotExist(chatList: ChatListRoom) {
         Log.d("NEWCHATCREATED", chatList.toString())
@@ -33,6 +37,8 @@ class ChatRepositoryImpl(
 
     override suspend fun lastMessageOfChat(lastMessage: String, date: String,conversationID: String) {
         Log.d("LASTMESSAGE",lastMessage)
+        Log.d("CONVERSATION",conversationID)
+        Log.d("DATE",date)
         chatListDao.lastMessageOfChat(lastMessage, date, conversationID)
     }
 
@@ -48,8 +54,6 @@ class ChatRepositoryImpl(
     override fun getChatListRoom(): MutableList<ChatListRoom> {
         return chatListDao.getChatListRoom()
     }
-
-
 
     override suspend fun createChat(
         message: String,
@@ -110,8 +114,8 @@ class ChatRepositoryImpl(
         return response
     }
 
-    override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ChatModel>? {
-        lateinit var chatModel: ChatModel
+    override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ContactChatList>? {
+        lateinit var chatModel: ContactChatList
         lateinit var userModel: UserModel
 
         try {
@@ -121,12 +125,25 @@ class ChatRepositoryImpl(
 
                 userModel = query.get().await().getValue(UserModel::class.java)!!
 
-                chatModel = ChatModel(
+//                chatModel = ContactChatList(
+//                    chat.chatId,
+//                    userModel.name!!,
+//                    chat.lastMessage,
+//                    userModel.online,
+//                    chat.member
+//                )
+
+                chatModel = ContactChatList(
+                    chat.member,
+                    userModel.name!!,
+                    userModel.number!!,
+                    userModel.status!!,
+                    userModel.image!!,
+                    "",
                     chat.chatId,
-                    userModel.name,
+                    "",
                     chat.lastMessage,
-                    userModel.online,
-                    chat.member
+                    ""
                 )
 
                 chatModelList?.add(chatModel)
@@ -278,7 +295,7 @@ class ChatRepositoryImpl(
             databaseReference.updateChildren(map)
 
             lastMessageOfChat(message,System.currentTimeMillis().toString(), conversationID!!)
-            Log.d("UPDATEMESSAGEROOM","TEST")
+                Log.d("UPDATEMESSAGEROOM",lastMessageOfChat(message,System.currentTimeMillis().toString(),conversationID!!).toString())
         } catch (e: Exception){
             Log.d("SENDMESSAGE",e.message ?: e.toString())
         }

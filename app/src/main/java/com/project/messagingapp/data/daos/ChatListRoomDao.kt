@@ -10,7 +10,7 @@ import com.project.messagingapp.data.model.ChatListRoom
 @Dao
 interface ChatListRoomDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun createChatIfNotExist(chatList: ChatListRoom)
 
     @Query("UPDATE chat_list SET message_date = :date, lastMessageOfChat = :lastMessage WHERE chatid = :conversationID")
@@ -20,5 +20,8 @@ interface ChatListRoomDao {
     // SELECT * FROM chat_list
     @Query("SELECT * FROM chat_list")
     fun getChatListRoom(): MutableList<ChatListRoom>
+
+    @Query("DELETE FROM chat_list")
+    fun deleteChatList()
 
 }

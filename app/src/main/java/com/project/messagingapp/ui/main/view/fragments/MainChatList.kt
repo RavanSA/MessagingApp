@@ -18,10 +18,13 @@ import com.project.messagingapp.ui.main.adapter.ChatListRecyclerAdapter
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactInfoViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.forEach
+
+
+
 
 class MainChatList : Fragment() {
 
@@ -38,6 +41,13 @@ class MainChatList : Fragment() {
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
         getCurrentUserChatList()
 
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                // And Update Ui here
+                getContactList()
+            }
+        }
+
         getContactList()
         return chatBinding.root
     }
@@ -47,12 +57,16 @@ class MainChatList : Fragment() {
         return chatListViewModel.getChatListRoom()
     }
 
-    private fun getContactList(): MutableList<ContactChatList> {
-        val testContactList = chatListViewModel.getContactListRoom()
-        testContactList.forEach { data ->
-            Log.d("TESTCONTACTLIST", data.toString())
+
+    private fun getContactList(): Flow<MutableList<ContactChatList>> {
+        var contactList = chatListViewModel.getContactListRoom()
+        GlobalScope.launch {
+            chatListViewModel.getContactListRoom().collect {
+                callAdapter(it)
+            }
         }
-        return testContactList
+//        callAdapter(testContactList)
+        return contactList
     }
 
     private fun getCurrentUserChatList() {
@@ -69,19 +83,67 @@ class MainChatList : Fragment() {
             lifecycleScope.launch {
                 chatListViewModel.getChatList(chatListModel)
                     .observe(requireActivity(), Observer { data ->
-                        data?.let { callAdapter(it) }
+                        data?.let { remoteList ->
+                            val testContactList = getContactList()
+                            GlobalScope.launch {
+                                testContactList.collect {
+                            if(remoteList.size == it.size){
+                                //DO NOTHING
+                                Log.d("Test1","EQUAL")
+                                Log.d("LOCAL", it.toString())
+                                callAdapter(it)
+
+                            } else if(remoteList.lastmessage == it.lastmessage) {
+                                // if the last message not equal update it
+                                //UPDATE LAST MESSAGE
+                            } else {
+                                //DELETE ALL CHAT
+                                // CREATE ROOM CHAT LIST
+                                Log.d("Test3","NOTEQUAL")
+                                Log.d("REMOTE", remoteList.toString())
+                                Log.d("LOCAL", it.toString())
+                                //DELETE THEN ADD ALL
+                                chatListViewModel.deleteChatList()
+//                                newChatList.addAll(remoteList)
+                                val newChat = mutableListOf<ChatListRoom>()
+                                for(i in remoteList){
+                                    val newChat = ChatListRoom(
+                                        i.uid,i.chatid,i.message_date,i.lastMessageOfChat,i.receiverID
+                                    )
+
+                                    chatListViewModel.createChatIfNotExist(newChat)
+                                }
+                                callAdapter(remoteList)
+
+                            }
+                                    Log.d("REMOTE", remoteList.toString())
+                                    Log.d("LOCAL", it.toString())
+                                    Log.d("REMOTESIZE", remoteList.size.toString())
+                                    Log.d("LOCALSIZE", it.size.toString())
+                                }
+                            }
+
+
+                            Log.d("TESTCONTACTROOM", testContactList.toString())
+                        }
                         Log.d("OBSERVECHATLIST", data.toString())
                     })
+                //if last message not equal update room db last message
+                // else if remote db.size != local db.size delete all create new chat or insert replace
+                // else call adapter from local
             }
         }
     }
 
-    private fun callAdapter(chatModel:MutableList<ChatModel>){
-        chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(requireActivity(),
-            LinearLayoutManager.VERTICAL,false)
-        chatAdapter = ChatListRecyclerAdapter(chatModel)
-        chatBinding.recyclerViewChat.adapter = chatAdapter
-        chatAdapter!!.notifyDataSetChanged()
+    private fun callAdapter(chatModel: MutableList<ContactChatList>){
+        activity?.runOnUiThread{
+            chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(requireActivity(),
+                LinearLayoutManager.VERTICAL,false)
+            chatAdapter = ChatListRecyclerAdapter(chatModel)
+            chatBinding.recyclerViewChat.adapter = chatAdapter
+            chatAdapter!!.notifyDataSetChanged()
+        }
+
     }
 
 }

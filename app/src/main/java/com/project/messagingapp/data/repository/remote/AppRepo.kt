@@ -2,6 +2,7 @@ package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
@@ -12,6 +13,7 @@ import com.project.messagingapp.data.daos.ContactListDao
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AppRepo(
@@ -35,8 +37,9 @@ class AppRepo(
 
     }
 
-
-    fun getContactListRoom(): MutableList<ContactChatList> {
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
         return contactListDao.getAllContactList()
     }
 

@@ -7,11 +7,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatModel
+import com.project.messagingapp.data.model.ContactChatList
 import com.project.messagingapp.databinding.ChatlistItemLayoutBinding
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
+import kotlinx.coroutines.flow.Flow
 
 class ChatListRecyclerAdapter(
-    private val chatModel: MutableList<ChatModel>
+    private val chatModel: MutableList<ContactChatList>
 ) : RecyclerView.Adapter<ChatListRecyclerAdapter.ChatListRecyclerView>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListRecyclerView {
@@ -29,7 +31,7 @@ class ChatListRecyclerAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)
-            intent.putExtra("id_receiver",chatList.member)
+            intent.putExtra("id_receiver",chatList.receiverID)
             it.context.startActivity(intent)
         }
 

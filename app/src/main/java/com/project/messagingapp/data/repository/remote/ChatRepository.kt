@@ -18,7 +18,7 @@ interface ChatRepository {
 
     suspend fun checkChatCreated(receiverID: String) : String?
 
-    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ChatModel>?
+    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>?
 
     suspend fun checkOnlineStatus(receiverID: String): UserModel
 
@@ -33,6 +33,8 @@ interface ChatRepository {
     suspend fun lastMessageOfChat(lastMessage: String, date: String, conversationID: String)
 
     suspend fun addNewMessage(chatRoom: ChatRoom)
+
+     fun deleteChatList()
 
     fun getAllMessagesOfChat(conversationID: String)
 
