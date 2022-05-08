@@ -15,26 +15,27 @@
 > The app will provide a modern approach to chat apps using new technologies for the community. 
 > It aims to use more machine learning approaches to determine a person's emotional state and then react to it, and try to create artificial emotional intelligence.
 > Live demo can be found [_here_](https://play.google.com/store/apps/xxxxxxxxxxxxxx) "not yet available". 
-
+<br/>
 
 ![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)
-!Language(https://img.shields.io/badge/Language-Kotlin-yellowgreen.svg)
+![Language](https://img.shields.io/badge/Language-Kotlin-yellowgreen.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/RavanSA/MessagingApp)
 ![GitHub contributors](https://img.shields.io/github/contributors/RavanSA/MessagingApp)
 ![GitHub stars](https://img.shields.io/github/stars/RavanSA/MessagingApp)
-
-## Prerequisites :star:
+<br/><br/>
+## Prerequisites 
 
 Before you begin, ensure you have met the following requirements:<br/>
-✅ &nbsp; You have `Android Studio` installed in your machine <br/>
-✅ &nbsp; You have a Android Device or Emulator with Android Version 6.0 or above. <br/>
-✅ &nbsp; You have read [SRS](https://github.com/RavanSA/MessagingApp/blob/main/doc.pdf).<br/>
+- You have `Android Studio` installed in your machine <br/>
+- You have a Android Device or Emulator with Android Version 6.0 or above. <br/>
+- You should read [SRS](https://github.com/RavanSA/MessagingApp/blob/main/doc.pdf) documentation.<br/>
 
-
-## Installing Android Kotlin Chat App
+<br/><br/>
+## Install Chat App <br/>
 Simply clone the repository from [here](https://github.com/RavanSA/MessagingApp/archive/refs/heads/main.zip)
----
 
+
+<br/><br/>
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -48,48 +49,47 @@ Simply clone the repository from [here](https://github.com/RavanSA/MessagingApp/
 * [License](#license)
 
 
-##  General Information
+##  General Information <br/>
 Our applications enable users to communicate with each other and communicate securely by using new
 technologies. We will provide a great app for people to communicate with each other that they know
 using their contact lists whether they give permissions. The main functionality of the application gives the
-opportunity to the user. These are described below:
+opportunity to the user. These are described below <br/>
 - send and receive text messages
 - sending images and files
 - scheduling messages
 - sending location
 - sending voice recording
-- voice and video calling with end-to-end encryption
+- voice and video calling with end-to-end encryption <br/>
 Another functionality is that it offers features such as taking photos, adding filters, and editing images.
 We also mentioned earlier that we will be implementing machine learning applications such as image
 recognition and sentiment analysis. For the profile picture, the application will force to the user set the
 profile picture as a real picture of themselves. Some machine learning applications will be applied to our
-applications. Some of them described below:
-- Emotion Recognition
+applications. Some of them described below:<br/>
+- **Emotion Recognition** <br/>
 It is a subset of artificial intelligence that measures, understands, simulates, and reacts to human emotions.
 It’s known as artificial emotional intelligence. The AI will try to determine your emotional expression based on their dialogues in the chat application.
 In case you’re wondering, this is how some of those are 8 emotions: neutral, happy, sad, surprise, fear, disgust, anger, and contempt.
-Dataset : We will take a Twitter dataset which is provided by Kaggle for
+*Dataset* : We will take a Twitter dataset which is provided by Kaggle for
 text classification competitions. It includes 40,000 tweets labeled respectively
 to 13 different human emotions. The result of the model will be presented in the user interface using color psychology according to the result of the model.
-Preprocessing : Stemming and lemmatization are two crucial steps of pre-processing.
+*Preprocessing* : Stemming and lemmatization are two crucial steps of pre-processing.
 In stemming, we will convert words to their root form by truncating suffixes. 
 This process reduces the unwanted computation of sentences.
 Lemmatization involves morphological analysis to remove inflectional endings from a token to turn it into the base word lemma.
-Model: We will use Bidirectional LSTM for model.
-Bidirectional long-short term memory (Bi-LSTM) is a Recurrent Neural Network architecture where makes use of information in both directions forward or backward.
+*Model*: We will use Bidirectional LSTM for model.
+Bidirectional long-short term memory (Bi-LSTM) is a Recurrent Neural Network architecture where makes use of information in both directions forward or backward. <br/>
 <img align="center" width="100%" height="auto"
 src="<img align="center" width="100%" height="auto"
-src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">
-- Age Estimation
-Dataset: We will train our model on the UTKFace dataset which contains 23K images.
-Preprocessing: We use 3-channeled RGB images as input. The age estimation model takes in 200 * 200 images as input.
-Model: We will use CNN for face recognition. A CNN is trained to detect and recognize face images.
-The model will build using Keras Convolution 2D layers.
-- Gender Estimation
-Dataset: The dataset for gender estimation will be same as the dataset we will use for age estimation. 
-Preprocessing: We use 3-channeled RGB images as input. The age estimation model takes in 128 * 128 images as input.
+src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">      <br/>
+- **Age Estimation**  <br/>
+*Dataset*: We will train our model on the UTKFace dataset which contains 23K images.
+*Preprocessing*: We use 3-channeled RGB images as input. The age estimation model takes in 200 * 200 images as input.
+*Model*: We will use CNN for face recognition. A CNN is trained to detect and recognize face images.
+The model will build using Keras Convolution 2D layers. <br/>
+- **Gender Estimation** <br/>
+*Dataset*: The dataset for gender estimation will be same as the dataset we will use for age estimation. 
+Preprocessing*: We use 3-channeled RGB images as input. The age estimation model takes in 128 * 128 images as input.
 Model: The model will be the same as the age estimation with a small difference to adapt the binary classification.
-- Generate anime faces from human faces
 
 ## Technologies Used
 - Android Studio - Arctic Fox (2020.3.1)
@@ -126,40 +126,31 @@ Model: The model will be the same as the age estimation with a small difference 
 - Update Information
 - Persistence offline authentication
 - Fetching users contacts
-- Upload profile picture with using local storage and camera
+- Upload profile picture with using local storage and camera <br/>
 This list can be extended
-
+<br/>
 ## Screenshots
 <img align="center" width="100%" height="auto"
 src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">
-
+<br/>
 
 ## Project Status
-Project is: InProgress
+The project is currently under development. Expected completion date is June 22, 2022.
 
-## Room for Improvement
-Include areas you believe need improvement / could be improved. Also add TODOs for future development.
+## Future Works
+- Generate anime faces using users profile pictures<br/>
+Using the DCGAN algorithm, we will build a model to generate an anime picture based on users' profile pictures. When the user updates their profile picture, the user will be able to create that picture
+and they will have a dialog bar to set the profile picture.
+- QR-code sharing
+- Web application
 
-Room for improvement:
-- Improvement to be done 1
-- Improvement to be done 2
-
-To do:
-- Feature to be added 1
-- Feature to be added 2
-
-## Acknowledgements
-Give credit here.
-- This project was inspired by...
-- This project was based on [this tutorial](https://www.example.com).
-- Many thanks to...
-
+<br/>
 
 ## Contact
-Created by [@flynerdpl](https://www.flynerd.pl/) - feel free to contact me!
+Created by [Ravan SADIGLI](https://www.flynerd.pl/) - feel free to contact me!
 
 
-
+<br/>
 ## License
 ```
 MIT License
