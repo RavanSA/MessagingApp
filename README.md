@@ -22,7 +22,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/RavanSA/MessagingApp)
 ![GitHub contributors](https://img.shields.io/github/contributors/RavanSA/MessagingApp)
 ![GitHub stars](https://img.shields.io/github/stars/RavanSA/MessagingApp)
-<br/><br/>
+<br/>
 ## Prerequisites 
 
 Before you begin, ensure you have met the following requirements:<br/>
@@ -30,12 +30,10 @@ Before you begin, ensure you have met the following requirements:<br/>
 - You have a Android Device or Emulator with Android Version 6.0 or above. <br/>
 - You should read [SRS](https://github.com/RavanSA/MessagingApp/blob/main/doc.pdf) documentation.<br/>
 
-<br/><br/>
+
 ## Install Chat App <br/>
 Simply clone the repository from [here](https://github.com/RavanSA/MessagingApp/archive/refs/heads/main.zip)
 
-
-<br/><br/>
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -43,8 +41,7 @@ Simply clone the repository from [here](https://github.com/RavanSA/MessagingApp/
 * [Features](#features)
 * [Screenshots](#screenshots)
 * [Project Status](#project-status)
-* [Room for Improvement](#room-for-improvement)
-* [Acknowledgements](#acknowledgements)
+* [Future Works](#future-works)
 * [Contact](#contact)
 * [License](#license)
 
@@ -61,38 +58,37 @@ opportunity to the user. These are described below <br/>
 - sending voice recording
 - voice and video calling with end-to-end encryption <br/>
 Another functionality is that it offers features such as taking photos, adding filters, and editing images.
-We also mentioned earlier that we will be implementing machine learning applications such as image
-recognition and sentiment analysis. For the profile picture, the application will force to the user set the
+We will also be implementing machine learning applications. For the profile picture, the application will force to the user set the
 profile picture as a real picture of themselves. Some machine learning applications will be applied to our
 applications. Some of them described below:<br/>
 - **Emotion Recognition** <br/>
 It is a subset of artificial intelligence that measures, understands, simulates, and reacts to human emotions.
 It’s known as artificial emotional intelligence. The AI will try to determine your emotional expression based on their dialogues in the chat application.
-In case you’re wondering, this is how some of those are 8 emotions: neutral, happy, sad, surprise, fear, disgust, anger, and contempt.
+In case you’re wondering, this is how some of those are 8 emotions: neutral, happy, sad, surprise, fear, disgust, anger, and contempt. <br/>
 *Dataset* : We will take a Twitter dataset which is provided by Kaggle for
 text classification competitions. It includes 40,000 tweets labeled respectively
 to 13 different human emotions. The result of the model will be presented in the user interface using color psychology according to the result of the model.
-*Preprocessing* : Stemming and lemmatization are two crucial steps of pre-processing.
+<br/>*Preprocessing* : Stemming and lemmatization are two crucial steps of pre-processing.
 In stemming, we will convert words to their root form by truncating suffixes. 
 This process reduces the unwanted computation of sentences.
 Lemmatization involves morphological analysis to remove inflectional endings from a token to turn it into the base word lemma.
-*Model*: We will use Bidirectional LSTM for model.
+<br/>*Model*: We will use Bidirectional LSTM for model.
 Bidirectional long-short term memory (Bi-LSTM) is a Recurrent Neural Network architecture where makes use of information in both directions forward or backward. <br/>
 <img align="center" width="100%" height="auto"
-src="<img align="center" width="100%" height="auto"
-src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">      <br/>
+src="https://miro.medium.com/max/766/1*10K6EwcZKtuyR6Y2t7chNA.jpeg">    <br/>
 - **Age Estimation**  <br/>
 *Dataset*: We will train our model on the UTKFace dataset which contains 23K images.
-*Preprocessing*: We use 3-channeled RGB images as input. The age estimation model takes in 200 * 200 images as input.
-*Model*: We will use CNN for face recognition. A CNN is trained to detect and recognize face images.
+<br/>*Preprocessing*: We use 3-channeled RGB images as input. The age estimation model takes in 200 * 200 images as input.
+<br/>*Model*: We will use CNN for face recognition. A CNN is trained to detect and recognize face images.
 The model will build using Keras Convolution 2D layers. <br/>
 - **Gender Estimation** <br/>
-*Dataset*: The dataset for gender estimation will be same as the dataset we will use for age estimation. 
+<br/>*Dataset*: The dataset for gender estimation will be same as the dataset we will use for age estimation. 
 Preprocessing*: We use 3-channeled RGB images as input. The age estimation model takes in 128 * 128 images as input.
-Model: The model will be the same as the age estimation with a small difference to adapt the binary classification.
+<br/>*Model*: The model will be the same as the age estimation with a small difference to adapt the binary classification.
 
 ## Technologies Used
 - Android Studio - Arctic Fox (2020.3.1)
+- Android Jetpack library
 - Kotlin - 203-1.6.10-RC-release-906-AS7717.8
 - Firebase - 20.0.3
 - Python - 3.6.9
@@ -127,15 +123,14 @@ Model: The model will be the same as the age estimation with a small difference 
 - Persistence offline authentication
 - Fetching users contacts
 - Upload profile picture with using local storage and camera <br/>
-This list can be extended
-<br/>
-## Screenshots
+This list can be flexible
+
+## Screenshots <br/>
 <img align="center" width="100%" height="auto"
 src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">
-<br/>
 
 ## Project Status
-The project is currently under development. Expected completion date is June 22, 2022.
+The project is currently under development. Expected completion date is June 25, 2022.
 
 ## Future Works
 - Generate anime faces using users profile pictures<br/>
@@ -143,15 +138,13 @@ Using the DCGAN algorithm, we will build a model to generate an anime picture ba
 and they will have a dialog bar to set the profile picture.
 - QR-code sharing
 - Web application
-
-<br/>
+- Single page website to get information about the app
 
 ## Contact
-Created by [Ravan SADIGLI](https://www.flynerd.pl/) - feel free to contact me!
+Created by <a href="mailto:revan.sadiqli99@gmail.com">Ravan SADIGLI</a>.  - feel free to contact me!
 
 
-<br/>
-## License
+## License<br/>
 ```
 MIT License
 
