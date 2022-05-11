@@ -28,10 +28,10 @@ class ChatListRecyclerAdapter(
     override fun onBindViewHolder(holder: ChatListRecyclerView, position: Int) {
         val chatList = chatModel[position]
         holder.list.chatModel = chatList
-
+//        holder.list.txtChatStatus.text = chatList.lastMessageOfChat
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)
-            intent.putExtra("id_receiver",chatList.receiverID)
+            intent.putExtra("id_receiver",chatList.receiver_id)
             it.context.startActivity(intent)
         }
 

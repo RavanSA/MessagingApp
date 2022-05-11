@@ -43,7 +43,16 @@ class AppRepo(
         return contactListDao.getAllContactList()
     }
 
+    fun getContactListAndChatList(): List<ContactListandChatList>{
+        return contactListDao.getContactListAndChatList()
+    }
+
+    fun getContactList(): List<ContactListRoom>{
+        return contactListDao.getContactList()
+    }
+
       fun addReceiverInformation(contactListRoom: ContactListRoom){
+          Log.d("ADDED TO DATABASE", contactListRoom.toString())
         contactListDao.addReceiverInformation(contactListRoom)
     }
 
@@ -166,7 +175,7 @@ class AppRepo(
                                             appContacts?.add(userModel)
                                             val contactListRoom = ContactListRoom(userModel.uid!!, userModel.name!!,userModel.number!!,
                                                 userModel.status!!,userModel.image!!)
-
+                                                Log.d("CONTACTLIST", contactListRoom.toString())
                                                 addReceiverInformation(contactListRoom)
 
                                         }

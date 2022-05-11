@@ -1,18 +1,27 @@
 package com.project.messagingapp.data.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity(tableName = "contact_list",
-    indices = [
-        Index(value = arrayOf("receiver_id"), unique = true)
-    ])
+@Entity(tableName = "contact_list"
+//    foreignKeys = [ForeignKey(
+//        entity = ChatListRoom::class,
+//        parentColumns = arrayOf("receiver_id"),
+//        childColumns = arrayOf("receiver_id"),
+//        onDelete = ForeignKey.CASCADE,
+//        onUpdate = ForeignKey.CASCADE
+//    )],
+//    indices = [
+//        Index(value = arrayOf("receiver_id"), unique = true)
+//    ]
+    )
+//    indices = [
+//        Index(value = arrayOf("receiver_id"), unique = true)
+//    ])
 data class ContactListRoom(
 
     @PrimaryKey(autoGenerate = false)
-    val receiver_id: String = "",
+    @ColumnInfo(name = "receiver_id")
+    val receiverID: String = "",
     @ColumnInfo(name = "receiver_Name")
     val name: String = "",
     @ColumnInfo(name = "receiver_phone_number")

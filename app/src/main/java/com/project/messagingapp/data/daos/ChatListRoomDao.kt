@@ -1,10 +1,7 @@
 package com.project.messagingapp.data.daos
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.project.messagingapp.data.model.ChatListRoom
 
 @Dao
@@ -19,9 +16,18 @@ interface ChatListRoomDao {
 
     // SELECT * FROM chat_list
     @Query("SELECT * FROM chat_list")
-    fun getChatListRoom(): MutableList<ChatListRoom>
+    fun getChatListRoom(): List<ChatListRoom>
 
     @Query("DELETE FROM chat_list")
     fun deleteChatList()
+
+    @Insert
+    suspend fun insertAllChatList(chatList: MutableList<ChatListRoom>)
+
+    @Transaction
+    suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>){
+        deleteChatList()
+        insertAllChatList(chatList)
+    }
 
 }

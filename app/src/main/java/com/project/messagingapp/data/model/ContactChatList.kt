@@ -19,8 +19,6 @@ data class ContactChatList(
     val uid: String = "",
     val chatid: String = "",
     val message_date: String = "",
-    val lastMessageOfChat: String = "",
-    val receiverID: String = ""
-) {
+    var lastMessageOfChat: String = "") {
 
 }

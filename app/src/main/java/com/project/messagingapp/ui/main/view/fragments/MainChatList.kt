@@ -1,5 +1,9 @@
 package com.project.messagingapp.ui.main.view.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.api.LogDescriptor
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.databinding.FragmentMainChatListBinding
@@ -22,8 +27,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.forEach
-
-
 
 
 class MainChatList : Fragment() {
@@ -39,98 +42,144 @@ class MainChatList : Fragment() {
         chatBinding = FragmentMainChatListBinding.inflate(layoutInflater,container,false)
 
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
-        getCurrentUserChatList()
+//        getCurrentUserChatList()
 
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
                 // And Update Ui here
-                getContactList()
+//                getContactList(
+//            getContactListAndChatList()
+                getCurrentUserChatList()
             }
         }
 
-        getContactList()
+//        getContactListAndChatList()
+//        getContactList()
         return chatBinding.root
     }
 
 
-    private fun getChatListRoom(): MutableList<ChatListRoom> {
-        return chatListViewModel.getChatListRoom()
-    }
+//    private fun getChatListRoom(): MutableList<ChatListRoom> {
+//        return chatListViewModel.getChatListRoom()
+//    }
 
 
     private fun getContactList(): Flow<MutableList<ContactChatList>> {
         var contactList = chatListViewModel.getContactListRoom()
         GlobalScope.launch {
             chatListViewModel.getContactListRoom().collect {
-                callAdapter(it)
+              callAdapter(it)
             }
         }
 //        callAdapter(testContactList)
         return contactList
     }
 
-    private fun getCurrentUserChatList() {
+    private suspend fun getContactListAndChatList(): MutableList<ContactChatList> {
+        val testContactList = chatListViewModel.getContactListRoom2()
+        val testChatList = chatListViewModel.getChatListRoom()
+        val newList = mutableListOf<ContactChatList>()
+
+        Log.d("TEST", testContactList.size.toString())
+        Log.d("TEST2", testChatList.size.toString())
+        GlobalScope.launch(Dispatchers.IO) {
+
+            for (elementContact in testContactList) {
+                for (elementChat in testChatList) {
+                    withContext(Dispatchers.IO) {
+
+                    Log.d("ELEMENCTCHAT", elementChat.member)
+                    Log.d("ELEMENTCONTACT", elementContact.receiverID)
+                        if (elementContact.receiverID == elementChat.member) {
+//                    Log.d("FINAL TEST", testChatList.toString())
+
+                        Log.d("CONTACTRECEIVERID",elementContact.receiverID)
+                        Log.d("CHATLISTRECEVIER",elementChat.uid)
+//                        Log.d("CHATLISTRECEVIER",elementChat.)
+                        val contactList = ContactChatList(
+                            elementContact.receiverID,
+                            elementContact.name,
+                            elementContact.number,
+                            elementContact.status,
+                            elementContact.image,
+                            "",
+                            elementChat.chatID,
+                            elementChat.date,
+                            elementChat.lastMessage
+                        )
+                        newList.add(contactList)
+                    }
+                    }
+                    }
+            }
+//            callAdapter(newList)
+//            getCurrentUserChatList(newList)
+        }
+        Log.d("NEWLIST CREATED", newList.toString())
+        return newList
+    }
+
+
+    private suspend fun getCurrentUserChatList() {
+        var local = getContactListAndChatList()
+        if (!isNetworkAvailable(requireContext())) {
+            callAdapter(local)
+            Log.d("No INTERNET CONNECTION", local.toString())
+        } else if(isNetworkAvailable(requireContext())){
+            callAdapter(local)
             chatListViewModel.currrentUserChatList.observe(requireActivity(), {
 //                observeChatList(it)
-                Log.d("TESTCURRENTYSERCHAT", it.toString())
-                observeChatList(it.mainChatList)
+                Log.d("INTERNET CONNECTION", it.toString())
+                observeChatList(it.mainChatList,local)
             })
         }
+    }
 
 
-    private fun observeChatList(chatListModel: List<ChatListModel>?) {
+    private fun observeChatList(
+        chatListModel: List<ChatListModel>?,
+                                local: MutableList<ContactChatList>) {
         if (chatListModel != null) {
             lifecycleScope.launch {
                 chatListViewModel.getChatList(chatListModel)
                     .observe(requireActivity(), Observer { data ->
                         data?.let { remoteList ->
-                            val testContactList = getContactList()
-                            GlobalScope.launch {
-                                testContactList.collect {
-                            if(remoteList.size == it.size){
-                                //DO NOTHING
-                                Log.d("Test1","EQUAL")
-                                Log.d("LOCAL", it.toString())
-                                callAdapter(it)
-
-                            } else if(remoteList.lastmessage == it.lastmessage) {
-                                // if the last message not equal update it
-                                //UPDATE LAST MESSAGE
-                            } else {
-                                //DELETE ALL CHAT
-                                // CREATE ROOM CHAT LIST
-                                Log.d("Test3","NOTEQUAL")
-                                Log.d("REMOTE", remoteList.toString())
-                                Log.d("LOCAL", it.toString())
-                                //DELETE THEN ADD ALL
-                                chatListViewModel.deleteChatList()
-//                                newChatList.addAll(remoteList)
-                                val newChat = mutableListOf<ChatListRoom>()
-                                for(i in remoteList){
-                                    val newChat = ChatListRoom(
-                                        i.uid,i.chatid,i.message_date,i.lastMessageOfChat,i.receiverID
-                                    )
-
-                                    chatListViewModel.createChatIfNotExist(newChat)
+                            GlobalScope.launch(Dispatchers.IO) {
+                                if(remoteList.size != local.size) {
+//                                    chatListViewModel.deleteChatList()
+                                    var newLocalChatList = mutableListOf<ChatListRoom>()
+                                    for (element in remoteList) {
+//                                    for(roomElement in local)
+                                        val chatList = ChatListRoom(
+                                            element.receiver_id,
+                                            element.chatid,
+                                            element.message_date,
+                                            element.lastMessageOfChat,
+                                            element.uid
+                                        )
+                                        newLocalChatList.add(chatList)
+//                                        chatListViewModel.createChatIfNotExist(chatList)
+//                                    roomElement.lastMessageOfChat = element.lastMessageOfChat
+                                    }
+                                    chatListViewModel.deleteAndCreate(newLocalChatList)
+//                                    val newLocalDBChatList = chatListViewModel.getChatListRoom()
+                                    Log.d("INTERNET","CONNECTION")
+                                    callAdapter(local)
+                                } else {
+                                  for (element in remoteList){
+                                      chatListViewModel.updateLastMessage(
+                                          element.lastMessageOfChat,
+                                          element.message_date,
+                                          element.chatid
+                                      )
+                                  }
+                                    callAdapter(local)
+                                    Log.d("INTERNET IN ELSE","CONNECTION")
                                 }
-                                callAdapter(remoteList)
-
-                            }
-                                    Log.d("REMOTE", remoteList.toString())
-                                    Log.d("LOCAL", it.toString())
-                                    Log.d("REMOTESIZE", remoteList.size.toString())
-                                    Log.d("LOCALSIZE", it.size.toString())
                                 }
                             }
 
-
-                            Log.d("TESTCONTACTROOM", testContactList.toString())
-                        }
-                        Log.d("OBSERVECHATLIST", data.toString())
                     })
-                //if last message not equal update room db last message
-                // else if remote db.size != local db.size delete all create new chat or insert replace
-                // else call adapter from local
             }
         }
     }
@@ -144,6 +193,34 @@ class MainChatList : Fragment() {
             chatAdapter!!.notifyDataSetChanged()
         }
 
+    }
+
+
+    fun isNetworkAvailable(context: Context?): Boolean {
+        if (context == null) return false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                when {
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                        return true
+                    }
+                }
+            }
+        } else {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                return true
+            }
+        }
+        return false
     }
 
 }

@@ -38,5 +38,7 @@ interface ChatRepository {
 
     fun getAllMessagesOfChat(conversationID: String)
 
-    fun getChatListRoom() : MutableList<ChatListRoom>
+    fun getChatListRoom() : List<ChatListRoom>
+
+    suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>)
 }

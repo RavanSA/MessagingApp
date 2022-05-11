@@ -42,6 +42,10 @@ class ChatRepositoryImpl(
         chatListDao.lastMessageOfChat(lastMessage, date, conversationID)
     }
 
+    override suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>) {
+        chatListDao.deleteAndCreate(chatList)
+    }
+
     override suspend fun addNewMessage(chatRoom: ChatRoom) {
         Log.d("SENDNEWMESSAGEROOM", chatRoom.toString())
         chatRoomDao.sendNewMessage(chatRoom)
@@ -51,7 +55,7 @@ class ChatRepositoryImpl(
         chatRoomDao.getAllMessagesOfChat(conversationID)
     }
 
-    override fun getChatListRoom(): MutableList<ChatListRoom> {
+    override fun getChatListRoom(): List<ChatListRoom> {
         return chatListDao.getChatListRoom()
     }
 
@@ -139,12 +143,10 @@ class ChatRepositoryImpl(
                     userModel.number!!,
                     userModel.status!!,
                     userModel.image!!,
-                    "",
+                    AppUtil().getUID()!!,
                     chat.chatId,
-                    "",
-                    chat.lastMessage,
-                    ""
-                )
+                    System.currentTimeMillis().toString(),
+                    chat.lastMessage)
 
                 chatModelList?.add(chatModel)
             }

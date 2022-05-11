@@ -8,6 +8,8 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseApp.initializeApp
 import com.google.firebase.database.FirebaseDatabase
 import com.project.messagingapp.R
 import com.project.messagingapp.ui.main.viewmodel.SplashViewModel
@@ -54,7 +56,7 @@ class SplashScreen : AppCompatActivity() {
         val number = sharedPref.getString("PhoneNumber",null )
 
         if (number !== null){
-
+            FirebaseApp.initializeApp(this@SplashScreen)
             FirebaseMessaging.getInstance().token
                 .addOnCompleteListener(OnCompleteListener {
                     if (it.isSuccessful) {
