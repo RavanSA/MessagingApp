@@ -4,7 +4,7 @@
     <data>
         <variable
             name="chatModel"
-            type="com.project.messagingapp.data.model.ChatModel" />
+            type="com.project.messagingapp.data.model.ContactChatList" />
 
     </data>
 
@@ -41,7 +41,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
-                    android:text="@{chatModel.name, default=Nothing}"
+                    android:text="@{chatModel.receiver_Name, default=Nothing}"
                     android:textColor="@color/white"
                     android:textSize="15dp"
                     android:textStyle="bold" />
@@ -60,7 +60,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
-                        android:text="@{chatModel.lastMessage,default=Nothing}"
+                        android:text="@{chatModel.lastMessageOfChat,default=Nothing}"
                         android:textColor="@color/white"
                         android:textSize="13dp"
                         android:textStyle="bold" />

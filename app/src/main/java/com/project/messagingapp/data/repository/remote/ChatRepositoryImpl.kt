@@ -2,13 +2,10 @@ package com.project.messagingapp.data.repository.remote
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.google.firebase.database.*
 import com.android.volley.Response
 
-import com.google.firebase.firestore.util.Listener
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
@@ -17,18 +14,50 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
-import org.json.JSONException
 
-import com.android.volley.toolbox.HttpHeaderParser
+import com.project.messagingapp.data.daos.ChatListRoomDao
+import com.project.messagingapp.data.daos.ChatRoomDao
 
-import com.android.volley.NetworkResponse
-import com.android.volley.ServerError
-import java.io.UnsupportedEncodingException
-
-
-class ChatRepositoryImpl: ChatRepository {
+class ChatRepositoryImpl(
+    private val chatListDao: ChatListRoomDao,
+    private val chatRoomDao: ChatRoomDao
+): ChatRepository {
     private var conversationID: String? = null
-    private var chatModelList: MutableList<ChatModel>? = mutableListOf()
+    private var chatModelList: MutableList<ContactChatList>? = mutableListOf()
+
+
+    override fun deleteChatList() {
+        chatListDao.deleteChatList()
+    }
+
+    override suspend fun createChatIfNotExist(chatList: ChatListRoom) {
+        Log.d("NEWCHATCREATED", chatList.toString())
+        chatListDao.createChatIfNotExist(chatList)
+    }
+
+    override suspend fun lastMessageOfChat(lastMessage: String, date: String,conversationID: String) {
+        Log.d("LASTMESSAGE",lastMessage)
+        Log.d("CONVERSATION",conversationID)
+        Log.d("DATE",date)
+        chatListDao.lastMessageOfChat(lastMessage, date, conversationID)
+    }
+
+    override suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>) {
+        chatListDao.deleteAndCreate(chatList)
+    }
+
+    override suspend fun addNewMessage(chatRoom: ChatRoom) {
+        Log.d("SENDNEWMESSAGEROOM", chatRoom.toString())
+        chatRoomDao.sendNewMessage(chatRoom)
+    }
+
+    override fun getAllMessagesOfChat(conversationID: String) {
+        chatRoomDao.getAllMessagesOfChat(conversationID)
+    }
+
+    override fun getChatListRoom(): List<ChatListRoom> {
+        return chatListDao.getChatListRoom()
+    }
 
     override suspend fun createChat(
         message: String,
@@ -43,6 +72,7 @@ class ChatRepositoryImpl: ChatRepository {
                 ChatListModel(chatID!!, message, System.currentTimeMillis().toString(), receiverID)
             databaseReference.child(chatID).setValue(chatListMode)
 
+
             databaseReference = FirebaseDatabase.getInstance().getReference("ChatList")
                 .child(receiverID)
 
@@ -51,10 +81,21 @@ class ChatRepositoryImpl: ChatRepository {
 
             databaseReference.child(chatID).setValue(chatList)
 
+            val chatListRoom = ChatListRoom(AppUtil().getUID()!!,chatID,
+                System.currentTimeMillis().toString(),message,receiverID)
+
+            createChatIfNotExist(chatListRoom)
+
             databaseReference = FirebaseDatabase.getInstance().getReference("Chat").child(chatID)
 
             val messageModel = MessageModel(AppUtil().getUID()!!, receiverID, message, type = "text")
            databaseReference.push().setValue(messageModel)
+
+
+            val chatRoom = ChatRoom(0,chatID,System.currentTimeMillis().toString(),message,
+                receiverID,AppUtil().getUID()!!,"text")
+
+            addNewMessage(chatRoom)
         } catch (e: Exception){
             Log.d("error",e.message ?: e.toString())
          }
@@ -70,15 +111,15 @@ class ChatRepositoryImpl: ChatRepository {
             response.mainChatList = query.get().await().children.map { snapshot ->
                 snapshot.getValue(ChatListModel::class.java)!!
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             response.exception = e
         }
 
         return response
     }
 
-    override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ChatModel>? {
-        lateinit var chatModel: ChatModel
+    override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ContactChatList>? {
+        lateinit var chatModel: ContactChatList
         lateinit var userModel: UserModel
 
         try {
@@ -88,13 +129,24 @@ class ChatRepositoryImpl: ChatRepository {
 
                 userModel = query.get().await().getValue(UserModel::class.java)!!
 
-                chatModel = ChatModel(
+//                chatModel = ContactChatList(
+//                    chat.chatId,
+//                    userModel.name!!,
+//                    chat.lastMessage,
+//                    userModel.online,
+//                    chat.member
+//                )
+
+                chatModel = ContactChatList(
+                    chat.member,
+                    userModel.name!!,
+                    userModel.number!!,
+                    userModel.status!!,
+                    userModel.image!!,
+                    AppUtil().getUID()!!,
                     chat.chatId,
-                    userModel.name,
-                    chat.lastMessage,
-                    userModel.online,
-                    chat.member
-                )
+                    System.currentTimeMillis().toString(),
+                    chat.lastMessage)
 
                 chatModelList?.add(chatModel)
             }
@@ -186,7 +238,7 @@ class ChatRepositoryImpl: ChatRepository {
         val mutableLiveData = MutableLiveData<ChatResponse>()
         val databaseRef =
             FirebaseDatabase.getInstance().getReference("ChatList").child(AppUtil().getUID()!!)
-
+        //SELECT * FROM chat_list  WHERE uid = user.uid and member = receiverID
         val chatQuery = databaseRef.orderByChild("member").equalTo(receiverID)
 
         chatQuery.get().addOnCompleteListener{ task ->
@@ -217,10 +269,16 @@ class ChatRepositoryImpl: ChatRepository {
                 FirebaseDatabase.getInstance().getReference("Chat").child(conversationID!!)
 
             val messageModel =
-                MessageModel(AppUtil().getUID()!!, receiverID, message, System.currentTimeMillis().toString(), "text")
+                MessageModel(AppUtil().getUID()!!, receiverID, message,
+                    System.currentTimeMillis().toString(), "text")
 
             databaseReference.push().setValue(messageModel)
 
+            val chatRoom  = ChatRoom(0,conversationID!!,System.currentTimeMillis().toString(),message,
+            receiverID,AppUtil().getUID()!!,"text")
+
+            addNewMessage(chatRoom)
+            Log.d("ADDNEWMESSAGEROOM", chatRoom.toString())
             val map: MutableMap<String, Any> = HashMap()
 
             map["lastMessage"] = message
@@ -237,6 +295,9 @@ class ChatRepositoryImpl: ChatRepository {
                     .child(conversationID!!)
 
             databaseReference.updateChildren(map)
+
+            lastMessageOfChat(message,System.currentTimeMillis().toString(), conversationID!!)
+                Log.d("UPDATEMESSAGEROOM",lastMessageOfChat(message,System.currentTimeMillis().toString(),conversationID!!).toString())
         } catch (e: Exception){
             Log.d("SENDMESSAGE",e.message ?: e.toString())
         }

@@ -1,23 +1,40 @@
 package com.project.messagingapp.ui.main.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.android.volley.toolbox.JsonObjectRequest
+import com.project.messagingapp.data.ChatDatabase
 import com.project.messagingapp.data.model.*
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
-import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
 
-class MessageViewModel:ViewModel() {
+class MessageViewModel(application: Application): AndroidViewModel(application) {
 
-    var chatRepo: ChatRepositoryImpl = ChatRepositoryImpl()
+    var chatRepo: ChatRepositoryImpl
+//    val chatListRepositoryRoom: ChatListRepository
 
     val readMessageLive = MutableLiveData<MutableList<MessageModel>>(mutableListOf())
 
 
+    //TODO find a way to initiliaze room chat database
+    init {
+        val chatListDao = ChatDatabase.getLocalDatabase(application).getChatListRoomDao()
+        val chatDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
+        chatRepo = ChatRepositoryImpl(chatListDao, chatDao)
+    }
+
     var createChatVal: Unit? = null
+
+//        suspend fun createChatIfNotExist(chatListRoom: ChatListRoom) = viewModelScope.launch(Dispatchers.IO) {
+//            chatListRepositoryRoom.createChatIfNotExist(chatListRoom)
+//        }
+//
+//        suspend fun lastMessageOfChat(chatListRoom: ChatListRoom) = viewModelScope.launch(Dispatchers.IO){
+//            chatListRepositoryRoom.lastMessageOfChat(chatListRoom)
+//        }
 
         suspend fun createChat(message: String, receiverID: String): LiveData<Unit> {
             val response = liveData(Dispatchers.IO) {

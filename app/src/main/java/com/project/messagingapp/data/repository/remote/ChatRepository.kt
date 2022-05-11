@@ -18,7 +18,7 @@ interface ChatRepository {
 
     suspend fun checkChatCreated(receiverID: String) : String?
 
-    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ChatModel>?
+    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>?
 
     suspend fun checkOnlineStatus(receiverID: String): UserModel
 
@@ -28,4 +28,17 @@ interface ChatRepository {
 
     fun sendNotification(to: JSONObject) : JsonObjectRequest
 
+    suspend fun createChatIfNotExist(chatList: ChatListRoom)
+
+    suspend fun lastMessageOfChat(lastMessage: String, date: String, conversationID: String)
+
+    suspend fun addNewMessage(chatRoom: ChatRoom)
+
+     fun deleteChatList()
+
+    fun getAllMessagesOfChat(conversationID: String)
+
+    fun getChatListRoom() : List<ChatListRoom>
+
+    suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>)
 }

@@ -2,17 +2,23 @@ package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.project.messagingapp.constants.AppConstants
-import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.data.model.UserModel
+import com.project.messagingapp.data.daos.ContactListDao
+import com.project.messagingapp.data.model.*
 import com.project.messagingapp.utils.AppUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
-class AppRepo {
+class AppRepo(
+    private val contactListDao: ContactListDao
+) {
     private var liveData: MutableLiveData<UserModel>? = null
     private var contactUserData: UserModel = UserModel()
     private var appContacts: MutableList<UserModel>? = null
@@ -23,14 +29,32 @@ class AppRepo {
     object SingletonStatic{
         private var instance: AppRepo? = null
 
-            fun getInstance(): AppRepo {
+            fun getInstance(contactListDao: ContactListDao): AppRepo {
                 if(instance == null)
-                    instance = AppRepo()
+                    instance = AppRepo(contactListDao)
                 return instance!!
             }
 
     }
 
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
+        return contactListDao.getAllContactList()
+    }
+
+    fun getContactListAndChatList(): List<ContactListandChatList>{
+        return contactListDao.getContactListAndChatList()
+    }
+
+    fun getContactList(): List<ContactListRoom>{
+        return contactListDao.getContactList()
+    }
+
+      fun addReceiverInformation(contactListRoom: ContactListRoom){
+          Log.d("ADDED TO DATABASE", contactListRoom.toString())
+        contactListDao.addReceiverInformation(contactListRoom)
+    }
 
     fun getUser(): LiveData<UserModel> {
         if (liveData == null){
@@ -149,6 +173,11 @@ class AppRepo {
                                     if (userModel != null ) {
                                         if(userModel !in appContacts as ArrayList<UserModel>){
                                             appContacts?.add(userModel)
+                                            val contactListRoom = ContactListRoom(userModel.uid!!, userModel.name!!,userModel.number!!,
+                                                userModel.status!!,userModel.image!!)
+                                                Log.d("CONTACTLIST", contactListRoom.toString())
+                                                addReceiverInformation(contactListRoom)
+
                                         }
                                     }
                                 }
