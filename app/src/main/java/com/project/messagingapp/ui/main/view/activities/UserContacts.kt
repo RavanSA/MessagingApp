@@ -33,7 +33,7 @@ class UserContacts : AppCompatActivity() {
     private lateinit var contactViewModel:ContactViewModel
     private var contactPermission: ContactPermission = ContactPermission()
     private lateinit var mobileContact: ArrayList<UserModel>
-
+    private var internetConnection: Boolean = false
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +43,48 @@ class UserContacts : AppCompatActivity() {
 
         setContentView(contactBinding.root)
 
-        if (contactPermission.isContactOk(this)) {
-            mobileContact = getMobileContact()
-            contactViewModel = ViewModelProvider(
-                this,
-                ContactViewModelFactory(getMobileContact(),application)
-            )[ContactViewModel::class.java]
+        internetConnection = AppUtil().checkInternetConnection(this)
+
+        contactViewModel = ViewModelProvider(
+            this,
+            ContactViewModelFactory(getMobileContact(), application)
+        )[ContactViewModel::class.java]
+
+        val newRoomListDB = mutableListOf<UserModel>()
+
+        if(internetConnection) {
+            if (contactPermission.isContactOk(this)) {
+                mobileContact = getMobileContact()
+
                 loadUsers()
-        } else contactPermission.requestContactPermission(this)
+            } else {
+                contactPermission.requestContactPermission(this)
+            }
+        } else {
+            val roomDbContactList = contactViewModel.getContactListRoom2()
+            for(element in roomDbContactList){
+                val user = UserModel(
+                    element.name,
+                    element.status,
+                    element.image,
+                    element.number,
+                    element.receiverID,
+                    "offline",
+                    "false",
+                    ""
+                )
+                newRoomListDB.add(user)
+            }
+            localLoadUser(newRoomListDB)
+        }
 
         contactBinding.swipeContact.setOnRefreshListener {
+
+            if(internetConnection) {
                 loadUsers()
+            } else{
+                localLoadUser(newRoomListDB)
+            }
             contactBinding.swipeContact.isRefreshing = false
 
         }
@@ -142,6 +173,14 @@ class UserContacts : AppCompatActivity() {
                 contactAdapter!!.notifyDataSetChanged()
             })
 
+    }
+
+    fun localLoadUser(users: MutableList<UserModel>){
+        contactBinding.recyclerViewContact.layoutManager =
+            LinearLayoutManager(this@UserContacts, LinearLayoutManager.VERTICAL, false)
+        contactAdapter = users?.let { CustomContactAdapter(it) }
+        contactBinding.recyclerViewContact.adapter = contactAdapter
+        contactAdapter!!.notifyDataSetChanged()
     }
 
     override fun onRequestPermissionsResult(

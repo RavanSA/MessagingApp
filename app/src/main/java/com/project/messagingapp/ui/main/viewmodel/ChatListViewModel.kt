@@ -8,7 +8,6 @@ import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 class ChatListViewModel(application: Application): AndroidViewModel(application) {
     var chatRepo: ChatRepositoryImpl
@@ -27,13 +26,8 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
     }
 
 
-    suspend fun getChatList(chatList: List<ChatListModel>): LiveData<MutableList<ContactChatList>?> {
-
-        val response = liveData(Dispatchers.IO) {
-            emit(chatRepo.getChatList(chatList))
-        }
-
-        return response
+    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>? {
+        return chatRepo.getChatList(chatList)
     }
 
     fun getChatListRoom():List<ChatListRoom>{

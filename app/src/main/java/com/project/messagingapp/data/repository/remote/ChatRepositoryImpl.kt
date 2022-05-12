@@ -129,13 +129,6 @@ class ChatRepositoryImpl(
 
                 userModel = query.get().await().getValue(UserModel::class.java)!!
 
-//                chatModel = ContactChatList(
-//                    chat.chatId,
-//                    userModel.name!!,
-//                    chat.lastMessage,
-//                    userModel.online,
-//                    chat.member
-//                )
 
                 chatModel = ContactChatList(
                     chat.member,

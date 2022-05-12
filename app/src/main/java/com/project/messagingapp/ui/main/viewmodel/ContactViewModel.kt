@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.project.messagingapp.data.ChatDatabase
+import com.project.messagingapp.data.model.ContactListRoom
 import com.project.messagingapp.data.model.UserContactList
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.data.repository.remote.AppRepo
@@ -29,6 +30,10 @@ constructor (private val mobileContact: ArrayList<UserModel>,
         }
 
         return response
+    }
+
+    fun getContactListRoom2(): List<ContactListRoom>{
+        return appRepo.getContactList()
     }
 
 }

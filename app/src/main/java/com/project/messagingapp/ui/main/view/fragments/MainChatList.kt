@@ -138,11 +138,11 @@ class MainChatList : Fragment() {
 
     private fun observeChatList(
         chatListModel: List<ChatListModel>?,
-                                local: MutableList<ContactChatList>) {
+        local: MutableList<ContactChatList>
+    ) {
         if (chatListModel != null) {
             lifecycleScope.launch {
-                chatListViewModel.getChatList(chatListModel)
-                    .observe(requireActivity(), Observer { data ->
+                val data = chatListViewModel.getChatList(chatListModel)
                         data?.let { remoteList ->
                             GlobalScope.launch(Dispatchers.IO) {
                                 if(remoteList.size != local.size) {
@@ -179,7 +179,7 @@ class MainChatList : Fragment() {
                                 }
                             }
 
-                    })
+
             }
         }
     }
