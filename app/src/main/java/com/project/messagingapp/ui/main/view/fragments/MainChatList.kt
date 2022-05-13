@@ -23,6 +23,7 @@ import com.project.messagingapp.ui.main.adapter.ChatListRecyclerAdapter
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.ContactInfoViewModel
+import io.ak1.pix.helpers.show
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -186,14 +187,20 @@ class MainChatList : Fragment() {
     }
 
     private fun callAdapter(chatModel: MutableList<ContactChatList>){
-        activity?.runOnUiThread{
-            chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(requireActivity(),
-                LinearLayoutManager.VERTICAL,false)
-            chatAdapter = ChatListRecyclerAdapter(chatModel)
-            chatBinding.recyclerViewChat.adapter = chatAdapter
-            chatAdapter!!.notifyDataSetChanged()
-        }
 
+        if(chatModel.isEmpty()){
+            chatBinding.mainChatListEmpty.show()
+        } else {
+            activity?.runOnUiThread {
+                chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(
+                    requireActivity(),
+                    LinearLayoutManager.VERTICAL, false
+                )
+                chatAdapter = ChatListRecyclerAdapter(chatModel)
+                chatBinding.recyclerViewChat.adapter = chatAdapter
+                chatAdapter!!.notifyDataSetChanged()
+            }
+        }
     }
 
 
