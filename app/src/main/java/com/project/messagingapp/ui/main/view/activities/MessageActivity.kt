@@ -68,7 +68,6 @@ class MessageActivity : AppCompatActivity() {
         messageBinding.btnSend.setOnClickListener {
             val msgTextString = messageBinding.msgText.text.toString()
             if(msgTextString.isNotEmpty()){
-
                     sendMessageObserve(msgTextString,receiverID!!)
                     msgText.setText("")
                     getChatID(receiverID!!)
@@ -109,8 +108,6 @@ class MessageActivity : AppCompatActivity() {
                 )
                 startActivity(contactActivity)
         }
-
-
         checkOnlineStatus(receiverID!!)
     }
 
@@ -136,8 +133,6 @@ class MessageActivity : AppCompatActivity() {
             messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
                 callAdapter(data)
             })
-//        val data = messageViewModel.readMessages(allMessages)
-//        callAdapter(data)
     }
 
     @SuppressLint("NotifyDataSetChanged")

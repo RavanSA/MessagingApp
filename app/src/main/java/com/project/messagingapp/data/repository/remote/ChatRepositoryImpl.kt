@@ -30,6 +30,10 @@ class ChatRepositoryImpl(
         chatListDao.deleteChatList()
     }
 
+    override fun insertLimitToTen(chatRoom: ChatRoom) {
+        chatRoomDao.insertLimitToTen(chatRoom)
+    }
+
     override suspend fun createChatIfNotExist(chatList: ChatListRoom) {
         Log.d("NEWCHATCREATED", chatList.toString())
         chatListDao.createChatIfNotExist(chatList)
@@ -173,11 +177,10 @@ class ChatRepositoryImpl(
     }
 
     override fun readMessages(allMessages: List<ChatListModel>) : MutableLiveData<MutableList<MessageModel>> {
-            val messagesLiveData = MutableLiveData<MutableList<MessageModel>>()
+        val messagesLiveData = MutableLiveData<MutableList<MessageModel>>()
         val listOfMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
 
         val query = FirebaseDatabase.getInstance().getReference("Chat")
-
                 query.get().addOnCompleteListener { task ->
                     val response = ChatResponse()
                     if(task.isSuccessful) {
@@ -189,8 +192,17 @@ class ChatRepositoryImpl(
                                         response.messageList = snapshot.children.map { childSnap ->
                                             childSnap.getValue(MessageModel::class.java)!!
                                         }
-
                                         listOfMessages.addAll(response.messageList!!)
+                                        var newRoomChatList = response.messageList?.takeLast(10)
+                                        if (newRoomChatList != null) {
+                                            for(element in newRoomChatList){
+                                                    val chatRoom = ChatRoom(
+                                                        0,conversationID!!,element.date,element.message,
+                                                        element.receiverId,element.senderId,"text"
+                                                    )
+                                                insertLimitToTen(chatRoom)
+                                            }
+                                        }
                                     }
                                 }
                             }

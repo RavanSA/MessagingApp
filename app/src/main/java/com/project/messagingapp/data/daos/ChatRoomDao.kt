@@ -16,4 +16,7 @@ interface ChatRoomDao {
     @Query("SELECT * FROM chat WHERE chat_id = :conversationID")
     fun getAllMessagesOfChat(conversationID: String) : MutableList<ChatRoom>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLimitToTen(chatRoom: ChatRoom)
+
 }

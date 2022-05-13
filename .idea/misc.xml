@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/clear_btn.xml" value="0.1765625" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/edit_back.xml" value="0.1765625" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/home_background.xml" value="0.1" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.10614035087719298" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/ic_baseline_chat_24.xml" value="0.11944444444444445" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/ic_baseline_help_outline_24.xml" value="0.11944444444444445" />
@@ -11,10 +14,12 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.10614035087719298" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/left_message_background.xml" value="0.2" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/right_message_background.xml" value="0.2" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/drawable/shape_circle.xml" value="0.1765625" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-land/activity_splash_screen.xml" value="0.1900352733686067" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-large/activity_splash_screen.xml" value="0.39384920634920634" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-sw600dp/activity_splash_screen.xml" value="0.13558743169398907" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-v29/activity_splash_screen.xml" value="0.17980072463768115" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-v29/fragment_get_number.xml" value="0.14" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout-xlarge/activity_splash_screen.xml" value="0.14895833333333333" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_contact_user_info.xml" value="0.1" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_main_chat_screen.xml" value="0.15" />
@@ -24,7 +29,7 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.12952898550724637" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_user_contacts.xml" value="0.1271186440677966" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_user_profile.xml" value="0.10778985507246377" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_user_registration_profile.xml" value="0.1" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/activity_user_registration_profile.xml" value="0.21" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/chatlist_item_layout.xml" value="0.1" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/contact_item.xml" value="0.18" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/content_user_profile.xml" value="0.14" />
@@ -33,13 +38,13 @@
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_contact_user_info.xml" value="0.1" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_dialog.xml" value="0.1394736842105263" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_first.xml" value="0.1074561403508772" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_get_number.xml" value="0.18" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_get_number.xml" value="0.12307692307692308" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_get_user_data.xml" value="0.16" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_main_chat_list.xml" value="0.18" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_user_registration.xml" value="0.1" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_verify_num.xml" value="0.25" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_welcome.xml" value="0.17980072463768115" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_verify_num.xml" value="0.16730038022813687" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/fragment_welcome.xml" value="0.16" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/left_message_item.xml" value="0.1" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/pick_image_dialog.xml" value="0.18903508771929825" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/MessagingApp/app/src/main/res/layout/right_message_layout.xml" value="0.5" />

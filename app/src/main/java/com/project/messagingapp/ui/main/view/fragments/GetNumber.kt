@@ -7,10 +7,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,9 +28,12 @@ import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.data.model.UserRoomModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.fragment_get_number.view.*
+import kotlinx.android.synthetic.main.fragment_verify_num.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 
 
 class GetNumber : Fragment() {
@@ -34,6 +41,8 @@ class GetNumber : Fragment() {
     private var firebaseAuth: FirebaseAuth? = null
     private var databaseReference: DatabaseReference? = null
     private var mCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+    private var mResendToken: ForceResendingToken? = null
+
     private lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreateView(
@@ -41,16 +50,14 @@ class GetNumber : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-//        val act = activity?.application!!
-
-
-
         val progressDialog = ProgressDialog(requireActivity())
         progressDialog.setTitle("Please wait")
         progressDialog.setMessage("We sending code, please wait")
         val view = inflater.inflate(R.layout.fragment_get_number, container, false)
 
         registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
+
+
 
         view.otpSendBtn.setOnClickListener {
             if(checkNumber()){
@@ -71,16 +78,6 @@ class GetNumber : Fragment() {
                                 firebaseAuth!!.uid!!
                             )
 
-//                        val userRoom = UserRoomModel(firebaseAuth!!.uid!!,"test account"
-//                            ,firebaseAuth!!.currentUser!!.phoneNumber!!,"sadfdsfsafsdfsdf")
-//
-//                        Log.d("RegistrationVIEWMODEL","CALLED")
-//                        try{
-//                            registrationViewModel.insertUser(userRoom)
-//                        } catch (e: Exception){
-//                            Log.d("EXCEPTIONOOCURED",e.toString())
-//                        }
-
                         databaseReference!!.child(firebaseAuth!!.uid!!).setValue(userModel)
                         startActivity(Intent(context, UserRegistrationProfile::class.java))
                         requireActivity().finish()
@@ -97,6 +94,8 @@ class GetNumber : Fragment() {
                             R.id.main_container, VerifyNum
                                 .newInstance(p0)
                         ).commit()
+
+                mResendToken = p1
             }
 
 
@@ -151,5 +150,36 @@ class GetNumber : Fragment() {
             }
         }
     }
+
+    fun resendVerificationCode(
+        phoneNumber: String,
+        token: ForceResendingToken
+    ) {
+        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(mCallBack!!)
+            .setForceResendingToken(token)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    fun callFromVerifyNum(phoneNumber: String){
+        mResendToken?.let { resendVerificationCode(phoneNumber, it) }
+    }
+}
+
+class GenericKeyEvent internal constructor(private val currentView: EditText, private val previousView: EditText?) : View.OnKeyListener{
+    override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+        if(event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.edt_one && currentView.text.isEmpty()) {
+            //If current is empty then previous EditText's number will also be deleted
+            previousView!!.text = null
+            previousView.requestFocus()
+            return true
+        }
+        return false
+    }
+
 
 }

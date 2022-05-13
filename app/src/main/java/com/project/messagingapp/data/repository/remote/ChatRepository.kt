@@ -41,4 +41,6 @@ interface ChatRepository {
     fun getChatListRoom() : List<ChatListRoom>
 
     suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>)
+
+    fun insertLimitToTen(chatRoom: ChatRoom)
 }

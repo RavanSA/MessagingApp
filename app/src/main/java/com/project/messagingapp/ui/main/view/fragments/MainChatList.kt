@@ -174,6 +174,7 @@ class MainChatList : Fragment() {
                                       )
                                   }
                                     callAdapter(local)
+                                    ///
                                     Log.d("INTERNET IN ELSE","CONNECTION")
                                 }
                                 }
