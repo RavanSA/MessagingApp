@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FF000000</color>
     <color name="WHITE">#FFFFFFFF</color>
+    <color name ="black_grey">#202020</color>
     <color name="BackGround">#DEEEEC</color>
     <color name="SecondColor">#2B665F</color>
 </resources>

@@ -45,21 +45,13 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
 
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
-
-//        profileViewModel.getUser().observe(this, { userModel ->
-//            profileBinding.userModel = userModel
-//            ProfileFirstName.text = userModel.name
-//            ProfilePhone.text =  userModel.number.toString()
-//            ProfileStatus.text =  userModel.status
-//        })
-
         registrationViewModel.getUserRoom().observe(this, { user ->
             ProfileFirstName.text = user.userName
             ProfilePhone.text =  user.phoneNumber
             ProfileStatus.text =  user.userStatus
             val roomUri = Uri.parse(user.profilePhoto)
             Log.d("USERPROFİLEURI", roomUri.toString())
-            Glide.with(this).load(roomUri).into(UpdateProfilePic)
+            Glide.with(this).load(roomUri).into(updatePickImage)
         })
 
 
@@ -170,7 +162,7 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         if (success) {
             registrationViewModel.updatedUserLocalProfileImage(imageURI.toString())
             profileViewModel.updateImage(imageURI!!)
-            Glide.with(this).load(imageURI).into(UpdateProfilePic)
+            Glide.with(this).load(imageURI).into(updatePickImage)
         }
     }
 
@@ -189,7 +181,7 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
             registrationViewModel.updatedUserLocalProfileImage(it.toString())
             profileViewModel.updateImage(it)
             Log.d("PICKIMAGESTORAGE", it.toString())
-            Glide.with(this).load(it).into(UpdateProfilePic)
+            Glide.with(this).load(it).into(updatePickImage)
         }
     }
 
