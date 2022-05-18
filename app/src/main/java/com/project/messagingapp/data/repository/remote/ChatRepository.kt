@@ -3,6 +3,7 @@ package com.project.messagingapp.data.repository.remote
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.model.*
+import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 
 interface ChatRepository {
@@ -32,15 +33,17 @@ interface ChatRepository {
 
     suspend fun lastMessageOfChat(lastMessage: String, date: String, conversationID: String)
 
-    suspend fun addNewMessage(chatRoom: ChatRoom)
+    suspend fun addNewMessage(chatRoom: ChatRoom): Long
 
      fun deleteChatList()
 
-    fun getAllMessagesOfChat(conversationID: String)
+    fun getAllMessagesOfChat(receiverID: String): Flow<MutableList<ChatRoom>>
 
     fun getChatListRoom() : List<ChatListRoom>
 
     suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>)
 
     fun insertLimitToTen(chatRoom: ChatRoom)
+
+    fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>>
 }

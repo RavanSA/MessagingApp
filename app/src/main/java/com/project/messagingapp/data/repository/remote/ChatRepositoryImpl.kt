@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.database.*
 import com.android.volley.Response
+import com.google.common.io.Files.map
 
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.*
@@ -17,6 +18,7 @@ import java.lang.Exception
 
 import com.project.messagingapp.data.daos.ChatListRoomDao
 import com.project.messagingapp.data.daos.ChatRoomDao
+import kotlinx.coroutines.flow.Flow
 
 class ChatRepositoryImpl(
     private val chatListDao: ChatListRoomDao,
@@ -50,17 +52,21 @@ class ChatRepositoryImpl(
         chatListDao.deleteAndCreate(chatList)
     }
 
-    override suspend fun addNewMessage(chatRoom: ChatRoom) {
+    override suspend fun addNewMessage(chatRoom: ChatRoom): Long {
         Log.d("SENDNEWMESSAGEROOM", chatRoom.toString())
-        chatRoomDao.sendNewMessage(chatRoom)
+        return chatRoomDao.sendNewMessage(chatRoom)
     }
 
-    override fun getAllMessagesOfChat(conversationID: String) {
-        chatRoomDao.getAllMessagesOfChat(conversationID)
+    override fun getAllMessagesOfChat(receiverID: String): Flow<MutableList<ChatRoom>> {
+       return chatRoomDao.getAllMessagesOfChat(receiverID)
     }
 
     override fun getChatListRoom(): List<ChatListRoom> {
         return chatListDao.getChatListRoom()
+    }
+
+    override fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>> {
+        return chatListDao.getChatListWithFlow()
     }
 
     override suspend fun createChat(
@@ -92,14 +98,26 @@ class ChatRepositoryImpl(
 
             databaseReference = FirebaseDatabase.getInstance().getReference("Chat").child(chatID)
 
-            val messageModel = MessageModel(AppUtil().getUID()!!, receiverID, message, type = "text")
-           databaseReference.push().setValue(messageModel)
+            val messageKey = databaseReference.push().key
+
+            val messageModel = messageKey?.let {
+                conversationID?.let { it1 ->
+                MessageModel(it,
+                    it1, AppUtil().getUID()!!, receiverID, message, type = "text")
+                }
+            }
+
+            messageKey?.let { databaseReference.child(it).setValue(messageModel) }
 
 
-            val chatRoom = ChatRoom(0,chatID,System.currentTimeMillis().toString(),message,
-                receiverID,AppUtil().getUID()!!,"text")
+            val chatRoom =
+                messageKey?.let {
+                    ChatRoom(
+                        it,chatID,System.currentTimeMillis().toString(),message,
+                        receiverID,AppUtil().getUID()!!,"text")
+                }
 
-            addNewMessage(chatRoom)
+            chatRoom?.let { addNewMessage(it) }
         } catch (e: Exception){
             Log.d("error",e.message ?: e.toString())
          }
@@ -190,19 +208,16 @@ class ChatRepositoryImpl(
                                 for(i in 1..allMessages.size) {
                                     if(snapshot.key == allMessages[i-1].chatId){
                                         response.messageList = snapshot.children.map { childSnap ->
+                                            Log.d("KEYS",childSnap.key.toString())
                                             childSnap.getValue(MessageModel::class.java)!!
                                         }
+
+//                                        snapshot.key!!.map { childSnap ->
+//
+//                                        }
+//                                        Log.d("MESSAGEKEYS", messageKeys.toString())
+
                                         listOfMessages.addAll(response.messageList!!)
-                                        var newRoomChatList = response.messageList?.takeLast(10)
-                                        if (newRoomChatList != null) {
-                                            for(element in newRoomChatList){
-                                                    val chatRoom = ChatRoom(
-                                                        0,conversationID!!,element.date,element.message,
-                                                        element.receiverId,element.senderId,"text"
-                                                    )
-                                                insertLimitToTen(chatRoom)
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -255,7 +270,6 @@ class ChatRepositoryImpl(
                         snapshot.getValue(ChatListModel::class.java)!!
                     }
                 }
-
             } else {
                 response.exception = task.exception
             }
@@ -269,17 +283,24 @@ class ChatRepositoryImpl(
         receiverID: String
     ) {
         try {
-
             var databaseReference: DatabaseReference =
                 FirebaseDatabase.getInstance().getReference("Chat").child(conversationID!!)
 
+            val messageKey = databaseReference.push().key
+
             val messageModel =
-                MessageModel(AppUtil().getUID()!!, receiverID, message,
-                    System.currentTimeMillis().toString(), "text")
+                messageKey?.let {
+                    MessageModel(
+                        it, conversationID!!, AppUtil().getUID()!!, receiverID, message,
+                        System.currentTimeMillis().toString(), "text")
+                }
 
-            databaseReference.push().setValue(messageModel)
+            databaseReference.child(messageKey!!).setValue(messageModel)
 
-            val chatRoom  = ChatRoom(0,conversationID!!,System.currentTimeMillis().toString(),message,
+            Log.d("MESSAGEKEY ", messageKey.toString())
+
+
+            val chatRoom  = ChatRoom(messageKey,conversationID!!,System.currentTimeMillis().toString(),message,
             receiverID,AppUtil().getUID()!!,"text")
 
             addNewMessage(chatRoom)
@@ -330,7 +351,7 @@ class ChatRepositoryImpl(
                     data.put("receiverID", receiverID)
                     data.put("message", message)
                     data.put("conversationID", conversationID)
-                    data.put("title", name)
+                    data.put("name", name)
 
                     to.put("to", token)
                     to.put("data", data)
@@ -360,13 +381,21 @@ class ChatRepositoryImpl(
                 Log.d("SENDNOTICATIONREPO", "onResponse: $response")
             },
             Response.ErrorListener { error ->
-                Log.d("ERRORSENDNOTIDICATIO", "onError: $error")
+                Log.d("ERRORSENDINGNOTI", "Error: " + error
+                        + "\nStatus Code " + error.networkResponse.statusCode
+                        + "\nResponse Data " + error.networkResponse.data
+                        + "\nlocalizedmessage " + error.localizedMessage
+                        + "\nmessage" + error.message
+                        + "\ncause" + error.cause
+                        + "\nsuppressed" + error.suppressed
+                        + "\ntimems" + error.networkTimeMs)
             }) {
             override fun getHeaders(): MutableMap<String, String> {
                 val map: MutableMap<String, String> = HashMap()
 
                 map["Authorization"] = "key=" + AppConstants.SERVER_KEY
                 map["Content-type"] = "application/json"
+                Log.d("JSONCONTECTTEST", map.toString())
                 return map
             }
 
@@ -378,16 +407,13 @@ class ChatRepositoryImpl(
         Log.d("TOKENVIEWMODEL", request.toString())
 
         return request
-        //TODO RETURN REQUEST
-        //TODO IMPLEMENT REQUEST QUEUE IN VIEW
-//        val requestQueue = Volley.newRequestQueue(this)
-//        request.retryPolicy = DefaultRetryPolicy(
-//            30000,
-//            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-//        )
-//
-//        requestQueue.add(request)
+    }
+
+    fun deleteMessageFromFirebase(chatID: String, messageKey: String){
+        val databaseRef = FirebaseDatabase.getInstance().getReference("Chat")
+            .child(chatID).child(messageKey)
+
+        databaseRef.removeValue()
     }
 
 

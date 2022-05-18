@@ -34,6 +34,9 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
         return chatRepo.getChatListRoom()
     }
 
+    fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>>{
+        return chatRepo.getChatListWithFlow()
+    }
 
 
      fun getContactListRoom(): Flow<MutableList<ContactChatList>> {

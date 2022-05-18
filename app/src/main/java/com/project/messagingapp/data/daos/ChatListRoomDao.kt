@@ -3,6 +3,8 @@ package com.project.messagingapp.data.daos
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.project.messagingapp.data.model.ChatListRoom
+import com.project.messagingapp.data.model.ChatRoom
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatListRoomDao {
@@ -29,5 +31,8 @@ interface ChatListRoomDao {
         deleteChatList()
         insertAllChatList(chatList)
     }
+
+    @Query("SELECT * FROM chat_list")
+    fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>>
 
 }

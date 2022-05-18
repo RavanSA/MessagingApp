@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
+import com.project.messagingapp.data.model.ChatRoom
 import com.project.messagingapp.data.model.MessageModel
 import com.project.messagingapp.databinding.LeftMessageItemBinding
 import com.project.messagingapp.databinding.RightMessageLayoutBinding
@@ -13,7 +14,7 @@ import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter.*
 import com.project.messagingapp.utils.AppUtil
 
 class MessageRecyclerAdapter(
-    private val messages: MutableList<MessageModel>?
+    private val messages: MutableList<ChatRoom>?
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -41,7 +42,7 @@ class MessageRecyclerAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val messageModel: MessageModel = getItem(position) as MessageModel
+        val messageModel: ChatRoom = getItem(position) as ChatRoom
         return if (messageModel.senderId == AppUtil().getUID()!!) 0 else 1
     }
 
@@ -64,14 +65,14 @@ class MessageRecyclerAdapter(
 
     inner class MessageViewHolderRight(var rightDataBinding: RightMessageLayoutBinding) :
         RecyclerView.ViewHolder(rightDataBinding.root){
-            fun bind(messages: MessageModel){
+            fun bind(messages: ChatRoom){
                 rightDataBinding.txtMessage.text = messages.message
             }
         }
 
     inner class MessageViewHolderLeft(var leftDataBinding: LeftMessageItemBinding):
         RecyclerView.ViewHolder(leftDataBinding.root){
-            fun bind(messages: MessageModel){
+            fun bind(messages: ChatRoom){
                 leftDataBinding.txtMessage.text = messages.message
             }
         }

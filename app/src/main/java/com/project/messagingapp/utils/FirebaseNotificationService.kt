@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
@@ -15,7 +16,11 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.project.messagingapp.R
 import com.project.messagingapp.constants.AppConstants
+import com.project.messagingapp.data.ChatDatabase
+import com.project.messagingapp.data.daos.ChatRoomDao
+import com.project.messagingapp.data.model.ChatRoom
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -37,6 +42,15 @@ class FirebaseNotificationService: FirebaseMessagingService() {
             val message = map["message"]
             val receiverID = map["receiverID"]
             val conversationID = map["conversationID"]
+//            val chatDao: ChatRoomDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
+//            val chatRoom  = ChatRoom(0,conversationID!!,"not defined yet",message!!,
+//                receiverID!!,AppUtil().getUID()!!,"text")
+//            GlobalScope.launch {
+//                withContext(Dispatchers.IO) {
+////                    chatDao.sendNewMessage(chatRoom)
+//                }
+//            }
+            Log.d("MAPFIREBASENOTIFICATION", map.toString())
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
                 createOreoNotification(name!!, message!!, receiverID!!, conversationID!!)
@@ -127,5 +141,7 @@ class FirebaseNotificationService: FirebaseMessagingService() {
 
         manager.notify(100, notification)
     }
+
+
 
 }

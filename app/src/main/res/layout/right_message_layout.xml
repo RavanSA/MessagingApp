@@ -11,7 +11,7 @@
 
         <variable
             name="messageModel"
-            type="com.project.messagingapp.data.model.MessageModel" />
+            type="com.project.messagingapp.data.model.ChatRoom" />
 
     </data>
 

@@ -6,15 +6,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.project.messagingapp.data.model.ChatRoom
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatRoomDao {
 
-    @Insert
-    suspend fun sendNewMessage(chatRoom: ChatRoom)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun sendNewMessage(chatRoom: ChatRoom): Long
 
-    @Query("SELECT * FROM chat WHERE chat_id = :conversationID")
-    fun getAllMessagesOfChat(conversationID: String) : MutableList<ChatRoom>
+    @Query("SELECT * FROM chat WHERE receiver_id = :receiverID ORDER BY message_date ASC")
+    fun getAllMessagesOfChat(receiverID: String) : Flow<MutableList<ChatRoom>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLimitToTen(chatRoom: ChatRoom)

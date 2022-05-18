@@ -55,6 +55,7 @@ dependencies {
     // ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'com.google.firebase:firebase-analytics:21.0.0'
 
     implementation "androidx.fragment:fragment-ktx:1.4.1"
     //New Material Design

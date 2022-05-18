@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "chat")
 data class ChatRoom(
-    @PrimaryKey(autoGenerate = true)
-    val messageID: Int = 0,
+    @PrimaryKey
+    val messageID: String = "",
     @ColumnInfo(name = "chat_id")
     val chatID:String,
     @ColumnInfo(name = "message_date")
@@ -22,5 +22,5 @@ data class ChatRoom(
     val type:String
 ){
     constructor():
-            this(0,"","","","","","")
+            this("","","","","","","")
 }

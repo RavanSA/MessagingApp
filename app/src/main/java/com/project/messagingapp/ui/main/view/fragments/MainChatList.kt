@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.api.LogDescriptor
@@ -37,6 +34,7 @@ class MainChatList : Fragment() {
     private lateinit var chatBinding: FragmentMainChatListBinding
     private lateinit var chatListViewModel: ChatListViewModel
     private var chatAdapter: ChatListRecyclerAdapter? = null
+//    private var testChatList:MutableList<ChatListRoom> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +43,6 @@ class MainChatList : Fragment() {
         chatBinding = FragmentMainChatListBinding.inflate(layoutInflater,container,false)
 
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
-//        getCurrentUserChatList()
 
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
@@ -55,6 +52,12 @@ class MainChatList : Fragment() {
                 getCurrentUserChatList()
             }
         }
+
+//        lifecycle.coroutineScope.launch {
+//            chatListViewModel.getChatListWithFlow().collect() {
+//                callAdapter(it)
+//            }
+//        }
 
 //        getContactListAndChatList()
 //        getContactList()
@@ -80,19 +83,21 @@ class MainChatList : Fragment() {
     }
 
     private suspend fun getContactListAndChatList(): MutableList<ContactChatList> {
+
         val testContactList = chatListViewModel.getContactListRoom2()
         val testChatList = chatListViewModel.getChatListRoom()
         val newList = mutableListOf<ContactChatList>()
 
         Log.d("TEST", testContactList.size.toString())
         Log.d("TEST2", testChatList.size.toString())
+        Log.d("TESTCHATLIST", testChatList.toString())
         GlobalScope.launch(Dispatchers.IO) {
 
             for (elementContact in testContactList) {
                 for (elementChat in testChatList) {
                     withContext(Dispatchers.IO) {
 
-                    Log.d("ELEMENCTCHAT", elementChat.member)
+                    Log.d("ELEMENCTCHAT", elementChat.uid)
                     Log.d("ELEMENTCONTACT", elementContact.receiverID)
                         if (elementContact.receiverID == elementChat.member) {
 //                    Log.d("FINAL TEST", testChatList.toString())
@@ -119,6 +124,8 @@ class MainChatList : Fragment() {
 //            callAdapter(newList)
 //            getCurrentUserChatList(newList)
         }
+
+
         Log.d("NEWLIST CREATED", newList.toString())
         return newList
     }
@@ -151,7 +158,6 @@ class MainChatList : Fragment() {
                             GlobalScope.launch(Dispatchers.IO) {
                                 if(remoteList.size != local.size) {
 
-//                                    chatListViewModel.deleteChatList()
                                     var newLocalChatList = mutableListOf<ChatListRoom>()
                                     for (element in remoteList) {
 //                                    for(roomElement in local)
@@ -184,17 +190,16 @@ class MainChatList : Fragment() {
                                 }
                                 }
                             }
-
-
             }
         }
     }
 
     private fun callAdapter(chatModel: MutableList<ContactChatList>){
-
-        if(chatModel.isEmpty()){
-            chatBinding.mainChatListEmpty.show()
-        } else {
+//
+//        if(chatModel.isEmpty()){
+//            chatBinding.mainChatListEmpty.show()
+//        } else {
+        Log.d("CHATMODELADAPGTER", chatModel.toString())
             activity?.runOnUiThread {
                 chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(
                     requireActivity(),
@@ -204,7 +209,7 @@ class MainChatList : Fragment() {
                 chatBinding.recyclerViewChat.adapter = chatAdapter
                 chatAdapter!!.notifyDataSetChanged()
             }
-        }
+//        }
     }
 
 
