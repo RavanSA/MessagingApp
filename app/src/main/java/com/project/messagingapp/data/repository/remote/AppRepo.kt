@@ -37,15 +37,15 @@ class AppRepo(
 
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
-        return contactListDao.getAllContactList()
-    }
+//    @Suppress("RedundantSuspendModifier")
+//    @WorkerThread
+//     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
+//        return contactListDao.getAllContactList()
+//    }
 
-    fun getContactListAndChatList(): List<ContactListandChatList>{
-        return contactListDao.getContactListAndChatList()
-    }
+//    fun getContactListAndChatList(): List<ContactListandChatList>{
+//        return contactListDao.getContactListAndChatList()
+//    }
 
     fun getContactList(): List<ContactListRoom>{
         return contactListDao.getContactList()

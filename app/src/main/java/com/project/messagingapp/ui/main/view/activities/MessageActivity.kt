@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatRoom
+import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
@@ -52,6 +53,7 @@ class MessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         receiverID = intent.getStringExtra("id_receiver")
+
 
         messageViewModel = ViewModelProvider(this)[MessageViewModel::class.java]
 
@@ -161,7 +163,7 @@ class MessageActivity : AppCompatActivity() {
                         )
 
 //                        val testReturnType = messageViewModel.addNewMessage(chatRoom)
-                        messageViewModel.deleteMessageFromFirebase(element.chatID,element.messageKey)
+//                        messageViewModel.deleteMessageFromFirebase(element.chatID,element.messageKey)
 //                        Log.d("testReturnType", testReturnType.toString())
                     }
                 }
@@ -201,6 +203,11 @@ class MessageActivity : AppCompatActivity() {
                 if (bool) {
                     sendMessage(message, receiverID)
                     getToken(message,receiverID,userName!!)
+//                    chatListViewModel.contactLastMessageUpdate(
+//                        element.message_date,
+//                        message,
+//                        conversa
+//                    )
                 } else {
                     createChat(message, receiverID)
 //                    messageViewModel.createChatIfNotExist()

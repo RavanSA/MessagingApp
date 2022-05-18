@@ -18,11 +18,15 @@ import java.lang.Exception
 
 import com.project.messagingapp.data.daos.ChatListRoomDao
 import com.project.messagingapp.data.daos.ChatRoomDao
+import com.project.messagingapp.data.daos.ContactChatDao
+import com.project.messagingapp.data.daos.ContactListDao
 import kotlinx.coroutines.flow.Flow
 
 class ChatRepositoryImpl(
     private val chatListDao: ChatListRoomDao,
-    private val chatRoomDao: ChatRoomDao
+    private val chatRoomDao: ChatRoomDao,
+    private val contactListDao: ContactListDao,
+    private val contactChatDao: ContactChatDao
 ): ChatRepository {
     private var conversationID: String? = null
     private var chatModelList: MutableList<ContactChatList>? = mutableListOf()
@@ -48,6 +52,10 @@ class ChatRepositoryImpl(
         chatListDao.lastMessageOfChat(lastMessage, date, conversationID)
     }
 
+    override fun getAllMessagesOfChat(receiverID: String): Flow<MutableList<ChatRoom>> {
+        return chatRoomDao.getAllMessagesOfChat(receiverID)
+    }
+
     override suspend fun deleteAndCreate(chatList: MutableList<ChatListRoom>) {
         chatListDao.deleteAndCreate(chatList)
     }
@@ -57,8 +65,12 @@ class ChatRepositoryImpl(
         return chatRoomDao.sendNewMessage(chatRoom)
     }
 
-    override fun getAllMessagesOfChat(receiverID: String): Flow<MutableList<ChatRoom>> {
-       return chatRoomDao.getAllMessagesOfChat(receiverID)
+    override fun insertContactChatList(contactChatList: ContactChatList) {
+        contactChatDao.insertContactChatList(contactChatList)
+    }
+
+    override fun getContactChatList(): Flow<MutableList<ContactChatList>> {
+       return contactChatDao.getContactChatList()
     }
 
     override fun getChatListRoom(): List<ChatListRoom> {
@@ -67,6 +79,10 @@ class ChatRepositoryImpl(
 
     override fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>> {
         return chatListDao.getChatListWithFlow()
+    }
+
+    override fun getContactListByReceiverID(receiverID: String): ContactListRoom {
+        return contactListDao.getContactListByReceiverID(receiverID)
     }
 
     override suspend fun createChat(
@@ -118,6 +134,13 @@ class ChatRepositoryImpl(
                 }
 
             chatRoom?.let { addNewMessage(it) }
+            val contactList = getContactListByReceiverID(receiverID)
+
+            val contactChatList = ContactChatList(
+                conversationID!!,receiverID,contactList.name,contactList.number,contactList.status
+                ,contactList.image, "",System.currentTimeMillis().toString(),message)
+
+            insertContactChatList(contactChatList)
         } catch (e: Exception){
             Log.d("error",e.message ?: e.toString())
          }
@@ -140,6 +163,14 @@ class ChatRepositoryImpl(
         return response
     }
 
+    override fun getContactChatListUntilChanged() {
+        contactChatDao.getContactChatListUntilChanged()
+    }
+
+    override fun contactLastMessageUpdate(date: String, message: String, chatID: String) {
+        contactChatDao.contactLastMessageUpdate(date, message, chatID)
+    }
+
     override suspend fun getChatList(chatList: List<ChatListModel>) : MutableList<ContactChatList>? {
         lateinit var chatModel: ContactChatList
         lateinit var userModel: UserModel
@@ -153,13 +184,13 @@ class ChatRepositoryImpl(
 
 
                 chatModel = ContactChatList(
+                    chat.chatId,
                     chat.member,
                     userModel.name!!,
                     userModel.number!!,
                     userModel.status!!,
                     userModel.image!!,
                     AppUtil().getUID()!!,
-                    chat.chatId,
                     System.currentTimeMillis().toString(),
                     chat.lastMessage)
 
@@ -323,6 +354,8 @@ class ChatRepositoryImpl(
             databaseReference.updateChildren(map)
 
             lastMessageOfChat(message,System.currentTimeMillis().toString(), conversationID!!)
+
+            contactLastMessageUpdate(System.currentTimeMillis().toString(),message,conversationID!!)
                 Log.d("UPDATEMESSAGEROOM",lastMessageOfChat(message,System.currentTimeMillis().toString(),conversationID!!).toString())
         } catch (e: Exception){
             Log.d("SENDMESSAGE",e.message ?: e.toString())

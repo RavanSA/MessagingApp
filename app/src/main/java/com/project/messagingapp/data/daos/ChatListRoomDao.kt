@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ChatListRoomDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createChatIfNotExist(chatList: ChatListRoom)
 
     @Query("UPDATE chat_list SET message_date = :date, lastMessageOfChat = :lastMessage WHERE chatid = :conversationID")

@@ -2,6 +2,7 @@ package com.project.messagingapp.data.repository.remote
 
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.toolbox.JsonObjectRequest
+import com.project.messagingapp.data.daos.ContactListDao
 import com.project.messagingapp.data.model.*
 import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
@@ -46,4 +47,14 @@ interface ChatRepository {
     fun insertLimitToTen(chatRoom: ChatRoom)
 
     fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>>
+
+    fun insertContactChatList(contactChatList: ContactChatList)
+
+    fun getContactChatList(): Flow<MutableList<ContactChatList>>
+
+    fun getContactChatListUntilChanged()
+
+    fun contactLastMessageUpdate(date: String, message: String, chatID: String)
+
+    fun getContactListByReceiverID(receiverID: String): ContactListRoom
 }

@@ -19,7 +19,9 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
     init {
         val chatListDao = ChatDatabase.getLocalDatabase(application).getChatListRoomDao()
         val chatDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
-        chatRepo = ChatRepositoryImpl(chatListDao, chatDao)
+        val contactListDao = ChatDatabase.getLocalDatabase(application).getContactListDao()
+        val contactChatDao = ChatDatabase.getLocalDatabase(application).getContactChatListDao()
+        chatRepo = ChatRepositoryImpl(chatListDao, chatDao,contactListDao,contactChatDao)
     }
 
         suspend fun createChat(message: String, receiverID: String): LiveData<Unit> {

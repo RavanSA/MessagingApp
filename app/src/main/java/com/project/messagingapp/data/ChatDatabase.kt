@@ -4,19 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.project.messagingapp.data.daos.ChatListRoomDao
-import com.project.messagingapp.data.daos.ChatRoomDao
-import com.project.messagingapp.data.daos.ContactListDao
-import com.project.messagingapp.data.daos.UserRoomDao
+import com.project.messagingapp.data.daos.*
 import com.project.messagingapp.data.model.*
 
 @Database(entities = arrayOf(UserRoomModel::class, ChatListRoom::class, ChatRoom::class,
-        ContactListRoom::class), version = 1, exportSchema = false)
+        ContactListRoom::class,ContactChatList::class), version = 1, exportSchema = false)
 abstract class ChatDatabase:RoomDatabase() {
     abstract fun getUserRoomDao(): UserRoomDao
     abstract fun getChatListRoomDao(): ChatListRoomDao
     abstract fun getChatRoomDao(): ChatRoomDao
     abstract fun getContactListDao(): ContactListDao
+    abstract fun getContactChatListDao(): ContactChatDao
 
     companion object{
         @Volatile
