@@ -11,5 +11,11 @@
         tools:listitem="@layout/chatlist_item_layout"
         />
 
+    <ImageView
+        android:id="@+id/mainChatListEmpty"
+        style="@style/WView"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:src="@drawable/chat_illusration_8"/>
 
 </FrameLayout>

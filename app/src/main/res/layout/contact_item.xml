@@ -10,75 +10,57 @@
             type="com.project.messagingapp.data.model.UserModel" />
     </data>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+    <LinearLayout
+        android:id="@+id/view_root"
+        style="@style/VView"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp">
 
+        <LinearLayout
+            style="@style/LView"
+            tools:ignore="ContentDescription">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="@color/BackGround"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="10dp">
+            <RelativeLayout style="@style/WView">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/image_profile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/profilepic" />
 
-                <TextView
-                    android:id="@+id/txtContactName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@{contactItem.name , default=Llllllllllllllllllllllllloading}"
-                    android:textColor="@color/white"
-                    android:textSize="15dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtContactStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/txtContactName"
-                    android:layout_alignStart="@+id/txtContactName"
-                    android:layout_marginTop="8dp"
-                    android:text="@{contactItem.status , default=Loading}"
-                    android:textColor="@color/white"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/imgContactInfo"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_baseline_info_24" />
+<!--                <TextView-->
+<!--                    android:visibility="@{(chatUser.user.image==null || chatUser.user.image.isEmpty) ? View.VISIBLE : View.GONE}"-->
+<!--                    android:text="@{chatUser.localName}"-->
+<!--                    style="@style/TxtNoImageUrlStyle" />-->
             </RelativeLayout>
-        </androidx.cardview.widget.CardView>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgContactUserInfo"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_alignTop="@id/container"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="13dp"
-            android:elevation="10dp"
-             />
-    </RelativeLayout>
+            <LinearLayout
+                style="@style/LWView"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    style="@style/TxtSemiSmallStyle"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/txtContactName"
+                    android:text="@{contactItem.name,default=Loading}"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/WView"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/txtContactStatus"
+                    android:text="@{contactItem.status , default=loading}"
+                    android:textColor="@color/black_grey"
+                    android:textSize="16sp"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </layout>

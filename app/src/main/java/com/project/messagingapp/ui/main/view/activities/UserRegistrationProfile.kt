@@ -127,7 +127,7 @@ class UserRegistrationProfile : AppCompatActivity() {
     val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
         if (success) {
             Log.d("IMAGEINLAUNCHER", image.toString())
-            Glide.with(this).load(image).into(temp_prof_image)
+            Glide.with(this).load(image).into(imgPickImage)
         }
     }
 
@@ -135,7 +135,7 @@ class UserRegistrationProfile : AppCompatActivity() {
 
         uri?.let { it ->
             image=it
-            Glide.with(this).load(it).into(temp_prof_image)
+            Glide.with(this).load(it).into(imgPickImage)
         }
     }
 

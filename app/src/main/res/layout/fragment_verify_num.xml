@@ -1,93 +1,114 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    style="@style/ScrollRoot"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.view.fragments.VerifyNum"
     android:background="@color/BackGround">
 
-    <TextView
-        android:id="@+id/VerifyAddNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Verify "
-        android:textColor="@color/black"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="40dp" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        style="@style/StyleRoot"
+        android:id="@+id/view_holder">
 
-    <TextView
-        android:id="@+id/SplashBottomText"
-        android:layout_width="371dp"
-        android:layout_height="119dp"
-        android:layout_marginBottom="216dp"
-        android:text="@string/lorem_ipsum"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        android:layout_marginTop="110dp"
-        android:layout_marginLeft="20dp"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/chat_illusration_7"
+             />
 
-    <View
-        android:layout_width="300dp"
-        android:layout_height="1dp"
-        android:background="@color/white"
-        android:alpha="0.9"
-        android:layout_marginTop="90dp"
-        android:layout_marginLeft="50dp"/>
+        <LinearLayout style="@style/FView"
+            >
 
-    <EditText
-        android:id="@+id/OTPPinText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="15"
-        android:inputType="phone"
-        android:layout_gravity="center"
-        android:layout_marginTop="-110dp"/>
+            <LinearLayout
+                style="@style/VWView"
+                android:layout_marginTop="190dp"
+                android:background="@drawable/home_background"
+                android:elevation="5dp"
+                android:paddingTop="5dp"
+                android:padding="20dp">
 
-    <TextView
-        android:id="@+id/VerifyNumText"
-        android:layout_width="371dp"
-        android:layout_height="119dp"
-        android:layout_marginBottom="216dp"
-        android:text="@string/lorem_ipsum"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        android:layout_marginTop="110dp"
-        android:layout_marginLeft="20dp"/>
+                <TextView
+                    style="@style/TxtSemiStyle"
+                    android:layout_marginTop="15dp"
+                    android:textSize="22sp"
+                    android:text="Verify phone number" />
 
-    <TextView
-        android:id="@+id/VerifyNumReSend"
-        android:layout_width="371dp"
-        android:layout_height="119dp"
-        android:layout_marginBottom="216dp"
-        android:text="@string/resend_sms"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        android:layout_marginTop="340dp"
-        android:layout_marginLeft="40dp"/>
+                <LinearLayout
+                    style="@style/LView"
+                    android:layout_marginTop="20dp">
 
-    <TextView
-        android:id="@+id/VerifyNumWrongNum"
-        android:layout_width="371dp"
-        android:layout_height="119dp"
-        android:layout_marginBottom="216dp"
-        android:text="@string/wrong_number"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        android:layout_marginTop="380dp"
-        android:layout_marginLeft="40dp"/>
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_one"
+                        />
 
-    <Button
-        android:id="@+id/OTPPinSend"
-        android:layout_marginTop="90dp"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:text="Complete"
-        />
-</FrameLayout>
+                    <View
+                        style="@style/LWView"
+                        android:layout_height="1dp" />
+
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_two"
+                        />
+
+                    <View
+                        style="@style/LWView"
+                        android:layout_height="1dp" />
+
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_three"
+                        />
+
+                    <View
+                        style="@style/LWView"
+                        android:layout_height="1dp" />
+
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_four"/>
+
+                    <View
+                        style="@style/LWView"
+                        android:layout_height="1dp" />
+
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_five"
+                        />
+
+                    <View
+                        style="@style/LWView"
+                        android:layout_height="1dp" />
+
+                    <EditText style="@style/EdtOTPStyle"
+                        android:id="@+id/edt_six"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/LView"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center">
+
+                    <TextView
+                        style="@style/TxtRgStyle"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="5dp"
+                        android:id="@+id/resendCode"
+                        android:text="@string/resend_code" />
+
+                    <TextView
+                        style="@style/TxtRgStyle"
+                        android:textSize="16sp"
+                        android:id="@+id/resendCodeTimer"
+                        android:text="01:00" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/BtnStyle"
+                    android:id="@+id/OTPPinSend"
+                    android:layout_marginTop="80dp"
+                    android:text="VERIFY NUMBER"
+                    android:background="@color/SecondColor"
+                    android:textColor="@color/WHITE"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>

@@ -15,6 +15,7 @@ import com.project.messagingapp.R
 import com.project.messagingapp.data.model.UserModel
 import com.project.messagingapp.databinding.ContactItemBinding
 import androidx.databinding.library.baseAdapters.BR
+import com.bumptech.glide.Glide
 import com.project.messagingapp.ui.main.view.activities.ContactUserInfo
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.view.fragments.VerifyNum
@@ -43,12 +44,16 @@ class CustomContactAdapter(
 
         holder.item.contactItem = appContacts[position]
 
-        holder.item.imgContactInfo.setOnClickListener {
-
-            val intent = Intent(it.context, ContactUserInfo::class.java)
-            intent.putExtra("UID", userModel.uid)
-            it.context.startActivity(intent)
+        if(userModel.image?.isEmpty() == false) {
+            Glide.with(holder.itemView.context).load(userModel.image)
+                .into(holder.item.imageProfile)
         }
+//        holder.item.imgContactInfo.setOnClickListener {
+//
+//            val intent = Intent(it.context, ContactUserInfo::class.java)
+//            intent.putExtra("UID", userModel.uid)
+//            it.context.startActivity(intent)
+//        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context,MessageActivity::class.java)

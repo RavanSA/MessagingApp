@@ -71,6 +71,7 @@ class MainChatScreen : AppCompatActivity() {
 
 //    override fun onResume() {
 //        super.onResume()
+
 //        AppUtil().updateOnlineStatus("online")
 //    }
 //

@@ -8,7 +8,6 @@ import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 class ChatListViewModel(application: Application): AndroidViewModel(application) {
     var chatRepo: ChatRepositoryImpl
@@ -18,7 +17,9 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
         val chatListDao = ChatDatabase.getLocalDatabase(application).getChatListRoomDao()
         val chatDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
         val contactDao = ChatDatabase.getLocalDatabase(application).getContactListDao()
-        chatRepo = ChatRepositoryImpl(chatListDao, chatDao)
+        val contactChatDao = ChatDatabase.getLocalDatabase(application).getContactChatListDao()
+
+        chatRepo = ChatRepositoryImpl(chatListDao, chatDao,contactDao,contactChatDao)
         appRepo = AppRepo.SingletonStatic.getInstance(contactDao)
     }
 
@@ -27,32 +28,45 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
     }
 
 
-    suspend fun getChatList(chatList: List<ChatListModel>): LiveData<MutableList<ContactChatList>?> {
-
-        val response = liveData(Dispatchers.IO) {
-            emit(chatRepo.getChatList(chatList))
-        }
-
-        return response
+    suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>? {
+        return chatRepo.getChatList(chatList)
     }
+
+    fun insertContactChatList(contactChatList: ContactChatList){
+        return chatRepo.insertContactChatList(contactChatList)
+    }
+
+    fun getContacChattList(): Flow<MutableList<ContactChatList>> =
+        chatRepo.getContactChatList()
 
     fun getChatListRoom():List<ChatListRoom>{
         return chatRepo.getChatListRoom()
     }
 
-
-
-     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
-        return appRepo.getContactListRoom()
+    fun getContactChatUntilChanged(){
+        chatRepo.getContactChatListUntilChanged()
     }
+
+    fun getChatListWithFlow(): Flow<MutableList<ChatListRoom>>{
+        return chatRepo.getChatListWithFlow()
+    }
+
+    fun contactLastMessageUpdate(date: String, message: String, chatID: String){
+        chatRepo.contactLastMessageUpdate(date, message, chatID)
+    }
+
+
+//     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
+//        return appRepo.getContactListRoom()
+//    }
 
     fun getContactListRoom2(): List<ContactListRoom>{
         return appRepo.getContactList()
     }
 
-    fun getContactListAndChatList(): List<ContactListandChatList>{
-        return appRepo.getContactListAndChatList()
-    }
+//    fun getContactListAndChatList(): List<ContactListandChatList>{
+//        return appRepo.getContactListAndChatList()
+//    }
 
     suspend fun createChatIfNotExist(chatList: ChatListRoom){
         chatRepo.createChatIfNotExist(chatList)

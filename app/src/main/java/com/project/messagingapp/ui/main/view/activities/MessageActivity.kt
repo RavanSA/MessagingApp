@@ -24,17 +24,20 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.coroutineScope
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.project.messagingapp.R
+import com.project.messagingapp.data.model.ChatRoom
+import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
 import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
-
+import kotlinx.coroutines.flow.collect
 
 class MessageActivity : AppCompatActivity() {
     private lateinit var messageBinding: ActivityMessageBinding
@@ -51,12 +54,15 @@ class MessageActivity : AppCompatActivity() {
 
         receiverID = intent.getStringExtra("id_receiver")
 
+
         messageViewModel = ViewModelProvider(this)[MessageViewModel::class.java]
 
 
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
-                checkChatBool = checkChatCreated(receiverID!!)
+//                checkChatBool = checkChatCreated(receiverID!!)
+//                getChatID(receiverID!!)
+                getUserMessages()
             }
         }
 
@@ -68,10 +74,8 @@ class MessageActivity : AppCompatActivity() {
         messageBinding.btnSend.setOnClickListener {
             val msgTextString = messageBinding.msgText.text.toString()
             if(msgTextString.isNotEmpty()){
-
                     sendMessageObserve(msgTextString,receiverID!!)
                     msgText.setText("")
-                    getChatID(receiverID!!)
             }
         }
 
@@ -95,13 +99,6 @@ class MessageActivity : AppCompatActivity() {
         }
 
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main){
-                getChatID(receiverID!!)
-            }
-        }
-
-
         msgBack.setOnClickListener {
                 val contactActivity = Intent(
                     this@MessageActivity,
@@ -110,8 +107,28 @@ class MessageActivity : AppCompatActivity() {
                 startActivity(contactActivity)
         }
 
+        lifecycle.coroutineScope.launch {
+            messageViewModel.getUserMessageFromRoomDb(receiverID!!).collect() {
+                callAdapter(it)
+            }
+        }
 
-        checkOnlineStatus(receiverID!!)
+    }
+
+//    private fun getMessages(){
+//        getChatID(receiverID!!)
+//
+//    }
+
+    private suspend fun getUserMessages(){
+        val internetConnection = AppUtil().checkInternetConnection(this)
+        if(internetConnection){
+            checkChatBool = checkChatCreated(receiverID!!)
+            getChatID(receiverID!!)
+            checkOnlineStatus(receiverID!!)
+        } else if(!internetConnection){
+            receiverID?.let { messageViewModel.getUserMessageFromRoomDb(it) }
+        }
     }
 
     private fun getChatID(receiverID:String) {
@@ -133,15 +150,28 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun readMessage(allMessages: List<ChatListModel>){
-            messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
-                callAdapter(data)
-            })
-//        val data = messageViewModel.readMessages(allMessages)
-//        callAdapter(data)
+        messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
+//                callAdapter(data)
+                for(element in data){
+                    val chatRoom = ChatRoom(
+                        element.messageKey,element.chatID,element.date,element.message,
+                        element.receiverId,element.senderId,element.type
+                    )
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        messageViewModel.addNewMessage(
+                            chatRoom
+                        )
+
+//                        val testReturnType = messageViewModel.addNewMessage(chatRoom)
+//                        messageViewModel.deleteMessageFromFirebase(element.chatID,element.messageKey)
+//                        Log.d("testReturnType", testReturnType.toString())
+                    }
+                }
+        })
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun callAdapter (data: MutableList<MessageModel>) {
+    private fun callAdapter (data: MutableList<ChatRoom>) {
         messageBinding.messageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         messageAdapter = MessageRecyclerAdapter(data)
         messageBinding.messageRecyclerView.adapter = messageAdapter
@@ -173,6 +203,11 @@ class MessageActivity : AppCompatActivity() {
                 if (bool) {
                     sendMessage(message, receiverID)
                     getToken(message,receiverID,userName!!)
+//                    chatListViewModel.contactLastMessageUpdate(
+//                        element.message_date,
+//                        message,
+//                        conversa
+//                    )
                 } else {
                     createChat(message, receiverID)
 //                    messageViewModel.createChatIfNotExist()

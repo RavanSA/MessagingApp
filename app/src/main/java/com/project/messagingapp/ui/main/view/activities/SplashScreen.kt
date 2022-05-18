@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseApp.initializeApp
@@ -17,12 +19,21 @@ import com.google.firebase.iid.FirebaseInstanceIdReceiver
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessaging.getInstance
+import com.project.messagingapp.data.model.ChatListRoom
+import com.project.messagingapp.databinding.FragmentMainChatListBinding
+import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.utils.AppUtil
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class SplashScreen : AppCompatActivity() {
 
     private lateinit var splashViewModel: SplashViewModel
+    private lateinit var chatListViewModel: ChatListViewModel
+    private var testChatList:MutableList<ChatListRoom> = mutableListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -70,6 +81,17 @@ class SplashScreen : AppCompatActivity() {
                         databaseReference.updateChildren(map)
                     }
                 })
+
+            chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
+
+            lifecycle.coroutineScope.launch {
+                chatListViewModel.getChatListWithFlow().collect() {
+                    testChatList = it
+                    Log.d("TESTFLOW", it.toString())
+                }
+            }
+
+//            registratedUser.putExtra("flow_chat_list",testChatList)
 
             startActivity(registratedUser)
         } else {
