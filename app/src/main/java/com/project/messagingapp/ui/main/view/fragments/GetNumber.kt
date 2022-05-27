@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -111,7 +112,13 @@ class GetNumber : Fragment() {
             }
 
         }
+
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setDefaultCountry()
     }
 
     private fun sendOneTimePassword(number: String?) {
@@ -168,12 +175,20 @@ class GetNumber : Fragment() {
     fun callFromVerifyNum(phoneNumber: String){
         mResendToken?.let { resendVerificationCode(phoneNumber, it) }
     }
+
+    private fun setDefaultCountry() {
+            val manager =
+                requireActivity().getSystemService(Context.TELEPHONY_SERVICE) as (TelephonyManager)?
+            Log.d("MANAGER", manager?.networkCountryIso.toString())
+        val countryCode: String? = manager?.networkCountryIso
+        requireView().country_code_picker.setDefaultCountryUsingNameCode(countryCode)
+        requireView().country_code_picker.resetToDefaultCountry()
+    }
 }
 
 class GenericKeyEvent internal constructor(private val currentView: EditText, private val previousView: EditText?) : View.OnKeyListener{
     override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
         if(event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.edt_one && currentView.text.isEmpty()) {
-            //If current is empty then previous EditText's number will also be deleted
             previousView!!.text = null
             previousView.requestFocus()
             return true

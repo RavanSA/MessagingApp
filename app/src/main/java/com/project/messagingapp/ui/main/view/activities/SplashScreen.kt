@@ -1,14 +1,26 @@
 package com.project.messagingapp.ui.main.view.activities
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
+import android.location.LocationRequest
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest.create
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseApp.initializeApp
@@ -32,6 +44,7 @@ class SplashScreen : AppCompatActivity() {
     private lateinit var splashViewModel: SplashViewModel
     private lateinit var chatListViewModel: ChatListViewModel
     private var testChatList:MutableList<ChatListRoom> = mutableListOf()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +56,10 @@ class SplashScreen : AppCompatActivity() {
 
         splashViewModel = ViewModelProvider(this)[SplashViewModel::class.java]
         splashViewModel.prepareTime()
+
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         splashViewModel.openAct.observe(this,
             {
@@ -91,13 +108,89 @@ class SplashScreen : AppCompatActivity() {
                 }
             }
 
-//            registratedUser.putExtra("flow_chat_list",testChatList)
+//            getLastKnownLocation(this)
 
+//            registratedUser.putExtra("flow_chat_list",testChatList)
+            getLocation()
             startActivity(registratedUser)
         } else {
             startActivity(notRegistratedUser)
+            //    fun getLastKnownLocation(context: Context) {
+//        Log.d("LOCATION","FUNCTİON")
+//        val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        val providers: List<String> = locationManager.getProviders(true)
+//        var location: Location? = null
+//        for (i in providers.size - 1 downTo 0) {
+//            Log.d("LOCATION","IN FOR LOOP")
+//
+//            if (ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                return
+//            } else {
+//                Log.d("PERMISSION NOT GRANTED","asdasd")
+//            }
+//            location= locationManager.getLastKnownLocation(providers[i])
+//            if (location != null)
+//                Log.d("LOCATIONGETTINGNULL", location.toString())
+//                break
+//        }
+//        val gps = DoubleArray(2)
+//        if (location != null) {
+//            gps[0] = location.getLatitude()
+//            gps[1] = location.getLongitude()
+//            Log.e("gpsLat",gps[0].toString())
+//            Log.e("gpsLong",gps[1].toString())
+//
+//        }
+//
+//    }
+
+
         }
 
     }
 
+    fun getLocation() {
+
+        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+
+        val locationListener = android.location.LocationListener { location ->
+            val latitute = location.latitude
+            val longitute = location.longitude
+
+            Log.i("AAAAAAAAAAAAAAAtest", "Latitute: $latitute ; Longitute: $longitute")
+            Toast.makeText(this,"Latitute: $latitute ; Longitute: $longitute",Toast.LENGTH_LONG).show()
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSION_REQUEST_ACCESS_FINE_LOCATION)
+            return
+        }
+        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_ACCESS_FINE_LOCATION) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> getLocation()
+                PackageManager.PERMISSION_DENIED -> Toast.makeText(this,"PERMISSOUN NOT GRANTED",Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 100
+    }
 }

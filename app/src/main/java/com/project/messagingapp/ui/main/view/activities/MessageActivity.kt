@@ -1,8 +1,10 @@
 package com.project.messagingapp.ui.main.view.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.coroutineScope
 import com.android.volley.DefaultRetryPolicy
@@ -46,7 +49,8 @@ class MessageActivity : AppCompatActivity() {
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
     private var userName: String? = null
-
+    private val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+    private val requestcode = 1
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +81,15 @@ class MessageActivity : AppCompatActivity() {
                     sendMessageObserve(msgTextString,receiverID!!)
                     msgText.setText("")
             }
+        }
+
+        msgInfo.setOnClickListener {
+            if (!isPermissionGranted()) {
+                askPermissions()
+            }
+            val intent = Intent(this, VideoCallActivity::class.java)
+            intent.putExtra("receiverID", receiverID)
+            startActivity(intent)
         }
 
         messageBinding.msgText.addTextChangedListener { object : TextWatcher {
@@ -275,6 +288,22 @@ class MessageActivity : AppCompatActivity() {
             Log.d("ACTIVISENDNOTIFICATION", sendNotifi.toString())
         requestQueue.add(sendNotifi)
 
+    }
+
+
+
+    private fun askPermissions() {
+        ActivityCompat.requestPermissions(this, permissions, requestcode)
+    }
+
+    private fun isPermissionGranted(): Boolean {
+
+        permissions.forEach {
+            if (ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED)
+                return false
+        }
+
+        return true
     }
 
 }
