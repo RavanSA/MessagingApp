@@ -165,7 +165,7 @@ class SplashScreen : AppCompatActivity() {
             val longitute = location.longitude
 
             Log.i("AAAAAAAAAAAAAAAtest", "Latitute: $latitute ; Longitute: $longitute")
-            Toast.makeText(this,"Latitute: $latitute ; Longitute: $longitute",Toast.LENGTH_LONG).show()
+            AppUtil().updateUserLocation(latitute.toString(),longitute.toString())
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

@@ -41,9 +41,6 @@ import kotlinx.coroutines.flow.forEach
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
 
 
-
-
-
 class MainChatList : Fragment() {
 
     private lateinit var chatBinding: FragmentMainChatListBinding
@@ -93,7 +90,7 @@ class MainChatList : Fragment() {
 
         }
 
-        getLastKnownLocation(requireContext())
+//        getLastKnownLocation(requireContext())
         return chatBinding.root
     }
 
@@ -273,44 +270,44 @@ class MainChatList : Fragment() {
 //        override fun onProviderEnabled(provider: String) {}
 //        override fun onProviderDisabled(provider: String) {}
 //    }
-fun getLastKnownLocation(context: Context) {
-    Log.d("LOCATION","FUNCTİON")
-    val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val providers: List<String> = locationManager.getProviders(true)
-    var location: Location? = null
-    Log.d("PROVIDERSIZE", providers.size.toString())
-    for (i in providers.size - 1 downTo 0) {
-        Log.d("LOCATION","IN FOR LOOP")
-
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) !==
-            PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(requireActivity(),
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            } else {
-                ActivityCompat.requestPermissions(requireActivity(),
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            }
-        }
-
-        location= locationManager.getLastKnownLocation(providers[i])
-        if (location != null)
-            Log.d("LOCATIONGETTINGNULL", location.toString())
-        break
-    }
-    Log.d("LOGHERELOCATION", location.toString())
-    val gps = DoubleArray(2)
-    if (location != null) {
-        Log.d("LOCATION NOT NULL","ASAAA")
-        gps[0] = location.getLatitude()
-        gps[1] = location.getLongitude()
-        Log.e("gpsLat",gps[0].toString())
-        Log.e("gpsLong",gps[1].toString())
-    }
-
-}
+//fun getLastKnownLocation(context: Context) {
+//    Log.d("LOCATION","FUNCTİON")
+//    val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//    val providers: List<String> = locationManager.getProviders(true)
+//    var location: Location? = null
+//    Log.d("PROVIDERSIZE", providers.size.toString())
+//    for (i in providers.size - 1 downTo 0) {
+//        Log.d("LOCATION","IN FOR LOOP")
+//
+//        if (ContextCompat.checkSelfPermission(requireContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION) !==
+//            PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                ActivityCompat.requestPermissions(requireActivity(),
+//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+//            } else {
+//                ActivityCompat.requestPermissions(requireActivity(),
+//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+//            }
+//        }
+//
+//        location= locationManager.getLastKnownLocation(providers[i])
+//        if (location != null)
+//            Log.d("LOCATIONGETTINGNULL", location.toString())
+//        break
+//    }
+//    Log.d("LOGHERELOCATION", location.toString())
+//    val gps = DoubleArray(2)
+//    if (location != null) {
+//        Log.d("LOCATION NOT NULL","ASAAA")
+//        gps[0] = location.getLatitude()
+//        gps[1] = location.getLongitude()
+//        Log.e("gpsLat",gps[0].toString())
+//        Log.e("gpsLong",gps[1].toString())
+//    }
+//
+//}
 
 
 
