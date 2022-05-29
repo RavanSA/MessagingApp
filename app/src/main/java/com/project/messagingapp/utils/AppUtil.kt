@@ -1,9 +1,12 @@
 package com.project.messagingapp.utils
 
 import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -38,6 +41,15 @@ class AppUtil {
             .getReference("Users").child(getUID()!!)
         val map = HashMap<String, Any>()
         map["online"] = status
+        databaseRef.updateChildren(map)
+    }
+
+    fun updateUserLocation(log: String, lat: String){
+        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
+            .getReference("Users").child(getUID()!!)
+        val map = HashMap<String, Any>()
+        map["locationLatitude"] =lat
+        map["locationLongtitude"] =log
         databaseRef.updateChildren(map)
     }
 

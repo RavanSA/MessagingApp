@@ -1,5 +1,6 @@
 package com.project.messagingapp.ui.main.view.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,13 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.messagingapp.R
-import com.project.messagingapp.data.model.ChatModel
-import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter
 import com.project.messagingapp.ui.main.view.fragments.MainChatList
-import com.project.messagingapp.ui.main.view.fragments.WelcomeFragment
-import com.project.messagingapp.utils.AppUtil
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -42,6 +38,8 @@ class MainChatScreen : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .add(R.id.chatFragmentHolder, MainChatList())
             .commit()
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,6 +47,7 @@ class MainChatScreen : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("ResourceType")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemView = item.itemId
 
@@ -61,6 +60,15 @@ class MainChatScreen : AppCompatActivity() {
                      ))
                      Toast.makeText(applicationContext,"CLICK",Toast.LENGTH_LONG).show()
                 }
+
+            R.id.nearbyUsers ->
+            {
+                startActivity(Intent(
+                    this@MainChatScreen,
+                    NearbyUserFragment::class.java
+                ))
+//                Toast.makeText(applicationContext,"CLICK",Toast.LENGTH_LONG).show()
+            }
 
             R.id.searchuser -> Toast.makeText(applicationContext,"Search User",Toast.LENGTH_LONG).show()
         }

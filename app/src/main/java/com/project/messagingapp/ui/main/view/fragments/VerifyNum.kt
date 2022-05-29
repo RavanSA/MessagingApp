@@ -99,6 +99,13 @@ class VerifyNum : Fragment() {
             }
     }
 
+    private fun autoCallWhenFinished(){
+        if (CheckPin()) {
+            val credential = PhoneAuthProvider.getCredential(p0!!, pin!!)
+            signInUser(credential)
+        }
+    }
+
     private fun CheckPin(): Boolean {
         pin = requireView().edt_one.text.toString() + requireView().edt_two.text.toString() +
                 requireView().edt_three.text.toString() + requireView().edt_four.text.toString() +
@@ -150,6 +157,7 @@ class VerifyNum : Fragment() {
                 null
             )
         )
+
 
         requireView().edt_one.setOnKeyListener(GenericKeyEvent(requireView().edt_one, null))
         requireView().edt_two.setOnKeyListener(

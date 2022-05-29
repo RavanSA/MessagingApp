@@ -39,6 +39,10 @@ class UserContacts : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if(!contactPermission.isContactOk(this)){
+            contactPermission.requestContactPermission(this)
+        }
+
         contactBinding = ActivityUserContactsBinding.inflate(layoutInflater)
 
         setContentView(contactBinding.root)
@@ -52,6 +56,7 @@ class UserContacts : AppCompatActivity() {
 
         val newRoomListDB = mutableListOf<UserModel>()
 
+        contactPermission.requestContactPermission(this)
         if(internetConnection) {
             if (contactPermission.isContactOk(this)) {
                 mobileContact = getMobileContact()

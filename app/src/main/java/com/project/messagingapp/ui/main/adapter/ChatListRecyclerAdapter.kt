@@ -23,7 +23,6 @@ class ChatListRecyclerAdapter(
             LayoutInflater.from(parent.context),
             R.layout.chatlist_item_layout,parent,false
         )
-
         return ChatListRecyclerView(chatItemLayoutBing)
     }
 
@@ -35,6 +34,7 @@ class ChatListRecyclerAdapter(
             Glide.with(holder.itemView.context).load(chatList.receiver_image)
                 .into(holder.list.profImageChatList)
         }
+
 //        holder.list.txtChatStatus.text = chatList.lastMessageOfChat
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)

@@ -2,6 +2,7 @@ package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,10 @@ import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import com.google.firebase.database.DataSnapshot
+
+
+
 
 class AppRepo(
     private val contactListDao: ContactListDao
@@ -217,4 +222,106 @@ class AppRepo(
         value.addAll(values)
         this.value = value
     }
+
+    fun findNearbyUsersUsingHarvesineDistance(): MutableLiveData<MutableList<UserModel>>{
+        val nearbyUsersList = mutableListOf<UserModel>()
+        val nearbyUsersLiveData: MutableLiveData<MutableList<UserModel>> = MutableLiveData()
+        val currentUserLocation = getCurrentUserLocation()
+
+        appUtil.getDatabaseReferenceUsers().addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.children) {
+                    val uid = ds.child("uid").value.toString()
+                    if ( uid != AppUtil().getUID()) {
+                        val userLocationLantitude = ds.child("locationLatitude").value.toString()
+                        val userLocationLongtitude = ds.child("locationLongtitude").value.toString()
+                        Log.d("USERLOCATİONLAT", userLocationLantitude)
+                        Log.d("USERLOCATİONLONG", userLocationLongtitude)
+
+                        val distanceCalculator: Double = haversineDistance(
+                            currentUserLocation[0],
+                            currentUserLocation[1],
+                            userLocationLantitude, userLocationLongtitude
+                        )
+
+                        if (distanceCalculator <= 10) {
+                            Log.d("SNAPASHOTTEST", ds.toString())
+                            val userModel = ds.getValue(UserModel::class.java)
+                            userModel?.let { nearbyUsersList.add(it) }
+                        }
+                        Log.d("USERLIST", nearbyUsersList.toString())
+                    }
+                }
+                nearbyUsersLiveData.value = nearbyUsersList
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("ERROR OCCURED: ", error.toString())
+            }
+
+        })
+        Log.d("NEARBYUSERLIST", nearbyUsersList.toString())
+        return nearbyUsersLiveData
+    }
+
+    private fun strToDouble(str: String): Double {
+        if(str == "" || str == "null"){
+            return 0.00
+        }
+        return str.toDouble()
+    }
+
+    fun haversineDistance(latCurrentUser: String, longCurrentUser: String,
+                            latUser: String, longUser: String): Double {
+
+        val earthRadiusKm: Double = 6372.8
+        val latCurrentUserDouble = strToDouble(latCurrentUser)
+        val longCurrentUserDouble = strToDouble(longCurrentUser)
+        val latUserDouble = strToDouble(latUser)
+        val longUserDouble = strToDouble(longUser)
+        val dLat = Math.toRadians(latCurrentUserDouble - latUserDouble);
+        val dLon = Math.toRadians(longCurrentUserDouble - longUserDouble);
+        Log.d("LATCURRENTUSER", latCurrentUserDouble.toString())
+        Log.d("LongCURRENTUSER", longCurrentUserDouble.toString())
+        Log.d("LATUSER", latUserDouble.toString())
+        Log.d("LongUSER", longUserDouble.toString())
+//        val originLat = Math.toRadians(this.lat);
+//        val destinationLat = Math.toRadians(destination.lat);
+
+        val a = Math.pow(Math.sin(dLat / 2), 2.toDouble()) + Math.pow(Math.sin(dLon / 2), 2.toDouble()) * Math.cos(latCurrentUserDouble) * Math.cos(latUserDouble);
+        val c = 2 * Math.asin(Math.sqrt(a));
+        Log.d("CALCULATINGHAVERSINE", (earthRadiusKm * c).toString())
+        return earthRadiusKm * c;
+    }
+
+    private fun getCurrentUserLocation(): Array<String> {
+
+        val gps = arrayOf("","")
+
+        appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!).addValueEventListener(
+            object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.d("NAPSHOTTRST", snapshot.toString())
+                        val currentUserLocationLatitude =  snapshot.child("locationLatitude").getValue(String::class.java)
+
+                        val currentUserLocationLongtitutde =  snapshot.child("locationLongtitude").getValue(String::class.java)
+                        if (currentUserLocationLatitude != null) {
+                            gps[0] = currentUserLocationLatitude
+                        }
+                        if (currentUserLocationLongtitutde != null) {
+                            gps[1] = currentUserLocationLongtitutde
+                        }
+
+                        Log.d("CURRENTUSERLOCATİONLAT", currentUserLocationLatitude.toString())
+                        Log.d("CURRENTUSERLOCATİONLog", currentUserLocationLongtitutde.toString())
+
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("ERROR OCCURED", error.toString())
+                }
+
+            })
+        return gps
+    }
+
 }

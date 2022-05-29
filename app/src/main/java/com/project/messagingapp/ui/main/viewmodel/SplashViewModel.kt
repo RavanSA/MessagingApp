@@ -1,5 +1,8 @@
 package com.project.messagingapp.ui.main.viewmodel
 
+import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.*
@@ -17,4 +20,6 @@ class SplashViewModel: ViewModel() {
             }
         }
     }
+
+
 } 

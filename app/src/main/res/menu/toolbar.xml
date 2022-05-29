@@ -11,9 +11,9 @@
     </item>
 
     <item
-        android:id="@+id/profilepic"
+        android:id="@+id/nearbyUsers"
         android:icon="@drawable/ic_baseline_person_add_24"
-        android:title="@string/profile_picture"
+        android:title="@string/find_nearby_users"
         app:showAsAction="never"
         >
     </item>
