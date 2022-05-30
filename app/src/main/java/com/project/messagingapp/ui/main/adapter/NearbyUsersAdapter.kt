@@ -46,10 +46,9 @@ class NearbyUsersAdapter(
         holder.itemView.UserName.text = nearbyUserList[position].name
         holder.itemView.UserStatus.text = nearbyUserList[position].status
 
-//        if(!nearbyUserList[position].image.isNullOrEmpty()) {
-//            Glide.with(holder.itemView.context).load(nearbyUserList[position].image)
-//                .into(holder.itemView.nearbyImage)
-//        }
+            Glide.with(holder.itemView.context).load(nearbyUserList[position].image)
+                .into(holder.itemView.nearbyImage)
+
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)

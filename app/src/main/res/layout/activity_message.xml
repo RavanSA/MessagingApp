@@ -58,12 +58,12 @@
                 android:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/btnDataSend"
+                    android:id="@+id/imageFile"
                     android:layout_width="38dp"
                     android:layout_height="38dp"
                     android:layout_gravity="center|bottom"
                     android:layout_marginStart="5dp"
-                    android:src="@drawable/ic_baseline_info_24" />
+                    android:src="@drawable/ic_baseline_attach_file_24" />
 
                 <EditText
                     android:id="@+id/msgText"

@@ -13,7 +13,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/msgBack"
+                android:id="@+id/nearbyBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -32,8 +32,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Nearby Users"
-                    android:textSize="25dp"
-                    android:layout_marginRight="120dp"
+                    android:textSize="22dp"
+                    android:layout_marginRight="150dp"
                     android:textColor="@color/WHITE"
                     />
 

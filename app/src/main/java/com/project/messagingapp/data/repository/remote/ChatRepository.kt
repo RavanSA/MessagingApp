@@ -1,5 +1,6 @@
 package com.project.messagingapp.data.repository.remote
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.daos.ContactListDao
@@ -10,7 +11,7 @@ import org.json.JSONObject
 interface ChatRepository {
     suspend fun createChat(message: String,receiverID: String)
 
-    suspend fun sendMessage(message: String, receiverID: String)
+    suspend fun sendMessage(message: String, receiverID: String,type: String  ="text")
 
     fun readMessages (allMessages: List<ChatListModel>) : MutableLiveData<MutableList<MessageModel>>
 
@@ -57,4 +58,6 @@ interface ChatRepository {
     fun contactLastMessageUpdate(date: String, message: String, chatID: String)
 
     fun getContactListByReceiverID(receiverID: String): ContactListRoom
+
+    suspend fun sendImage(uri: Uri,receiverID: String)
 }

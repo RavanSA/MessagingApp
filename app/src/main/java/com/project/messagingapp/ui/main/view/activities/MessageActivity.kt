@@ -3,12 +3,14 @@ package com.project.messagingapp.ui.main.view.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,26 +25,36 @@ import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.*
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.coroutineScope
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatRoom
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.pick_image_dialog.view.*
 import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
 import kotlinx.coroutines.flow.collect
+import java.io.File
 
 class MessageActivity : AppCompatActivity() {
+
+
     private lateinit var messageBinding: ActivityMessageBinding
     private var receiverID: String? = null
     private lateinit var messageViewModel: MessageViewModel
@@ -51,6 +63,9 @@ class MessageActivity : AppCompatActivity() {
     private var userName: String? = null
     private val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     private val requestcode = 1
+    private var imageURI: Uri? = null
+    private lateinit var dialog: AlertDialog
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +105,10 @@ class MessageActivity : AppCompatActivity() {
             val intent = Intent(this, VideoCallActivity::class.java)
             intent.putExtra("receiverID", receiverID)
             startActivity(intent)
+        }
+
+        imageFile.setOnClickListener {
+            updateImageDialog()
         }
 
         messageBinding.msgText.addTextChangedListener { object : TextWatcher {
@@ -225,7 +244,6 @@ class MessageActivity : AppCompatActivity() {
                     createChat(message, receiverID)
 //                    messageViewModel.createChatIfNotExist()
                 }
-
         }
     }
 
@@ -306,4 +324,94 @@ class MessageActivity : AppCompatActivity() {
         return true
     }
 
+    private fun updateImageDialog(){
+
+        val updateDialog = AlertDialog.Builder(this)
+        val layout:View = LayoutInflater.from(this).inflate(R.layout.pick_image_dialog,
+            null,false)
+        updateDialog.setView(layout)
+
+        layout.imageFromCamera.setOnClickListener {
+            requestPermissionLauncher.launch(
+                Manifest.permission.CAMERA
+            )
+
+            dialog.dismiss()
+        }
+
+        layout.imageFromStorage.setOnClickListener {
+            pickImages.launch("image/*")
+            dialog.dismiss()
+        }
+
+        dialog = updateDialog.create()
+        dialog.show()
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                GlobalScope.launch (Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
+                        takePicture()
+                    }
+                }
+            } else {
+                Toast.makeText(this,"GİVE PERMISSION TO THE USER",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private suspend fun takePicture() {
+        val root =
+            File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), BuildConfig.APPLICATION_ID + File.separator)
+        root.mkdirs()
+        val fname = "img_" + System.currentTimeMillis() + ".jpg"
+        val sdImageMainDirectory = File(root, fname)
+
+        imageURI = FileProvider.getUriForFile(this, "com.project.messagingapp.provider",
+            sdImageMainDirectory)
+        Log.d("IMAGEINCAMERA", imageURI.toString())
+        val takePictureLauncherVar = takePictureLauncher()
+        takePictureLauncherVar.launch(imageURI)
+    }
+
+    val pickImages = registerForActivityResult(ActivityResultContracts.GetContent()){ uri: Uri? ->
+        GlobalScope.launch (Dispatchers.IO){
+            withContext(Dispatchers.IO) {
+                uri?.let { it ->
+                    Log.d("PICKIMAGEMESSAGE", it.toString())
+
+                    receiverID?.let { it1 -> messageViewModel.sendImage(it, it1) }
+                }
+            }
+        }
+    }
+
+    private suspend fun takePictureLauncher(): ActivityResultLauncher<Uri> {
+        var takePicture: ActivityResultLauncher<Uri>? = null
+        takePicture =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+//                Toast.makeText(this, "In Launcher" + imageURI.toString(), Toast.LENGTH_LONG).show()
+                if (success) {
+                    Log.d("IMAGEURIMESSAGE", imageURI.toString())
+                    GlobalScope.launch (Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
+                        imageURI?.let {
+                            receiverID?.let { it1 ->
+                                messageViewModel.sendImage(
+                                    it,
+                                    it1
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return takePicture!!
+    }
 }

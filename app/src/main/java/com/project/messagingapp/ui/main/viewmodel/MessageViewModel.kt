@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.android.volley.toolbox.JsonObjectRequest
@@ -100,6 +101,10 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
 
     fun deleteMessageFromFirebase(chatID: String, messageKey: String){
         return chatRepo.deleteMessageFromFirebase(chatID, messageKey)
+    }
+
+    suspend fun sendImage(uri: Uri, receiverID: String){
+        return chatRepo.sendImage(uri,receiverID)
     }
 
 }
