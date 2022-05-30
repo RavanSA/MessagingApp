@@ -500,7 +500,7 @@ class ChatRepositoryImpl(
 //        child(appUtil.getUID()!!)
 //        userUploadData = MutableLiveData()
         conversationID?.let { it1 ->
-            appUtil.getStorageReference().child(AppConstants.chatPath).child(it1).putFile(uri)
+            appUtil.getStorageReference().child(AppConstants.chatPath).child(it1).child(System.currentTimeMillis().toString()).putFile(uri)
                 .addOnSuccessListener {
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->

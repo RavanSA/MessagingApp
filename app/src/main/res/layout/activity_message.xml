@@ -86,8 +86,18 @@
                 android:layout_gravity="center|bottom"
                 android:layout_marginEnd="5dp"
                 android:layout_weight=".2"
-                android:src="@drawable/ic_baseline_send_24" />
+                android:src="@drawable/ic_baseline_send_24"
+                />
 
+            <ImageView
+                android:id="@+id/imgRecord"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="5dp"
+                android:padding="3dp"
+                android:layout_marginBottom="3dp"
+                android:src="@drawable/ic_baseline_mic_24"/>
 
         </LinearLayout>
 

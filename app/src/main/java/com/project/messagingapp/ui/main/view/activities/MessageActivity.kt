@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,8 @@ import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatRoom
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
+import io.ak1.pix.helpers.hide
+import io.ak1.pix.helpers.show
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -65,6 +68,12 @@ class MessageActivity : AppCompatActivity() {
     private val requestcode = 1
     private var imageURI: Uri? = null
     private lateinit var dialog: AlertDialog
+    private var recorder: MediaRecorder? = null
+    private var isRecording: Boolean = false
+    private var recordStart = 0L
+    private var lastAudioFile=""
+    private var recordDuration = 0L
+    private val REQ_AUDIO_PERMISSION=29
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -93,9 +102,14 @@ class MessageActivity : AppCompatActivity() {
         messageBinding.btnSend.setOnClickListener {
             val msgTextString = messageBinding.msgText.text.toString()
             if(msgTextString.isNotEmpty()){
+                Log.d("MESSAGEISEMPTY","TRUE")
                     sendMessageObserve(msgTextString,receiverID!!)
                     msgText.setText("")
             }
+//            else if(msgTextString.isEmpty()){
+//                Log.d("MESSAGEISNOTEMPTY","TRUE")
+//                btnSend.setImageResource(R.drawable.ic_baseline_mic_24)
+//            }
         }
 
         msgInfo.setOnClickListener {
@@ -111,25 +125,9 @@ class MessageActivity : AppCompatActivity() {
             updateImageDialog()
         }
 
-        messageBinding.msgText.addTextChangedListener { object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(s.toString().isEmpty())
-                    typingStatus("false")
-                else
-                    typingStatus(receiverID!!)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
-            }
-
-        } 
-        }
-
+        messageBinding.imgRecord.show()
+        messageBinding.btnSend.hide()
+        messageBinding.msgText.addTextChangedListener(msgTxtChangeListener)
 
         msgBack.setOnClickListener {
                 val contactActivity = Intent(
@@ -139,11 +137,25 @@ class MessageActivity : AppCompatActivity() {
                 startActivity(contactActivity)
         }
 
+        messageBinding.imgRecord.setOnClickListener {
+            if(AppUtil().checkPermission(this, Manifest.permission.RECORD_AUDIO,reqCode = REQ_AUDIO_PERMISSION))
+                startRecording()
+        }
+
         lifecycle.coroutineScope.launch {
             messageViewModel.getUserMessageFromRoomDb(receiverID!!).collect() {
                 callAdapter(it)
             }
         }
+
+    }
+
+    private fun startRecording() {
+        messageBinding.msgText.apply {
+            isEnabled = false
+            hint = "Recording..."
+        }
+
 
     }
 
@@ -414,4 +426,26 @@ class MessageActivity : AppCompatActivity() {
 
         return takePicture!!
     }
+
+
+    private val msgTxtChangeListener=object : TextWatcher{
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if(s.isNullOrBlank() || s.isEmpty()) {
+                typingStatus("false")
+                messageBinding.imgRecord.show()
+                messageBinding.btnSend.hide()
+            } else {
+                typingStatus(receiverID!!)
+                messageBinding.btnSend.show()
+                messageBinding.imgRecord.hide()
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
+    }
+
 }
