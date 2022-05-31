@@ -170,9 +170,9 @@ class MessageActivity : AppCompatActivity() {
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
+            setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
             setOutputFile(lastAudioFile)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             try {
                 prepare()
             } catch (e: IOException) {
@@ -223,7 +223,7 @@ class MessageActivity : AppCompatActivity() {
         lifecycleScope.launch {
             withContext(Dispatchers.Main){
                 messageViewModel.getChatID(receiverID).observe(this@MessageActivity,{ data ->
-                    readMessage(data.chatList!!)
+                    data.chatList?.let { readMessage(it) }
                 })
             }
         }
