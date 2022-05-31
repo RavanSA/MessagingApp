@@ -75,7 +75,7 @@
                     android:inputType="textMultiLine"
                     android:padding="8dp"
                     android:scrollbars="vertical"
-                    android:text="" />
+                    android:text=""/>
             </LinearLayout>
 
 
@@ -87,6 +87,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_weight=".2"
                 android:src="@drawable/ic_baseline_send_24"
+                android:visibility="invisible"
                 />
 
             <ImageView
@@ -98,6 +99,20 @@
                 android:padding="3dp"
                 android:layout_marginBottom="3dp"
                 android:src="@drawable/ic_baseline_mic_24"/>
+
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_voice"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="end|bottom"
+                android:visibility="gone"
+                bind:lottie_autoPlay="true"
+                bind:lottie_loop="true"
+                bind:lottie_rawRes="@raw/lottie_voice_animation"
+                bind:lottie_repeatCount="20"
+                />
+
 
         </LinearLayout>
 

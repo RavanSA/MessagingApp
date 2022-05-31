@@ -33,6 +33,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isGone
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.coroutineScope
 import com.android.volley.DefaultRetryPolicy
@@ -54,6 +55,8 @@ import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
 import kotlinx.coroutines.flow.collect
 import java.io.File
+import java.io.IOException
+import java.util.*
 
 class MessageActivity : AppCompatActivity() {
 
@@ -75,7 +78,6 @@ class MessageActivity : AppCompatActivity() {
     private var recordDuration = 0L
     private val REQ_AUDIO_PERMISSION=29
 
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,8 +90,6 @@ class MessageActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
-//                checkChatBool = checkChatCreated(receiverID!!)
-//                getChatID(receiverID!!)
                 getUserMessages()
             }
         }
@@ -106,10 +106,6 @@ class MessageActivity : AppCompatActivity() {
                     sendMessageObserve(msgTextString,receiverID!!)
                     msgText.setText("")
             }
-//            else if(msgTextString.isEmpty()){
-//                Log.d("MESSAGEISNOTEMPTY","TRUE")
-//                btnSend.setImageResource(R.drawable.ic_baseline_mic_24)
-//            }
         }
 
         msgInfo.setOnClickListener {
@@ -125,8 +121,6 @@ class MessageActivity : AppCompatActivity() {
             updateImageDialog()
         }
 
-        messageBinding.imgRecord.show()
-        messageBinding.btnSend.hide()
         messageBinding.msgText.addTextChangedListener(msgTxtChangeListener)
 
         msgBack.setOnClickListener {
@@ -148,15 +142,65 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
+        messageBinding.lottieVoice.setOnClickListener {
+            if (isRecording){
+                stopRecording()
+                val duration=(recordDuration/1000).toInt()
+                if (duration<=1) {
+                    Toast.makeText(this,"Nothing is created",Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                receiverID?.let { it1 -> messageViewModel.sendVoiceMessage(lastAudioFile, it1) }
+            }
+        }
+
     }
 
     private fun startRecording() {
+        messageBinding.lottieVoice.show()
         messageBinding.msgText.apply {
-            isEnabled = false
             hint = "Recording..."
         }
 
+        lastAudioFile=
+            "${this.externalCacheDir?.absolutePath}/audiorecord${System.currentTimeMillis()}.mp3"
 
+        Log.d("LASTADIOFILEPATH",lastAudioFile.toString())
+
+        recorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
+            setOutputFile(lastAudioFile)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            try {
+                prepare()
+            } catch (e: IOException) {
+                println("ChatFragment.startRecording${e.message}")
+            }
+            start()
+            isRecording=true
+            recordStart = Date().time
+        }
+
+    }
+
+    private fun stopRecording() {
+        messageBinding.msgText.apply {
+            isEnabled=true
+            hint="Message"
+        }
+
+        recorder?.apply {
+            stop()
+            release()
+            recorder = null
+        }
+        isRecording=false
+        recordDuration = Date().time - recordStart
+        messageBinding.lottieVoice.apply {
+            isEnabled = false
+        }
     }
 
 //    private fun getMessages(){

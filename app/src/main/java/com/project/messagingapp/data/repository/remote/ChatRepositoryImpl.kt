@@ -7,6 +7,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.database.*
 import com.android.volley.Response
 import com.google.common.io.Files.map
+import com.google.firebase.storage.ktx.storageMetadata
 
 import com.project.messagingapp.constants.AppConstants
 import com.project.messagingapp.data.model.*
@@ -24,6 +25,7 @@ import com.project.messagingapp.data.daos.ContactListDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.io.File
 import kotlin.coroutines.suspendCoroutine
 
 class ChatRepositoryImpl(
@@ -522,6 +524,39 @@ class ChatRepositoryImpl(
 
     }
 
+    override fun sendVoiceMessage(lastAudioFile: String, receiverID: String) {
+
+        var voiceURL = ""
+
+        val metadata = storageMetadata {
+            contentType = "audio/mpeg"
+        }
+
+//        val voiceUri: Uri = Uri.parse(lastAudioFile)
+        val voiceUri: Uri = Uri.fromFile(File(lastAudioFile))
+
+        Log.d("VOICEURI",voiceUri.toString())
+
+        conversationID?.let {
+            appUtil.getStorageReference().child(AppConstants.chatPath).child(it).child(System.currentTimeMillis().toString()).putFile(voiceUri, metadata)
+                .addOnSuccessListener {
+                    val task = it.storage.downloadUrl
+                    task.addOnCompleteListener { uri ->
+                        voiceURL = uri.result.toString()
+                        Log.d("VOİCE", voiceURL)
+                        Log.d("IMAGE UPLOADED", "TRUE")
+                        GlobalScope.launch(Dispatchers.IO) {
+                            withContext(Dispatchers.IO) {
+                                if (!voiceURL.isNullOrEmpty()) {
+                                    sendMessage(voiceURL, receiverID, "audio")
+                                    Log.d("MESSAGESENDED", "TRUE")
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+    }
 
     operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: MutableList<T>) {
         val value = this.value ?: mutableListOf()

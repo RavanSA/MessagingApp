@@ -95,7 +95,7 @@ class AppUtil {
                         vararg permissions: String, reqCode: Int= PERMISSION_REQ_CODE): Boolean {
         var allPermitted = false
         for (permission in permissions) {
-            allPermitted = (ContextCompat.checkSelfPermission(context.requireContext(), permission)
+            allPermitted = (ContextCompat.checkSelfPermission(context, permission)
                     == PackageManager.PERMISSION_GRANTED)
             if (!allPermitted) break
         }

@@ -60,4 +60,6 @@ interface ChatRepository {
     fun getContactListByReceiverID(receiverID: String): ContactListRoom
 
     suspend fun sendImage(uri: Uri,receiverID: String)
+
+    fun sendVoiceMessage( lastAudioFile: String, receiveID: String)
 }

@@ -107,4 +107,8 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
         return chatRepo.sendImage(uri,receiverID)
     }
 
+    fun sendVoiceMessage(lastAudioFile: String, receiverID: String) {
+        return chatRepo.sendVoiceMessage(lastAudioFile, receiverID)
+    }
+
 }
