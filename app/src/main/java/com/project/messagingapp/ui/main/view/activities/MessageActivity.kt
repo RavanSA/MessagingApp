@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.net.Uri
@@ -50,6 +52,9 @@ import kotlinx.android.synthetic.main.activity_main_chat_screen.*
 import kotlinx.android.synthetic.main.activity_message.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.pick_image_dialog.view.*
+import kotlinx.android.synthetic.main.pick_image_dialog.view.imageFromCamera
+import kotlinx.android.synthetic.main.pick_image_dialog.view.imageFromStorage
+import kotlinx.android.synthetic.main.send_document_dialog.view.*
 import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
@@ -213,7 +218,7 @@ class MessageActivity : AppCompatActivity() {
         if(internetConnection){
             checkChatBool = checkChatCreated(receiverID!!)
             getChatID(receiverID!!)
-            checkOnlineStatus(receiverID!!)
+//            checkOnlineStatus(receiverID!!)
         } else if(!internetConnection){
             receiverID?.let { messageViewModel.getUserMessageFromRoomDb(it) }
         }
@@ -383,7 +388,7 @@ class MessageActivity : AppCompatActivity() {
     private fun updateImageDialog(){
 
         val updateDialog = AlertDialog.Builder(this)
-        val layout:View = LayoutInflater.from(this).inflate(R.layout.pick_image_dialog,
+        val layout:View = LayoutInflater.from(this).inflate(R.layout.send_document_dialog,
             null,false)
         updateDialog.setView(layout)
 
@@ -398,6 +403,16 @@ class MessageActivity : AppCompatActivity() {
         layout.imageFromStorage.setOnClickListener {
             pickImages.launch("image/*")
             dialog.dismiss()
+        }
+
+        layout.selectDocument.setOnClickListener {
+            val intent = Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT)
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.flags = FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
+            getFilesLauncher.launch(intent)
         }
 
         dialog = updateDialog.create()
@@ -489,6 +504,16 @@ class MessageActivity : AppCompatActivity() {
         }
 
         override fun afterTextChanged(s: Editable?) {
+        }
+    }
+
+    private var getFilesLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val data: Intent = it.data!!
+            val uri: Uri? = data.data
+            receiverID?.let { it1 -> uri?.let { it2 -> messageViewModel.sendDocumentFile(it2, it1) } }
         }
     }
 

@@ -558,6 +558,30 @@ class ChatRepositoryImpl(
         }
     }
 
+    override fun sendDocumentFile(data: Uri, receiverID: String) {
+        var fileUrl: String = ""
+
+        conversationID?.let {
+            appUtil.getStorageReference().child(AppConstants.chatPath).child(it).child(System.currentTimeMillis().toString()).putFile(data)
+                .addOnSuccessListener {
+                    val task = it.storage.downloadUrl
+                    task.addOnCompleteListener { uri ->
+                        fileUrl = uri.result.toString()
+                        Log.d("VOİCE", fileUrl)
+                        Log.d("IMAGE UPLOADED", "TRUE")
+                        GlobalScope.launch(Dispatchers.IO) {
+                            withContext(Dispatchers.IO) {
+                                if (!fileUrl.isNullOrEmpty()) {
+                                    sendMessage(fileUrl, receiverID, "document")
+                                    Log.d("MESSAGESENDED", "TRUE")
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
     operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: MutableList<T>) {
         val value = this.value ?: mutableListOf()
         value.addAll(values)

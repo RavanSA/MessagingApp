@@ -111,4 +111,8 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
         return chatRepo.sendVoiceMessage(lastAudioFile, receiverID)
     }
 
+    fun sendDocumentFile(data: Uri, receiverID: String){
+        return chatRepo.sendDocumentFile(data, receiverID)
+    }
+
 }

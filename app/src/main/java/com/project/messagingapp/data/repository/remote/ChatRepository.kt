@@ -62,4 +62,6 @@ interface ChatRepository {
     suspend fun sendImage(uri: Uri,receiverID: String)
 
     fun sendVoiceMessage( lastAudioFile: String, receiveID: String)
+
+    fun sendDocumentFile(data: Uri, receiverID: String)
 }
