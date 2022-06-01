@@ -9,6 +9,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -91,6 +92,7 @@ class AppUtil {
         return false
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun checkPermission(context: Activity,
                         vararg permissions: String, reqCode: Int= PERMISSION_REQ_CODE): Boolean {
         var allPermitted = false

@@ -582,6 +582,22 @@ class ChatRepositoryImpl(
         }
     }
 
+    override fun sendCurrentLocation(currentLocation: String, receiverID: String) {
+//        val location = currentLocation[0] + "," + currentLocation[1]
+
+        Log.d("CURRENTLATITUDE",currentLocation)
+//        Log.d("CURRENTLONGTITUDE",currentLocation[1])
+
+        GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.IO){
+//                if(!currentLocation[0].isNullOrEmpty() || !currentLocation[1].isNullOrEmpty()) {
+                    sendMessage(currentLocation, receiverID, "location")
+//                }
+            }
+        }
+
+    }
+
     operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: MutableList<T>) {
         val value = this.value ?: mutableListOf()
         value.addAll(values)

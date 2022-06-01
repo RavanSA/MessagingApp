@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.project.messagingapp.data.ChatDatabase
 import com.project.messagingapp.data.model.*
+import com.project.messagingapp.data.repository.remote.AppRepo
 import com.project.messagingapp.data.repository.remote.ChatRepositoryImpl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ import org.json.JSONObject
 class MessageViewModel(application: Application): AndroidViewModel(application) {
 
     var chatRepo: ChatRepositoryImpl
+    var appRepo: AppRepo
 
     init {
         val chatListDao = ChatDatabase.getLocalDatabase(application).getChatListRoomDao()
@@ -23,6 +25,7 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
         val contactListDao = ChatDatabase.getLocalDatabase(application).getContactListDao()
         val contactChatDao = ChatDatabase.getLocalDatabase(application).getContactChatListDao()
         chatRepo = ChatRepositoryImpl(chatListDao, chatDao,contactListDao,contactChatDao)
+        appRepo = AppRepo.SingletonStatic.getInstance(contactListDao)
     }
 
         suspend fun createChat(message: String, receiverID: String): LiveData<Unit> {
@@ -113,6 +116,14 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
 
     fun sendDocumentFile(data: Uri, receiverID: String){
         return chatRepo.sendDocumentFile(data, receiverID)
+    }
+
+    fun getUserCurrentLocation(): Array<String> {
+        return appRepo.getCurrentUserLocation()
+    }
+
+    fun sendCurrentLocation(currentLocation:String,receiverID: String) {
+        return chatRepo.sendCurrentLocation(currentLocation, receiverID)
     }
 
 }

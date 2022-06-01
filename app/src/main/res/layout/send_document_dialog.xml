@@ -39,4 +39,17 @@
         android:backgroundTint="@color/white"
         android:text="Select Document Storage"
         android:textColor="@color/WHITE" />
+
+
+    <Button
+        android:id="@+id/selectLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageFromCamera"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="160dp"
+        android:background="@color/BackGround"
+        android:backgroundTint="@color/white"
+        android:text="Send Current Location"
+        android:textColor="@color/WHITE" />
 </RelativeLayout>

@@ -63,6 +63,8 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         lateinit var dataBindingLeftAudio: LeftAudioMessageItemBinding
         lateinit var dataBindingRightFile: RightFileMessageItemBinding
         lateinit var dataBindingLeftFile: LeftFileMessageItemBinding
+        lateinit var dataBindingRightLocation: RightLocationMessageItemBinding
+        lateinit var dataBindingLeftLocation: LeftLocationMessageItemBinding
         if (viewType == 0) {
             dataBindingRight = RightMessageLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -111,6 +113,22 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
             )
         }
 
+    if (viewType == 1000) {
+        dataBindingRightLocation= RightLocationMessageItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+    }
+
+    if (viewType == 1100) {
+        dataBindingLeftLocation = LeftLocationMessageItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+    }
+
          if (viewType == 0) {
            return MessageViewHolderRight(dataBindingRight)
         } else if (viewType == 1) {
@@ -123,6 +141,10 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
              return RightFileMessageViewHolder(dataBindingRightFile)
          } else if (viewType == 110) {
              return LeftFileMessageViewHolder(dataBindingLeftFile)
+         } else if (viewType == 1000) {
+             return RightLocationMessageViewHolder(dataBindingRightLocation)
+         } else if (viewType == 1100) {
+             return LeftLocationMessageViewHolder(dataBindingLeftLocation)
          }
 
 
@@ -145,6 +167,10 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         } else if (messageModel.senderId !== AppUtil().getUID()!! &&
             (messageModel.type == "image" || messageModel.type == "text")){
             return 1
+        } else if(messageModel.senderId == AppUtil().getUID()!! && messageModel.type == "location") {
+            return 1000
+        } else if (messageModel.senderId !== AppUtil().getUID()!! && messageModel.type == "location" ){
+            return 1100
         }
 
         return super.getItemViewType(position)
@@ -180,7 +206,15 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         }
 
         if(getItemViewType(position) == 110){
-            (holder as LeftAudioMessageViewHolder).bind(context, messages!![position])
+            (holder as LeftFileMessageViewHolder).bind(messages!![position])
+        }
+
+        if(getItemViewType(position) == 1000){
+            (holder as RightLocationMessageViewHolder).bind(messages!![position])
+        }
+
+        if(getItemViewType(position) == 1100){
+            (holder as LeftLocationMessageViewHolder).bind(messages!![position])
         }
 
     }
@@ -349,6 +383,38 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
             }
         }
 
+
+    inner class RightLocationMessageViewHolder(var rightLocationMessageItemBinding: RightLocationMessageItemBinding)
+        : RecyclerView.ViewHolder(rightLocationMessageItemBinding.root) {
+        fun bind(messages: ChatRoom){
+            rightLocationMessageItemBinding.locationOpener.setOnClickListener {
+
+                val gpsArr: List<String> = messages.message.split(",")
+                val latitude = gpsArr[0]
+                val longtitude = gpsArr[1]
+                val gmmIntentUri: Uri = Uri.parse("google.navigation:q=$latitude,$longtitude")
+                val intent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                intent.`package` = "com.google.android.apps.maps"
+                it.context.startActivity(intent)
+            }
+        }
+    }
+
+
+    inner class LeftLocationMessageViewHolder(var leftLocationMessageItemBinding: LeftLocationMessageItemBinding)
+        : RecyclerView.ViewHolder(leftLocationMessageItemBinding.root){
+        fun bind( messages: ChatRoom){
+            leftLocationMessageItemBinding.locationOpener.setOnClickListener {
+                val gpsArr: List<String> = messages.message.split(",")
+                val latitude = gpsArr[0]
+                val longtitude = gpsArr[1]
+                val gmmIntentUri: Uri = Uri.parse("google.navigation:q=$latitude,$longtitude")
+                val intent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                intent.`package` = "com.google.android.apps.maps"
+                it.context.startActivity(intent)
+            }
+        }
+    }
 
     override fun getItemCount(): Int {
         return messages!!.size

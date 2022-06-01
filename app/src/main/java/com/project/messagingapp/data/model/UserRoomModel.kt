@@ -17,6 +17,7 @@ data class UserRoomModel(
     val userStatus: String,
     @ColumnInfo(name = "profileImage")
     val profilePhoto: String
+
 )
 {
     constructor()

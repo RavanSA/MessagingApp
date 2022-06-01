@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
-import android.location.LocationRequest
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -18,21 +16,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationListener
-import com.google.android.gms.location.LocationRequest.create
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseApp.initializeApp
 import com.google.firebase.database.FirebaseDatabase
 import com.project.messagingapp.R
 import com.project.messagingapp.ui.main.viewmodel.SplashViewModel
-import com.google.firebase.iid.FirebaseInstanceIdReceiver
-import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessaging.getInstance
 import com.project.messagingapp.data.model.ChatListRoom
-import com.project.messagingapp.databinding.FragmentMainChatListBinding
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.utils.AppUtil
 import kotlinx.coroutines.flow.collect
@@ -45,6 +36,7 @@ class SplashScreen : AppCompatActivity() {
     private lateinit var chatListViewModel: ChatListViewModel
     private var testChatList:MutableList<ChatListRoom> = mutableListOf()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    var gps: DoubleArray = doubleArrayOf(0.0,0.0)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,9 +155,19 @@ class SplashScreen : AppCompatActivity() {
         val locationListener = android.location.LocationListener { location ->
             val latitute = location.latitude
             val longitute = location.longitude
+            gps[0] = latitute
+            gps[1] = longitute
 
             Log.i("AAAAAAAAAAAAAAAtest", "Latitute: $latitute ; Longitute: $longitute")
             AppUtil().updateUserLocation(latitute.toString(),longitute.toString())
+
+            val sharedPref: SharedPreferences = this
+                .getSharedPreferences("com.project.messaginapp.location",
+                    Context.MODE_PRIVATE)
+            val strLocation: String = gps[0].toString() + "," + gps[1].toString()
+            val editor = sharedPref.edit()
+            editor.putString("LOCATION",strLocation)
+            editor.apply()
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -177,6 +179,11 @@ class SplashScreen : AppCompatActivity() {
             return
         }
         locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
+
+    }
+
+    fun getCurrentUserLocation(): String {
+        return gps[0].toString() + "," + gps[1].toString()
     }
 
 

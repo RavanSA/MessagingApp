@@ -64,4 +64,6 @@ interface ChatRepository {
     fun sendVoiceMessage( lastAudioFile: String, receiveID: String)
 
     fun sendDocumentFile(data: Uri, receiverID: String)
+
+    fun sendCurrentLocation(currentLocation: String, receiverID: String)
 }

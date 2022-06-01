@@ -4,9 +4,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.net.Uri
@@ -33,6 +35,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
@@ -83,6 +86,7 @@ class MessageActivity : AppCompatActivity() {
     private var recordDuration = 0L
     private val REQ_AUDIO_PERMISSION=29
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -337,6 +341,7 @@ class MessageActivity : AppCompatActivity() {
 
             })
         }
+
     }
 
     override fun onResume() {
@@ -419,8 +424,23 @@ class MessageActivity : AppCompatActivity() {
             getFilesLauncher.launch(intent)
         }
 
+        layout.selectLocation.setOnClickListener{
+            sendCurrentLocation()
+        }
+
         dialog = updateDialog.create()
         dialog.show()
+    }
+
+    private fun sendCurrentLocation() {
+//        val currentLocationTest = SplashScreen().gps
+//
+//       val currentLocation = currentLocationTest[0].toString() + "," + currentLocationTest[1].toString()
+        val sharedPref : SharedPreferences = this@MessageActivity.
+        getSharedPreferences("com.project.messaginapp.location", Context.MODE_PRIVATE)
+
+        val currentLocation = sharedPref.getString("LOCATION",null )
+        receiverID?.let { currentLocation?.let { it1 -> messageViewModel.sendCurrentLocation(it1, it) } }
     }
 
     private val requestPermissionLauncher =
@@ -520,5 +540,7 @@ class MessageActivity : AppCompatActivity() {
             receiverID?.let { it1 -> uri?.let { it2 -> messageViewModel.sendDocumentFile(it2, it1) } }
         }
     }
+
+
 
 }
