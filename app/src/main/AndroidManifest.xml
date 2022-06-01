@@ -26,6 +26,9 @@
         android:theme="@style/Theme.MessagingApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.main.view.activities.WebView"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.view.activities.NearbyUserFragment"
             android:exported="false" />
         <activity

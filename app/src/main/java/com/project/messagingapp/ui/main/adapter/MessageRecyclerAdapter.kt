@@ -12,19 +12,23 @@ import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatRoom
 import com.project.messagingapp.data.model.MessageModel
-import com.project.messagingapp.databinding.LeftAudioMessageItemBinding
-import com.project.messagingapp.databinding.LeftMessageItemBinding
-import com.project.messagingapp.databinding.RightAudioMessageItemBinding
-import com.project.messagingapp.databinding.RightMessageLayoutBinding
+import com.project.messagingapp.databinding.*
 import com.project.messagingapp.ui.main.adapter.MessageRecyclerAdapter.*
 import com.project.messagingapp.utils.AppUtil
 import io.ak1.pix.helpers.show
 import kotlinx.android.synthetic.main.nearby_user_item.view.*
 import kotlinx.android.synthetic.main.right_audio_message_item.view.*
 import java.io.IOException
+import com.project.messagingapp.R
+import android.content.Intent
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.project.messagingapp.ui.main.view.activities.MessageActivity
+import com.project.messagingapp.ui.main.view.activities.WebView
+
 
 class MessageRecyclerAdapter(
     private val messages: MutableList<ChatRoom>?
@@ -57,6 +61,8 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         lateinit var dataBindingLeft: LeftMessageItemBinding
         lateinit var dataBindingRightAudio: RightAudioMessageItemBinding
         lateinit var dataBindingLeftAudio: LeftAudioMessageItemBinding
+        lateinit var dataBindingRightFile: RightFileMessageItemBinding
+        lateinit var dataBindingLeftFile: LeftFileMessageItemBinding
         if (viewType == 0) {
             dataBindingRight = RightMessageLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -88,6 +94,23 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
                 false
             )
         }
+
+        if (viewType == 100) {
+            dataBindingRightFile = RightFileMessageItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        }
+
+        if (viewType == 110) {
+            dataBindingLeftFile = LeftFileMessageItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        }
+
          if (viewType == 0) {
            return MessageViewHolderRight(dataBindingRight)
         } else if (viewType == 1) {
@@ -96,7 +119,12 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
             return RightAudioMessageViewHolder(dataBindingRightAudio)
         } else if (viewType == 11) {
             return LeftAudioMessageViewHolder(dataBindingLeftAudio)
-        }
+        } else if (viewType == 100) {
+             return RightFileMessageViewHolder(dataBindingRightFile)
+         } else if (viewType == 110) {
+             return LeftFileMessageViewHolder(dataBindingLeftFile)
+         }
+
 
         return super.createViewHolder(parent,viewType)
     }
@@ -110,6 +138,10 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
             return 10
         } else if(messageModel.senderId !== AppUtil().getUID()!! && messageModel.type == "audio") {
             return 11
+        }else if(messageModel.senderId == AppUtil().getUID()!! && messageModel.type == "document") {
+            return 100
+        } else if(messageModel.senderId !== AppUtil().getUID()!! && messageModel.type == "document") {
+            return 110
         } else if (messageModel.senderId !== AppUtil().getUID()!! &&
             (messageModel.type == "image" || messageModel.type == "text")){
             return 1
@@ -140,6 +172,14 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         }
 
         if(getItemViewType(position) == 11){
+            (holder as LeftAudioMessageViewHolder).bind(context, messages!![position])
+        }
+
+        if(getItemViewType(position) == 100){
+            (holder as RightFileMessageViewHolder).bind(messages!![position])
+        }
+
+        if(getItemViewType(position) == 110){
             (holder as LeftAudioMessageViewHolder).bind(context, messages!![position])
         }
 
@@ -282,6 +322,29 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
                     } catch (e: IOException) {
                         println("ERROR OCCURED")
                     }
+                }
+            }
+        }
+
+    inner class RightFileMessageViewHolder(var rightFileMessageItemBinding: RightFileMessageItemBinding)
+        : RecyclerView.ViewHolder(rightFileMessageItemBinding.root) {
+            fun bind(messages: ChatRoom){
+                rightFileMessageItemBinding.fileOpener.setOnClickListener {
+                    val intent = Intent(it.context, WebView::class.java)
+                    intent.putExtra("url",messages.message)
+                    it.context.startActivity(intent)
+                }
+            }
+        }
+
+
+    inner class LeftFileMessageViewHolder(var leftFileMessageItemBinding: LeftFileMessageItemBinding)
+        : RecyclerView.ViewHolder(leftFileMessageItemBinding.root){
+            fun bind( messages: ChatRoom){
+                leftFileMessageItemBinding.fileOpener.setOnClickListener {
+                    val intent = Intent(it.context, WebView::class.java)
+                    intent.putExtra("url",messages.message)
+                    it.context.startActivity(intent)
                 }
             }
         }
