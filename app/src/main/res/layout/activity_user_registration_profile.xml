@@ -30,7 +30,7 @@
             android:hint="Username"
             android:inputType="textPersonName|textCapWords"
             android:padding="8dp"
-            android:textColor="@color/WHITE"
+            android:textColor="@color/black"
             android:textSize="20sp" />
 
 
@@ -42,7 +42,7 @@
             android:hint="Status"
             android:inputType="textPersonName|textCapWords"
             android:padding="8dp"
-            android:textColor="@color/WHITE"
+            android:textColor="@color/black"
             android:textSize="20sp" />
 
 

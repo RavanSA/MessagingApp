@@ -107,9 +107,13 @@ class MessageActivity : AppCompatActivity() {
         messageBinding.btnSend.setOnClickListener {
             val msgTextString = messageBinding.msgText.text.toString()
             if(msgTextString.isNotEmpty()){
-                Log.d("MESSAGEISEMPTY","TRUE")
-                    sendMessageObserve(msgTextString,receiverID!!)
-                    msgText.setText("")
+                GlobalScope.launch(Dispatchers.Main) {
+                    Log.d("MESSAGEISEMPTY", "TRUE")
+                    withContext(Dispatchers.Main) {
+                        sendMessageObserve(msgTextString, receiverID!!)
+                        msgText.setText("")
+                    }
+                }
             }
         }
 
@@ -288,14 +292,14 @@ class MessageActivity : AppCompatActivity() {
             })
     }
 
-    private fun sendMessageObserve(message: String, receiverID: String) {
-        lifecycleScope.launch {
+    private suspend fun sendMessageObserve(message: String, receiverID: String) {
             Log.d("ACTIVITYCHECKCHAT", checkChatBool.toString())
                 val bool = !checkChatCreated(receiverID).isNullOrEmpty()
 
                 if (bool) {
-                    sendMessage(message, receiverID)
-                    getToken(message,receiverID,userName!!)
+                        sendMessage(message, receiverID)
+                    userName?.let { getToken(message, receiverID, it) }
+
 //                    chatListViewModel.contactLastMessageUpdate(
 //                        element.message_date,
 //                        message,
@@ -306,7 +310,7 @@ class MessageActivity : AppCompatActivity() {
 //                    messageViewModel.createChatIfNotExist()
                 }
         }
-    }
+
 
     private fun checkOnlineStatus( receiverID: String) {
        lifecycleScope.launch {

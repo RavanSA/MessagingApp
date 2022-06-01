@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,9 @@ class WebView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web_view)
         app_web_view.settings.setJavaScriptEnabled(true)
+        app_web_view.settings.allowFileAccess
+        app_web_view.settings.allowContentAccess
+        app_web_view.settings.displayZoomControls
 
         url = intent.getStringExtra("url")
 
@@ -42,14 +46,16 @@ class WebView : AppCompatActivity() {
         }
 
 
-
-        app_web_view.loadUrl("https://www.google.co.in/")
+        Log.d("URLFORWEBVİEW", url.toString())
+        app_web_view.loadUrl("$url + .pdf")
 
     }
 
 
     private fun handler(uri: Uri): Boolean {
         val intent = Intent(Intent.ACTION_VIEW,uri)
+        intent.setDataAndType(Uri.parse(uri.toString()), "application/pdf")
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         startActivity(intent)
         return true
     }

@@ -330,8 +330,8 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         : RecyclerView.ViewHolder(rightFileMessageItemBinding.root) {
             fun bind(messages: ChatRoom){
                 rightFileMessageItemBinding.fileOpener.setOnClickListener {
-                    val intent = Intent(it.context, WebView::class.java)
-                    intent.putExtra("url",messages.message)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(messages.message + ".pdf")
                     it.context.startActivity(intent)
                 }
             }
@@ -342,8 +342,8 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         : RecyclerView.ViewHolder(leftFileMessageItemBinding.root){
             fun bind( messages: ChatRoom){
                 leftFileMessageItemBinding.fileOpener.setOnClickListener {
-                    val intent = Intent(it.context, WebView::class.java)
-                    intent.putExtra("url",messages.message)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(messages.message + ".pdf")
                     it.context.startActivity(intent)
                 }
             }
