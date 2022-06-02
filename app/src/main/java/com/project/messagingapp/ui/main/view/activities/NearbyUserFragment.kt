@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.view.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +14,8 @@ import com.project.messagingapp.ui.main.adapter.NearbyUsersAdapter
 import com.project.messagingapp.ui.main.viewmodel.NearbyUsersViewModel
 import kotlinx.android.synthetic.main.activity_nearby_user_fragment.*
 import kotlinx.android.synthetic.main.nearby_user_item.*
+import kotlinx.android.synthetic.main.toolbar_for_nearby.*
+import kotlinx.android.synthetic.main.toolbar_message.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,6 +41,14 @@ class NearbyUserFragment : AppCompatActivity() {
             withContext(Dispatchers.Main){
                 callAdapter(data)
             }
+        }
+
+        nearbyBack.setOnClickListener {
+            val contactActivity = Intent(
+                this,
+                MainChatScreen::class.java
+            )
+            startActivity(contactActivity)
         }
 
     }

@@ -47,18 +47,17 @@
                 android:singleLine="false"
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                android:text="test"
+                android:text=""
                 android:textStyle="bold"/>
 <!--                android:visibility="@{message.type.equals(`text`)?View.VISIBLE:View.GONE}" />-->
 
-<!--            <ImageView-->
-
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:scaleType="fitCenter"-->
-<!--                android:src="@drawable/ic_launcher_background"/>-->
-<!--                android:visibility="@{message.type.equals(`text`)?View.GONE:View.VISIBLE}" />-->
-<!--            imageMessage="@{message.message}"-->
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitCenter"
+                android:id="@+id/imageMessage"
+                android:src="@drawable/ic_launcher_background"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

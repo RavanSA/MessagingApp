@@ -294,7 +294,7 @@ class AppRepo(
         return earthRadiusKm * c;
     }
 
-    private fun getCurrentUserLocation(): Array<String> {
+    fun getCurrentUserLocation(): Array<String> {
 
         val gps = arrayOf("","")
 

@@ -70,7 +70,7 @@ class GetNumber : Fragment() {
         mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
             @SuppressLint("CommitPrefEdits")
             override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-                firebaseAuth!!.signInWithCredential(p0).addOnCompleteListener {
+                firebaseAuth?.signInWithCredential(p0)?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         val userModel =
                             UserModel(

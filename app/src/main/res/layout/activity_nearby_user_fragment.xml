@@ -15,7 +15,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_margin="20dp"
         android:layout_marginTop="4dp"
         app:cardBackgroundColor="@android:color/white"
@@ -28,9 +28,9 @@
             android:id="@+id/countListNearby"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="Loading.."
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView

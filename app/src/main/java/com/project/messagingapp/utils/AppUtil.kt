@@ -1,19 +1,27 @@
 package com.project.messagingapp.utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
+private const val PERMISSION_REQ_CODE = 114
+
 class AppUtil {
+
 
     fun getUID () : String? {
         val firebaseAuth = FirebaseAuth.getInstance()
@@ -81,6 +89,23 @@ class AppUtil {
                 return true
             }
         }
+        return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun checkPermission(context: Activity,
+                        vararg permissions: String, reqCode: Int= PERMISSION_REQ_CODE): Boolean {
+        var allPermitted = false
+        for (permission in permissions) {
+            allPermitted = (ContextCompat.checkSelfPermission(context, permission)
+                    == PackageManager.PERMISSION_GRANTED)
+            if (!allPermitted) break
+        }
+        if (allPermitted) return true
+        context.requestPermissions(
+            permissions,
+            reqCode
+        )
         return false
     }
 
