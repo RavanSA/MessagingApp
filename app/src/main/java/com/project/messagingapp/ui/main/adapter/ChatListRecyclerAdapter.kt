@@ -11,6 +11,7 @@ import com.project.messagingapp.data.model.ChatModel
 import com.project.messagingapp.data.model.ContactChatList
 import com.project.messagingapp.databinding.ChatlistItemLayoutBinding
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
+import com.project.messagingapp.utils.AES
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.flow.Flow
 
@@ -29,6 +30,7 @@ class ChatListRecyclerAdapter(
     override fun onBindViewHolder(holder: ChatListRecyclerView, position: Int) {
         val chatList = chatModel[position]
         holder.list.chatModel = chatList
+        holder.list.txtChatStatus.text = AES.decrypt(chatList.lastMessageOfChat)
 
         if(!chatList.receiver_image.isEmpty()) {
             Glide.with(holder.itemView.context).load(chatList.receiver_image)
@@ -39,6 +41,8 @@ class ChatListRecyclerAdapter(
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)
             intent.putExtra("id_receiver",chatList.receiver_id)
+            intent.putExtra("chat_list_receiver_name",chatList.receiver_Name)
+            intent.putExtra("chat_list_receiver_image", chatList.receiver_image)
             it.context.startActivity(intent)
         }
 

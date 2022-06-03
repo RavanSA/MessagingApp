@@ -6,7 +6,7 @@
             name="chatModel"
             type="com.project.messagingapp.data.model.ChatModel"
             />
-        
+
         <variable
             name="online"
             type="String" />

@@ -47,8 +47,10 @@ import com.bumptech.glide.Glide
 import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatRoom
+import com.project.messagingapp.databinding.ToolbarMessageBinding
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
+import com.project.messagingapp.utils.AES
 import io.ak1.pix.helpers.hide
 import io.ak1.pix.helpers.show
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
@@ -71,10 +73,12 @@ class MessageActivity : AppCompatActivity() {
 
     private lateinit var messageBinding: ActivityMessageBinding
     private var receiverID: String? = null
+    private var userName: String? = null
+    private var receiverImage: String? = null
     private lateinit var messageViewModel: MessageViewModel
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
-    private var userName: String? = null
+    private var receiver_userName: String? = null
     private val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     private val requestcode = 1
     private var imageURI: Uri? = null
@@ -92,7 +96,8 @@ class MessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         receiverID = intent.getStringExtra("id_receiver")
-
+        receiver_userName = intent.getStringExtra("chat_list_receiver_name")
+        receiverImage = intent.getStringExtra("chat_list_receiver_image")
 
         messageViewModel = ViewModelProvider(this)[MessageViewModel::class.java]
 
@@ -107,6 +112,9 @@ class MessageActivity : AppCompatActivity() {
 
         messageBinding = ActivityMessageBinding.inflate(layoutInflater)
         setContentView(messageBinding.root)
+
+        Glide.with(this).load(receiverImage)
+            .into(msgImage)
 
         messageBinding.btnSend.setOnClickListener {
             val msgTextString = messageBinding.msgText.text.toString()
@@ -130,7 +138,7 @@ class MessageActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        imageFile.setOnClickListener {
+        messageBinding.imageFile.setOnClickListener {
             updateImageDialog()
         }
 
@@ -139,7 +147,7 @@ class MessageActivity : AppCompatActivity() {
         msgBack.setOnClickListener {
                 val contactActivity = Intent(
                     this@MessageActivity,
-                    UserContacts::class.java
+                    MainChatScreen::class.java
                 )
                 startActivity(contactActivity)
         }
@@ -167,7 +175,6 @@ class MessageActivity : AppCompatActivity() {
                 receiverID?.let { it1 -> messageViewModel.sendVoiceMessage(lastAudioFile, it1) }
             }
         }
-
     }
 
     private fun startRecording() {
@@ -301,7 +308,7 @@ class MessageActivity : AppCompatActivity() {
                 val bool = !checkChatCreated(receiverID).isNullOrEmpty()
 
                 if (bool) {
-                        sendMessage(message, receiverID)
+                        sendMessage(AES.encrypt(message), receiverID)
                     userName?.let { getToken(message, receiverID, it) }
 
 //                    chatListViewModel.contactLastMessageUpdate(
@@ -310,7 +317,7 @@ class MessageActivity : AppCompatActivity() {
 //                        conversa
 //                    )
                 } else {
-                    createChat(message, receiverID)
+                    createChat(AES.encrypt(message), receiverID)
 //                    messageViewModel.createChatIfNotExist()
                 }
         }
@@ -319,7 +326,7 @@ class MessageActivity : AppCompatActivity() {
     private fun checkOnlineStatus( receiverID: String) {
        lifecycleScope.launch {
            messageViewModel.checkOnlineStatus(receiverID).observe(this@MessageActivity, Observer {
-               messageBinding.online = it.online
+//               messageBinding.online = it.online
 
                val typing = it.typing
                userName = it.name
