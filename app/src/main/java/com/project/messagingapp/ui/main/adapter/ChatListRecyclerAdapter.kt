@@ -63,8 +63,11 @@ class ChatListRecyclerAdapter(
     override fun onBindViewHolder(holder: ChatListRecyclerView, position: Int) {
         val chatList = chatModel[position]
         holder.list.chatModel = chatList
-        holder.list.txtChatStatus.text = AES.decrypt(chatList.lastMessageOfChat)
-
+        if("https://firebasestorage.googleapis.com/" in chatList.lastMessageOfChat) {
+            holder.list.txtChatStatus.text = chatList.lastMessageOfChat
+        } else {
+            holder.list.txtChatStatus.text = AES.decrypt(chatList.lastMessageOfChat)
+        }
         if(!chatList.receiver_image.isEmpty()) {
             Glide.with(holder.itemView.context).load(chatList.receiver_image)
                 .into(holder.list.profImageChatList)
