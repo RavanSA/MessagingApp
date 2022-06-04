@@ -224,7 +224,6 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         RecyclerView.ViewHolder(rightDataBinding.root){
             fun bind(messages: ChatRoom){
                 if(messages.type == "text") {
-
                     rightDataBinding.txtMessage.text = AES.decrypt(messages.message)
                 } else if (messages.type == "image"){
                     rightDataBinding.imageMessage.visibility = View.VISIBLE

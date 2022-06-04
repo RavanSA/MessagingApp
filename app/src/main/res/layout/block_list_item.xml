@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="userItem"
+            type="com.project.messagingapp.data.model.ContactChatList" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/view_root"
+        style="@style/VView"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            style="@style/LView"
+            tools:ignore="ContentDescription">
+
+            <RelativeLayout style="@style/WView">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageProfile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/profilepic" />
+
+                <!--                <TextView-->
+                <!--                    android:visibility="@{(chatUser.user.image==null || chatUser.user.image.isEmpty) ? View.VISIBLE : View.GONE}"-->
+                <!--                    android:text="@{chatUser.localName}"-->
+                <!--                    style="@style/TxtNoImageUrlStyle" />-->
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/LWView"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    style="@style/TxtSemiSmallStyle"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/txtContactName"
+                    android:text="@{userItem.receiver_Name,default=Loading}"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/WView"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/txtContactStatus"
+                    android:text="@{userItem.receiver_status , default=loading}"
+                    android:textColor="@color/black_grey"
+                    android:textSize="16sp"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

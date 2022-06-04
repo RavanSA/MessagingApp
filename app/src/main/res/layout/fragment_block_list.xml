@@ -1,0 +1,68 @@
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+
+<androidx.core.widget.NestedScrollView
+    style="@style/ScrollRoot"
+    android:background="@color/BackGround">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        style="@style/StyleRoot"
+        android:id="@+id/view_holder">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/chat_illusration_2" />
+
+        <LinearLayout style="@style/FView"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
+
+            <LinearLayout
+                style="@style/VWView"
+                android:layout_marginTop="190dp"
+                android:elevation="5dp"
+                android:padding="20dp"
+                android:background="@color/BackGround">
+
+                <TextView
+                    style="@style/TxtSemiStyle"
+                    android:layout_marginTop="15dp"
+                    android:text="Block List" />
+
+                <TextView
+                    style="@style/TxtRgStyle"
+                    android:layout_marginTop="15dp"
+                    android:gravity="start"
+                    android:text="Remove block people you have blocked" />
+
+
+                <LinearLayout
+                    style="@style/LView"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edit_back"
+                    >
+
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewBlockList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>
+</layout>

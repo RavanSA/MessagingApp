@@ -429,10 +429,14 @@ class MessageActivity : AppCompatActivity() {
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.flags = FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
             getFilesLauncher.launch(intent)
+            dialog.dismiss()
+
         }
 
         layout.selectLocation.setOnClickListener{
             sendCurrentLocation()
+            dialog.dismiss()
+
         }
 
         dialog = updateDialog.create()

@@ -83,6 +83,14 @@ class ChatRepositoryImpl(
         return contactChatDao.getContactChatList()
     }
 
+    override fun blockUser(receiverID: String,block: String) : Unit{
+        return contactChatDao.blockUser(receiverID,block)
+    }
+
+    override fun getAllBlockedUser(): MutableList<ContactChatList> {
+        return contactChatDao.getAllBlockedUser()
+    }
+
     override fun getChatListRoom(): List<ChatListRoom> {
         return chatListDao.getChatListRoom()
     }

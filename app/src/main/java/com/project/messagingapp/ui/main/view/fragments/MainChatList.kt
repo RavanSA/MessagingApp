@@ -226,7 +226,12 @@ class MainChatList : Fragment() {
                     requireActivity(),
                     LinearLayoutManager.VERTICAL, false
                 )
-                chatAdapter = ChatListRecyclerAdapter(chatModel)
+
+//                chatBinding.recyclerViewChat.adapter = ChatListRecyclerAdapter(chatModel){ item ->
+//                    chatListViewModel.blockUser(item.)
+//                }
+
+                chatAdapter = context?.let { ChatListRecyclerAdapter(it,chatListViewModel,chatModel) }
                 chatBinding.recyclerViewChat.adapter = chatAdapter
                 chatAdapter!!.notifyDataSetChanged()
             }
