@@ -28,6 +28,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.view.activities.WebView
+import com.project.messagingapp.utils.AES
 
 
 class MessageRecyclerAdapter(
@@ -223,7 +224,7 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.
         RecyclerView.ViewHolder(rightDataBinding.root){
             fun bind(messages: ChatRoom){
                 if(messages.type == "text") {
-                    rightDataBinding.txtMessage.text = messages.message
+                    rightDataBinding.txtMessage.text = AES.decrypt(messages.message)
                 } else if (messages.type == "image"){
                     rightDataBinding.imageMessage.visibility = View.VISIBLE
                     Glide.with(context).load(messages.message)

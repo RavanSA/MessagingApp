@@ -126,4 +126,5 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
         return chatRepo.sendCurrentLocation(currentLocation, receiverID)
     }
 
+
 }

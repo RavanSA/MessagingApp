@@ -96,6 +96,11 @@ dependencies {
     implementation 'com.iceteck.silicompressorr:silicompressor:2.2.4'
     implementation "androidx.room:room-runtime:2.4.2"
     implementation 'androidx.room:room-ktx:2.4.2'
+    implementation 'com.google.mlkit:face-detection:16.1.5'
+    implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.1'
+    implementation 'org.tensorflow:tensorflow-lite:2.8.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.8.0'
+   // implementation 'org.tensorflow:tensorflow-lite-support:2.8.0'
     kapt "androidx.room:room-compiler:2.4.2"
 
 

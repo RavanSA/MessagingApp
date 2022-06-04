@@ -86,4 +86,8 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
         chatRepo.deleteChatList()
     }
 
+    fun blockUser(receiverID: String, block: String):Unit{
+        return chatRepo.blockUser(receiverID,block)
+    }
+
 }

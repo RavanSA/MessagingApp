@@ -49,14 +49,17 @@ class SettingsViewModel : ViewModel {
         val editprofile = SettingList("1","Account","ic_baseline_manage_accounts_24","Privacy, Account,Settings")
         val editprofile2 = SettingList("2","Chat","ic_baseline_chat_24","Theme,wallpaper,history")
         val editprofile3 = SettingList("3","Help","ic_baseline_help_outline_24","terms&conditions, help, feedback")
+        val editprofile4 = SettingList("4","Block List","ic_baseline_block_24","Remove block people you have blocked")
 
         val settingviewmodel1: SettingsViewModel = SettingsViewModel(editprofile)
         val settingviewmodel2: SettingsViewModel = SettingsViewModel(editprofile2)
         val settingviewmodel3: SettingsViewModel = SettingsViewModel(editprofile3)
+        val settingviewmodel4: SettingsViewModel = SettingsViewModel(editprofile4)
 
         arrlist.add(settingviewmodel1)
         arrlist.add(settingviewmodel2)
         arrlist.add(settingviewmodel3)
+        arrlist.add(settingviewmodel4)
 
         arrlistMutableLiveData.value = arrlist
 

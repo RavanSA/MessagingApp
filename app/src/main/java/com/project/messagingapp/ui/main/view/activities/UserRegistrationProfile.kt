@@ -24,7 +24,15 @@ import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.data.model.UserRoomModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
+import com.project.messagingapp.utils.AgeDetection
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.gpu.CompatibilityList
+import org.tensorflow.lite.gpu.GpuDelegate
 import java.io.File
 
 class UserRegistrationProfile : AppCompatActivity() {
@@ -38,6 +46,11 @@ class UserRegistrationProfile : AppCompatActivity() {
     private lateinit var ImageUrl: String
     private lateinit var userViewModel: UserRegistrationViewModel
     private lateinit var registrationViewModel: RegistrationViewModel
+    private val compatList = CompatibilityList()
+    private val coroutineScope = CoroutineScope( Dispatchers.Main )
+    private lateinit var ageModelInterpreter: Interpreter
+    private lateinit var genderModelInterpreter: Interpreter
+    private lateinit var ageDetection: AgeDetection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +62,10 @@ class UserRegistrationProfile : AppCompatActivity() {
             .create(UserRegistrationViewModel::class.java)
 
         registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
+
+        val options = Interpreter.Options().apply {
+            addDelegate(GpuDelegate( compatList.bestOptionsForThisDevice ) )
+        }
 
         imgPickImage.setOnClickListener {
                 SelectPicture()
@@ -68,13 +85,31 @@ class UserRegistrationProfile : AppCompatActivity() {
 
 //                    registrationViewModel.updateUser(username,status)
 
+                    if ( !compatList.isDelegateSupportedOnThisDevice ){
+                        Toast.makeText(this,"GPU acceleration is not available on this device",Toast.LENGTH_LONG).show()
+                    }
+
                     registrationViewModel.insertUser(userRoom)
+
+                    coroutineScope.launch {
+                        initModels(options)
+                    }
 
                     startActivity(Intent(this@UserRegistrationProfile,
                         MainChatScreen::class.java))
                 }
             }
         }
+
+    private suspend fun initModels(options: Interpreter.Options) = withContext( Dispatchers.Default ) {
+//        ageModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[0]), options )
+//        withContext( Dispatchers.Main ) {
+//            ageEstimationModel = AgeEstimationModel().apply {
+//                interpreter = ageModelInterpreter
+//            }
+//        }
+    }
+
 
     fun SelectPicture() {
         AwesomeDialog.build(this)
@@ -138,5 +173,55 @@ class UserRegistrationProfile : AppCompatActivity() {
             Glide.with(this).load(it).into(imgPickImage)
         }
     }
+
+
+//    private fun detectFaces(image: Bitmap) {
+//        val inputImage = InputImage.fromBitmap(image, 0)
+//        // Pass the clicked picture to MLKit's FaceDetector.
+//        firebaseFaceDetector.process(inputImage)
+//            .addOnSuccessListener { faces ->
+//                if ( faces.size != 0 ) {
+//                    // Set the cropped Bitmap into sampleImageView.
+//                    sampleImageView.setImageBitmap(cropToBBox(image, faces[0].boundingBox))
+//                    // Launch a coroutine
+//                    coroutineScope.launch {
+//
+//                        // Predict the age and the gender.
+//                        val age = ageEstimationModel.predictAge(cropToBBox(image, faces[0].boundingBox))
+//                        val gender = genderClassificationModel.predictGender(cropToBBox(image, faces[0].boundingBox))
+//
+//                        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
+//                            .getReference("Users").child(getUID()!!)
+//                            .updateChildren(floor( age.toDouble() ).toInt().toString())
+//
+//                        // Show the final output to the user.
+//
+//                    }
+//                }
+//                else {
+//                    // Show a dialog to the user when no faces were detected.
+//                    Toast.makeText(this,"no faces were detected",Toast.LENGTH_LONG).show()
+//                }
+//            }
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ageModelInterpreter.close()
+
+    }
+
+//    private fun cropToBBox(image: Bitmap, bbox: Rect) : Bitmap {
+//        return Bitmap.createBitmap(
+//            image,
+//            bbox.left - 0 * shift,
+//            bbox.top + shift,
+//            bbox.width() + 0 * shift,
+//            bbox.height() + 0 * shift
+//        )
+//    }
+
+
+
 
 }

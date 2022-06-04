@@ -2,7 +2,9 @@ package com.project.messagingapp.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import javax.annotation.Nullable
 
 
 //@Entity(
@@ -32,7 +34,12 @@ data class ContactChatList(
     @ColumnInfo(name = "message_date")
     val message_date: String = "",
     @ColumnInfo(name = "last_message")
-    var lastMessageOfChat: String = "") {
+    var lastMessageOfChat: String = "",
+    @Nullable
+    @ColumnInfo(name = "is_blocked")
+    var userIsBlocked: String = "0"
+
+){
     constructor():
             this("","","","","","",""
             ,"","")

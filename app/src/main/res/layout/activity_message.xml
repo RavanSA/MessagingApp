@@ -24,8 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/messageToolbar"
-            android:layout_marginBottom="45dp"
-            />
+            android:layout_marginBottom="90dp" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieAnimation"
@@ -33,7 +32,6 @@
             android:layout_height="30dp"
             android:layout_above="@+id/msgData"
             android:layout_marginStart="5dp"
-            android:visibility="invisible"
             bind:lottie_autoPlay="true"
             bind:lottie_loop="true"
             bind:lottie_rawRes="@raw/typing_animation"
@@ -55,63 +53,91 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.8"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:background="@drawable/message_edit_text">
 
-                <ImageView
-                    android:id="@+id/imageFile"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
-                    android:layout_gravity="center|bottom"
-                    android:layout_marginStart="5dp"
-                    android:src="@drawable/ic_baseline_attach_file_24" />
 
-                <EditText
-                    android:id="@+id/msgText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:hint="Message"
-                    android:inputType="textMultiLine"
-                    android:padding="8dp"
-                    android:scrollbars="vertical"
-                    android:text=""/>
             </LinearLayout>
 
 
-            <ImageView
-                android:id="@+id/btnSend"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginEnd="5dp"
-                android:layout_weight=".2"
-                android:src="@drawable/ic_baseline_send_24"
-                android:visibility="invisible"
-                />
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                style="@style/LView"
+                tools:ignore="ContentDescription">
 
-            <ImageView
-                android:id="@+id/imgRecord"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="bottom"
-                android:layout_marginEnd="5dp"
-                android:padding="3dp"
-                android:layout_marginBottom="3dp"
-                android:src="@drawable/ic_baseline_mic_24"/>
+                <LinearLayout
+                    style="@style/LView"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/message_edit_text">
+
+                    <ImageView
+                        android:id="@+id/imageFile"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:src="@drawable/ic_baseline_attach_file_24" />
+
+                    <RelativeLayout
+                        style="@style/LWView"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="3dp"
+                        >
+
+                        <EditText
+                            android:id="@+id/msgText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:layout_marginEnd="3dp"
+                            android:hint="Message"
+                            android:inputType="textMultiLine"
+                            android:padding="8dp"
+                            android:scrollbars="vertical"
+                            android:text="" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/img_record"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginEnd="5dp"
+                        android:padding="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:src="@drawable/ic_baseline_mic_24"
+                         />
+
+                    <ImageView
+                        android:id="@+id/btnSend"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_baseline_send_24"
+                        android:visibility="visible"
+                        />
+
+                </LinearLayout>
 
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_voice"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_gravity="end|bottom"
-                android:visibility="gone"
-                bind:lottie_autoPlay="true"
-                bind:lottie_loop="true"
-                bind:lottie_rawRes="@raw/lottie_voice_animation"
-                bind:lottie_repeatCount="20"
-                />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_voice"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_gravity="end|bottom"
+                    android:visibility="gone"
+                    bind:lottie_autoPlay="true"
+                    bind:lottie_loop="true"
+                    bind:lottie_rawRes="@raw/lottie_voice_animation"
+                    bind:lottie_repeatCount="20"
+                    />
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
         </LinearLayout>

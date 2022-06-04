@@ -66,4 +66,8 @@ interface ChatRepository {
     fun sendDocumentFile(data: Uri, receiverID: String)
 
     fun sendCurrentLocation(currentLocation: String, receiverID: String)
+
+    fun blockUser(receiverID: String, block: String) : Unit
+
+    fun getAllBlockedUser(): MutableList<ContactChatList>
 }

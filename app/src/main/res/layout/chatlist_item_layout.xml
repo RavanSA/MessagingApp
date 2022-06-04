@@ -58,7 +58,6 @@
                         android:id="@+id/txtChatStatus"
                         android:textColor="@color/black_grey"
                         android:ellipsize="end"
-                        android:text="@{chatModel.lastMessageOfChat,default=Nothing}"
                         android:textSize="14sp" />
 
                     <TextView

@@ -104,6 +104,12 @@ class SettingsFragment : Fragment(), SettingRecyclerClickListener {
             "Chat" -> {
                 Toast.makeText(requireContext(),"CHAT", Toast.LENGTH_LONG).show()
             }
+              "Block List" -> {
+                  val transaction = activity?.supportFragmentManager?.beginTransaction()
+                  transaction?.replace(R.id.setting_container, BlockList())
+                  transaction?.disallowAddToBackStack()
+                  transaction?.commit()
+              }
             "Help" -> {
                 Toast.makeText(requireContext(),"HELP", Toast.LENGTH_LONG).show()
             }
