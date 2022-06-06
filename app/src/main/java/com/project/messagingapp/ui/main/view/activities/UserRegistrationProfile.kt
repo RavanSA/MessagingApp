@@ -2,7 +2,10 @@ package com.project.messagingapp.ui.main.view.activities
 
 import android.content.Context
 import android.content.Intent
+import org.tensorflow.lite.support.common.FileUtil
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.Rect
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,11 +23,15 @@ import com.project.messagingapp.R
 import com.example.awesomedialog.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.project.messagingapp.BuildConfig
 import com.project.messagingapp.data.model.UserRoomModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import com.project.messagingapp.ui.main.viewmodel.UserRegistrationViewModel
 import com.project.messagingapp.utils.AgeDetection
+import com.project.messagingapp.utils.AppUtil
 import kotlinx.android.synthetic.main.activity_user_registration_profile.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +41,15 @@ import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.gpu.GpuDelegate
 import java.io.File
+import java.lang.Math.floor
+import android.provider.MediaStore
+
+import android.os.Build
+
+import android.content.ContentResolver
+import android.graphics.ImageDecoder
+import java.lang.Exception
+
 
 class UserRegistrationProfile : AppCompatActivity() {
 
@@ -48,9 +64,15 @@ class UserRegistrationProfile : AppCompatActivity() {
     private lateinit var registrationViewModel: RegistrationViewModel
     private val compatList = CompatibilityList()
     private val coroutineScope = CoroutineScope( Dispatchers.Main )
+    private val shift = 5
     private lateinit var ageModelInterpreter: Interpreter
     private lateinit var genderModelInterpreter: Interpreter
     private lateinit var ageDetection: AgeDetection
+    private val realTimeOpts = FaceDetectorOptions.Builder()
+        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+        .build()
+    private val firebaseFaceDetector = FaceDetection.getClient(realTimeOpts)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +87,10 @@ class UserRegistrationProfile : AppCompatActivity() {
 
         val options = Interpreter.Options().apply {
             addDelegate(GpuDelegate( compatList.bestOptionsForThisDevice ) )
+        }
+
+        coroutineScope.launch {
+            initModels(options)
         }
 
         imgPickImage.setOnClickListener {
@@ -91,9 +117,9 @@ class UserRegistrationProfile : AppCompatActivity() {
 
                     registrationViewModel.insertUser(userRoom)
 
-                    coroutineScope.launch {
-                        initModels(options)
-                    }
+
+                    val bitmapForDetectAge = image?.let { it1 -> uriToBitmap(it1) }
+                    bitmapForDetectAge?.let { it1 -> detectFaces(it1) }
 
                     startActivity(Intent(this@UserRegistrationProfile,
                         MainChatScreen::class.java))
@@ -102,12 +128,12 @@ class UserRegistrationProfile : AppCompatActivity() {
         }
 
     private suspend fun initModels(options: Interpreter.Options) = withContext( Dispatchers.Default ) {
-//        ageModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[0]), options )
-//        withContext( Dispatchers.Main ) {
-//            ageEstimationModel = AgeEstimationModel().apply {
-//                interpreter = ageModelInterpreter
-//            }
-//        }
+        ageModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , "model_age_q.tflite"), options )
+        withContext( Dispatchers.Main ) {
+            ageDetection = AgeDetection().apply {
+                interpreter = ageModelInterpreter
+            }
+        }
     }
 
 
@@ -125,7 +151,8 @@ class UserRegistrationProfile : AppCompatActivity() {
                 "From Files",
                 buttonBackgroundColor = R.color.white,
             ) {  pickImages.launch("image/*")}
-            .onNegative( "Take Picture",
+            .onNegative(
+                "Take Picture",
                 buttonBackgroundColor = R.color.white,
             ){takePicture()}
     }
@@ -175,35 +202,31 @@ class UserRegistrationProfile : AppCompatActivity() {
     }
 
 
-//    private fun detectFaces(image: Bitmap) {
-//        val inputImage = InputImage.fromBitmap(image, 0)
-//        // Pass the clicked picture to MLKit's FaceDetector.
-//        firebaseFaceDetector.process(inputImage)
-//            .addOnSuccessListener { faces ->
-//                if ( faces.size != 0 ) {
-//                    // Set the cropped Bitmap into sampleImageView.
-//                    sampleImageView.setImageBitmap(cropToBBox(image, faces[0].boundingBox))
-//                    // Launch a coroutine
-//                    coroutineScope.launch {
-//
-//                        // Predict the age and the gender.
-//                        val age = ageEstimationModel.predictAge(cropToBBox(image, faces[0].boundingBox))
-//                        val gender = genderClassificationModel.predictGender(cropToBBox(image, faces[0].boundingBox))
-//
-//                        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
-//                            .getReference("Users").child(getUID()!!)
-//                            .updateChildren(floor( age.toDouble() ).toInt().toString())
-//
-//                        // Show the final output to the user.
-//
-//                    }
-//                }
-//                else {
-//                    // Show a dialog to the user when no faces were detected.
-//                    Toast.makeText(this,"no faces were detected",Toast.LENGTH_LONG).show()
-//                }
-//            }
-//    }
+    private fun detectFaces(image: Bitmap) {
+        val inputImage = InputImage.fromBitmap(image, 0)
+        firebaseFaceDetector.process(inputImage)
+            .addOnSuccessListener { faces ->
+                if ( faces.size != 0 ) {
+
+                    coroutineScope.launch {
+
+                        val age = ageDetection.predictAge(cropToBBox(image, faces[0].boundingBox))
+                        val ageFirebaseValue = floor( age.toDouble() ).toInt().toString()
+                        val databaseRef = FirebaseDatabase.getInstance()
+                            .getReference("Users").child(AppUtil().getUID()!!)
+                        val map = HashMap<String, Any>()
+                        map["estimatedAge"] = ageFirebaseValue
+                        databaseRef.updateChildren(map)
+
+
+
+                    }
+                }
+                else {
+                    Toast.makeText(this,"no faces were detected",Toast.LENGTH_LONG).show()
+                }
+            }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -211,17 +234,36 @@ class UserRegistrationProfile : AppCompatActivity() {
 
     }
 
-//    private fun cropToBBox(image: Bitmap, bbox: Rect) : Bitmap {
-//        return Bitmap.createBitmap(
-//            image,
-//            bbox.left - 0 * shift,
-//            bbox.top + shift,
-//            bbox.width() + 0 * shift,
-//            bbox.height() + 0 * shift
-//        )
-//    }
+    private fun cropToBBox(image: Bitmap, bbox: Rect) : Bitmap {
+        return Bitmap.createBitmap(
+            image,
+            bbox.left - 0 * shift,
+            bbox.top + shift,
+            bbox.width() + 0 * shift,
+            bbox.height() + 0 * shift
+        )
+    }
 
 
+    private fun uriToBitmap(imageUri: Uri): Bitmap? {
+        var bitmap: Bitmap? = null
+        val contentResolver = contentResolver
+        try {
+            bitmap = if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+            } else {
+                val source: ImageDecoder.Source =
+                    ImageDecoder.createSource(contentResolver, imageUri)
+                ImageDecoder.decodeBitmap(source)
+            }
+
+            bitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return bitmap
+    }
 
 
 }
