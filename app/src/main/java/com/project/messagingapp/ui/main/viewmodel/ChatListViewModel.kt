@@ -23,10 +23,16 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
         appRepo = AppRepo.SingletonStatic.getInstance(contactDao)
     }
 
+
+
     val currrentUserChatList = liveData(Dispatchers.IO){
         emit(chatRepo.getCurrentUserChatList())
     }
 
+
+    fun getEmotion(): String{
+        return appRepo.getEmotion()
+    }
 
     suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>? {
         return chatRepo.getChatList(chatList)

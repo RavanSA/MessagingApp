@@ -64,7 +64,7 @@ class FirebaseNotificationService: FirebaseMessagingService() {
         val databaseReference =
             FirebaseDatabase.getInstance().getReference("Users").child(AppUtil().getUID()!!)
         val map: MutableMap<String, Any> = HashMap()
-        map["token"] = token
+        map["token"] = "null"
         databaseReference.updateChildren(map)
 
     }

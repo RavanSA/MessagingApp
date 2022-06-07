@@ -61,6 +61,14 @@ class AppUtil {
         databaseRef.updateChildren(map)
     }
 
+    fun setUserMood(emotion: String){
+        val databaseRef: DatabaseReference = FirebaseDatabase.getInstance()
+            .getReference("Users").child(getUID()!!)
+        val map = HashMap<String, Any>()
+        map["emotion"] = emotion
+        databaseRef.updateChildren(map)
+    }
+
     fun getTimeAgo(date: Long): String{
         return date.toString()
     }

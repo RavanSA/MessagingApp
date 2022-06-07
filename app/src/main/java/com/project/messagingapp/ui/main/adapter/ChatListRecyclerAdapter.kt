@@ -3,10 +3,12 @@ package com.project.messagingapp.ui.main.adapter
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.graphics.toColorInt
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,6 +20,7 @@ import com.project.messagingapp.databinding.ChatlistItemLayoutBinding
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.utils.AES
+import kotlinx.android.synthetic.main.chatlist_item_layout.*
 import kotlinx.android.synthetic.main.chatlist_recycler_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +35,10 @@ class ChatListRecyclerAdapter(
 
     private lateinit var dialog: AlertDialog
 
+
+    private fun getColor(): String{
+        return chatListViewModel.getEmotion()
+    }
 //
 //    fun inflateDialog (v: Context?) {
 //        Toast.makeText(v, "long click", Toast.LENGTH_SHORT).show()
@@ -63,9 +70,18 @@ class ChatListRecyclerAdapter(
     override fun onBindViewHolder(holder: ChatListRecyclerView, position: Int) {
         val chatList = chatModel[position]
         holder.list.chatModel = chatList
+        val regex = Regex("/^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\$/gm")
+        Log.d("REGEXMEATCHES", chatList.lastMessageOfChat.trim().contains("/^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\$/gm".toRegex()).toString())
+
+        val colorStr: String = getColor()
+        if(colorStr.isNullOrEmpty()){
+            holder.list.profImageChatList.borderColor = colorStr.toColorInt()
+        }
+
         if("https://firebasestorage.googleapis.com/" in chatList.lastMessageOfChat) {
             holder.list.txtChatStatus.text = chatList.lastMessageOfChat
         } else {
+            Log.d("AESDECRYPT",chatList.lastMessageOfChat)
             holder.list.txtChatStatus.text = AES.decrypt(chatList.lastMessageOfChat)
         }
         if(!chatList.receiver_image.isEmpty()) {
