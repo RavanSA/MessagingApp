@@ -324,4 +324,21 @@ class AppRepo(
         return gps
     }
 
+
+    fun getEmotion(): String {
+        var emotion: String = ""
+        appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!).addValueEventListener(
+            object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d("USEREMOTION", snapshot.toString())
+                    emotion = snapshot.child("emotion").getValue(String::class.java).toString()
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("ERROR OCCURED", error.toString())
+                }
+            })
+        Log.d("REPOSITORYEMOTION",emotion)
+        return emotion
+    }
+
 }

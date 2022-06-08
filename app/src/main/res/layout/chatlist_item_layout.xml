@@ -26,7 +26,9 @@
                     android:id="@+id/profImageChatList"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/profilepic" />
+                    android:src="@drawable/profilepic"
+                    app:civ_border_width="4dp"
+                    app:civ_border_color="@color/BackGround"/>
 
 <!--                <TextView-->
 <!--                    android:visibility="@{(chatUser.user.user.image==null || chatUser.user.user.image.isEmpty) ? View.VISIBLE : View.GONE}"-->

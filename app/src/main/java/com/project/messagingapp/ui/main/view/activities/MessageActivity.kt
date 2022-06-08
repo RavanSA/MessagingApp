@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -51,6 +52,7 @@ import com.project.messagingapp.databinding.ToolbarMessageBinding
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.ui.main.viewmodel.RegistrationViewModel
 import com.project.messagingapp.utils.AES
+import com.project.messagingapp.utils.Classifier
 import io.ak1.pix.helpers.hide
 import io.ak1.pix.helpers.show
 import kotlinx.android.synthetic.main.activity_main_chat_screen.*
@@ -64,8 +66,12 @@ import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.android.synthetic.main.toolbar_message.*
 import org.json.JSONObject
 import kotlinx.coroutines.flow.collect
+import org.tensorflow.lite.Interpreter
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
 import java.util.*
 
 class MessageActivity : AppCompatActivity() {
@@ -89,6 +95,14 @@ class MessageActivity : AppCompatActivity() {
     private var lastAudioFile=""
     private var recordDuration = 0L
     private val REQ_AUDIO_PERMISSION=29
+    private val MODEL_ASSETS_PATH = "model_conv_lstm.tflite"
+
+    private val INPUT_MAXLEN = 300
+
+    private var tfLiteInterpreter : Interpreter? = null
+    private val classifier = Classifier(this , "word_dict.json" , INPUT_MAXLEN)
+
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("NotifyDataSetChanged")
@@ -100,6 +114,20 @@ class MessageActivity : AppCompatActivity() {
         receiverImage = intent.getStringExtra("chat_list_receiver_image")
 
         messageViewModel = ViewModelProvider(this)[MessageViewModel::class.java]
+
+        tfLiteInterpreter = Interpreter( loadModelFile() )
+
+
+        val progressDialog = ProgressDialog( this )
+        progressDialog.setMessage( "Parsing word_dict.json ..." )
+        progressDialog.setCancelable( false )
+        progressDialog.show()
+        classifier.processVocab( object: Classifier.VocabCallback {
+            override fun onVocabProcessed() {
+                // Processing done, dismiss the progressDialog.
+                progressDialog.dismiss()
+            }
+        })
 
 
         lifecycleScope.launch {
@@ -310,15 +338,13 @@ class MessageActivity : AppCompatActivity() {
                 if (bool) {
                         sendMessage(AES.encrypt(message), receiverID)
                     userName?.let { getToken(message, receiverID, it) }
+                    recognizeEmotion(message)
 
-//                    chatListViewModel.contactLastMessageUpdate(
-//                        element.message_date,
-//                        message,
-//                        conversa
 //                    )
                 } else {
                     createChat(AES.encrypt(message), receiverID)
 //                    messageViewModel.createChatIfNotExist()
+                    recognizeEmotion(message)
                 }
         }
 
@@ -539,6 +565,7 @@ class MessageActivity : AppCompatActivity() {
         }
 
         override fun afterTextChanged(s: Editable?) {
+
         }
     }
 
@@ -553,5 +580,131 @@ class MessageActivity : AppCompatActivity() {
     }
 
 
+    private fun recognizeEmotion(message: String){
+        // Init TFLiteInterpreter
+        val appUtil = AppUtil()
+        val tokenizedMessage = classifier.tokenize(message.lowercase(Locale.getDefault()).trim().toString())
+        Log.d("TOKENIZEDMESSAGE", tokenizedMessage.toString())
+        val paddedMessage = classifier.padSequence(tokenizedMessage)
+        for ( i in paddedMessage){
+            Log.d("PADDEDMESSAGEFORLOOP", i.toString())
+        }
+        Log.d("PADDEDMESSAGE", paddedMessage.size.toString())
+        val results = classifySequence(paddedMessage)
+        val maxResultValue = results.maxOrNull()
+        val label1 = results[0]
+        val label2 = results[1]
+        val label3 = results[2]
+        val label4 = results[3]
+        val label5 = results[4]
+        val label6 = results[5]
+
+        when (maxResultValue) {
+            results[0] -> {
+                //sadness
+                appUtil.setUserMood("#2a3b90")
+            }
+            results[1] -> {
+                //sadness
+                appUtil.setUserMood("#000000")
+            }
+            results[2] -> {
+                //anger
+                appUtil.setUserMood("#FF0000")
+            }
+            results[3] -> {
+                //surprise
+                appUtil.setUserMood("#e3e3e3")
+            }
+            results[4] -> {
+                //fear
+                appUtil.setUserMood("#2f2323")
+            }
+            results[5] -> {
+                //joy
+                appUtil.setUserMood("#821747")
+            }
+        }
+
+
+        Log.d("RESULTEMOTION", results.toString())
+        Log.d("LABEL1", label1.toString())
+        Log.d("LABEL2", label2.toString())
+        Log.d("LABEL3", label3.toString())
+        Log.d("LABEL4", label4.toString())
+        Log.d("LABEL5", label5.toString())
+        Log.d("LABEL6", label6.toString())
+
+
+    }
+
+    private fun loadModelFile(): MappedByteBuffer {
+
+        val assetFileDescriptor = assets.openFd(MODEL_ASSETS_PATH)
+        val fileInputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
+        val fileChannel = fileInputStream.channel
+        val startOffset = assetFileDescriptor.startOffset
+        val declaredLength = assetFileDescriptor.declaredLength
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+    }
+
+    private fun classifySequence (sequence : FloatArray ): FloatArray {
+
+//        val twoDimStringArray= arrayOf(
+//            floatArrayOf(
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F, 1293F,
+//                3849F, 4779F, 4322F)
+//        )
+
+        Log.d("SEQUENCESIZE", sequence.size.toString())
+        for ( i in sequence){
+            Log.d("PADDEDMESSAGECLASSIFIER", i.toString())
+        }
+
+        val results = FloatArray(sequence.size) { sequence[it].toFloat() }
+
+        Log.d("RSULTSFLOAT", results.toString())
+
+        val inputs : Array<FloatArray> = arrayOf(
+            sequence
+        )
+
+        Log.d("INPUTSIZE", inputs[0].size.toString())
+        val outputs : Array<FloatArray> = arrayOf(FloatArray( 6 ))
+
+        tfLiteInterpreter?.run( inputs , outputs )
+        for ( i in inputs[0]){
+            Log.d("INPUTSEQUENCE", i.toString())
+        }
+        Log.d("INPUTSCLASSFYSEQ", inputs.size.toString())
+        Log.d("OUTPUTCLASSFYSEQ", outputs.size.toString())
+        return outputs[0]
+    }
 
 }

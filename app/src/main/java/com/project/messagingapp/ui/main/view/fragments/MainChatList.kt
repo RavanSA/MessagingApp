@@ -19,6 +19,8 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -39,6 +41,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.forEach
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
+import com.project.messagingapp.databinding.ChatlistItemLayoutBinding
+import kotlinx.android.synthetic.main.chatlist_item_layout.*
 
 
 class MainChatList : Fragment() {
@@ -47,6 +51,7 @@ class MainChatList : Fragment() {
     private lateinit var chatListViewModel: ChatListViewModel
     private var chatAdapter: ChatListRecyclerAdapter? = null
     private var locationManager : LocationManager? = null
+//    private var chatItemLayout: ChatlistItemLayoutBinding? = null
 
     //    private var testChatList:MutableList<ChatListRoom> = mutableListOf()
 
@@ -55,6 +60,8 @@ class MainChatList : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         chatBinding = FragmentMainChatListBinding.inflate(layoutInflater,container,false)
+
+//        chatItemLayout = ChatlistItemLayoutBinding.inflate()
 
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
 
@@ -66,6 +73,7 @@ class MainChatList : Fragment() {
                 getCurrentUserChatList()
             }
         }
+
 
 //        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
 //

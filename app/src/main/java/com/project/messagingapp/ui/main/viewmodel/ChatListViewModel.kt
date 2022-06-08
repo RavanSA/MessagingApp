@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.project.messagingapp.data.ChatDatabase
 import com.project.messagingapp.data.model.*
@@ -23,10 +24,18 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
         appRepo = AppRepo.SingletonStatic.getInstance(contactDao)
     }
 
+
+
     val currrentUserChatList = liveData(Dispatchers.IO){
         emit(chatRepo.getCurrentUserChatList())
     }
 
+
+    fun getEmotion(): String{
+        val testValue = appRepo.getEmotion()
+        Log.d("GETEMOTION",testValue)
+        return testValue
+    }
 
     suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>? {
         return chatRepo.getChatList(chatList)
