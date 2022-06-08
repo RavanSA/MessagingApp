@@ -1,6 +1,7 @@
 package com.project.messagingapp.ui.main.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.project.messagingapp.data.ChatDatabase
 import com.project.messagingapp.data.model.*
@@ -31,7 +32,9 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
 
 
     fun getEmotion(): String{
-        return appRepo.getEmotion()
+        val testValue = appRepo.getEmotion()
+        Log.d("GETEMOTION",testValue)
+        return testValue
     }
 
     suspend fun getChatList(chatList: List<ChatListModel>): MutableList<ContactChatList>? {

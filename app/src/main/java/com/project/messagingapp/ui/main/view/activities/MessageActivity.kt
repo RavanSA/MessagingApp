@@ -565,6 +565,7 @@ class MessageActivity : AppCompatActivity() {
         }
 
         override fun afterTextChanged(s: Editable?) {
+
         }
     }
 
@@ -649,37 +650,37 @@ class MessageActivity : AppCompatActivity() {
 
     private fun classifySequence (sequence : FloatArray ): FloatArray {
 
-        val twoDimStringArray= arrayOf(
-            floatArrayOf(
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
-                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F, 1293F,
-                3849F, 4779F, 4322F)
-        )
+//        val twoDimStringArray= arrayOf(
+//            floatArrayOf(
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,
+//                0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F,    0F, 1293F,
+//                3849F, 4779F, 4322F)
+//        )
 
         Log.d("SEQUENCESIZE", sequence.size.toString())
         for ( i in sequence){

@@ -12,6 +12,9 @@ import androidx.core.graphics.toColorInt
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.project.messagingapp.R
 import com.project.messagingapp.data.model.ChatListRoom
 import com.project.messagingapp.data.model.ChatModel
@@ -20,6 +23,7 @@ import com.project.messagingapp.databinding.ChatlistItemLayoutBinding
 import com.project.messagingapp.ui.main.view.activities.MessageActivity
 import com.project.messagingapp.ui.main.viewmodel.ChatListViewModel
 import com.project.messagingapp.utils.AES
+import com.project.messagingapp.utils.AppUtil
 import kotlinx.android.synthetic.main.chatlist_item_layout.*
 import kotlinx.android.synthetic.main.chatlist_recycler_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -37,7 +41,9 @@ class ChatListRecyclerAdapter(
 
 
     private fun getColor(): String{
-        return chatListViewModel.getEmotion()
+        val testValue = chatListViewModel.getEmotion()
+        Log.d("TESTVALUE",testValue)
+        return testValue
     }
 //
 //    fun inflateDialog (v: Context?) {
@@ -73,10 +79,26 @@ class ChatListRecyclerAdapter(
         val regex = Regex("/^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\$/gm")
         Log.d("REGEXMEATCHES", chatList.lastMessageOfChat.trim().contains("/^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\$/gm".toRegex()).toString())
 
-        val colorStr: String = getColor()
-        if(colorStr.isNullOrEmpty()){
-            holder.list.profImageChatList.borderColor = colorStr.toColorInt()
-        }
+        AppUtil().getDatabaseReferenceUsers().child(AppUtil().getUID()!!).addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d("USEREMOTION", snapshot.toString())
+                    val emotion = snapshot.child("emotion").getValue(String::class.java).toString()
+                    Log.d("Emotion",emotion)
+                    holder.list.profImageChatList.borderColor = emotion.toColorInt()
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("ERROR OCCURED", error.toString())
+                }
+            })
+
+
+//        val colorStr: String = getEmotion()
+//        Log.d("COLORSTR",colorStr)
+//        if(!colorStr.isEmpty()){
+//            Log.d("TESTVALUE",colorStr)
+//            holder.list.profImageChatList.borderColor = getEmotion().toColorInt()
+//        }
 
         if("https://firebasestorage.googleapis.com/" in chatList.lastMessageOfChat) {
             holder.list.txtChatStatus.text = chatList.lastMessageOfChat
@@ -142,6 +164,23 @@ class ChatListRecyclerAdapter(
 
     override fun onLongClick(v: View?): Boolean {
         return true
+    }
+
+    fun getEmotion(): String {
+        var emotion: String = ""
+        AppUtil().getDatabaseReferenceUsers().child(AppUtil().getUID()!!).addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d("USEREMOTION", snapshot.toString())
+                    emotion = snapshot.child("e motion").getValue(String::class.java).toString()
+                    Log.d("Emotion",emotion)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("ERROR OCCURED", error.toString())
+                }
+            })
+        Log.d("REPOSITORYEMOTION",emotion)
+        return emotion
     }
 
 }
