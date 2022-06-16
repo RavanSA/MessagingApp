@@ -18,9 +18,18 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)
 ![Language](https://img.shields.io/badge/Language-Kotlin-yellowgreen.svg)
+![Language](https://img.shields.io/badge/Language-Python-yellowgreen.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/RavanSA/MessagingApp)
 ![GitHub contributors](https://img.shields.io/github/contributors/RavanSA/MessagingApp)
 ![GitHub stars](https://img.shields.io/github/stars/RavanSA/MessagingApp)
+<br/>
+Emotion Recognition
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]
+(https://colab.research.google.com/drive/1EsQAu5C0_Z3M2b1-X403RcrVzp7LJWOS?usp=sharing)
+<br/>
+Age Detection 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]
+(https://colab.research.google.com/drive/16FKc5L4K5xuTSJBIRI-PysWh0JK0mO-O?usp=sharing))
 <br/>
 ## Prerequisites 
 
