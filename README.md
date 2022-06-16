@@ -10,11 +10,10 @@
 
 
 
-# Chat Application Using Artificial Emotional Intelligence
+# A chat application developed for emotion recognition
 > The application is not like an ordinary chat application, but aims to keep its place in the market with a clean user interface, a solid application structure over a user-friendly and secure network.
 > The app will provide a modern approach to chat apps using new technologies for the community. 
 > It aims to use more machine learning approaches to determine a person's emotional state and then react to it, and try to create artificial emotional intelligence.
-> Live demo can be found [_here_](https://play.google.com/store/apps/xxxxxxxxxxxxxx) "not yet available". 
 <br/>
 
 ![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)
@@ -104,10 +103,10 @@ Preprocessing*: We use 3-channeled RGB images as input. The age estimation model
 - Message status for failed,sent,delivered and seen - InProgress
 - Supported message types
 	- Text
-	- Voice - Inprogress
-	- Image - Inprogress
-	- File - Inprogress
-	- Location - Inprogress
+	- Voice 
+	- Image 
+	- File
+	- Location
 - Typing status
 - Online, Last online
 - Notification when message received
@@ -116,8 +115,8 @@ Preprocessing*: We use 3-channeled RGB images as input. The age estimation model
 - Image editing when updating profile picture - Inprogress
 - Voice and video call using WebRTC - InProgress
 - Schedule message - InProgress
-- End-to-end encryption - InProgress
-- Block User - InProgress
+- End-to-end encryption
+- Block User 
 - Favorite Messages - InProgress
 - Update Information
 - Persistence offline authentication
@@ -125,12 +124,12 @@ Preprocessing*: We use 3-channeled RGB images as input. The age estimation model
 - Upload profile picture with using local storage and camera <br/>
 This list can be flexible
 
-## Screenshots <br/>
+<!-- ## Screenshots <br/>
 <img align="center" width="100%" height="auto"
-src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg">
+src="https://github.com/RavanSA/MessagingApp/blob/main/app/src/main/res/drawable/UI.jpg"> -->
 
 ## Project Status
-The project is currently under development. Expected completion date is June 25, 2022.
+The project is currently under development
 
 ## Future Works
 - Generate anime faces using users profile pictures<br/>
@@ -140,8 +139,6 @@ and they will have a dialog bar to set the profile picture.
 - Web application
 - Single page website to get information about the app
 
-## Contact
-Created by <a href="mailto:revan.sadiqli99@gmail.com">Ravan SADIGLI</a>.  - feel free to contact me!
 
 
 ## License<br/>
