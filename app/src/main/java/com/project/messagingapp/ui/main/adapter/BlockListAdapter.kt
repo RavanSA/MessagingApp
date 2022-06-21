@@ -32,8 +32,6 @@ class BlockListAdapter(
     private val blockList: MutableList<ContactChatList>
 ) : RecyclerView.Adapter<BlockListAdapter.BlockListView>() {
 
-//    var appContacts: List<UserModel> = appUserContacts
-//    private var allContact: List<UserModel> = appContacts
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
             BlockListAdapter.BlockListView {
@@ -55,7 +53,6 @@ class BlockListAdapter(
                 .into(holder.item.imageProfile)
         }
 
-        Log.d("IN ADAPTER","TRUE")
         holder.itemView.setOnClickListener {
             blockListViewModel.removeBlock(blockList.receiver_id,"0")
             Toast.makeText(it.context," You removed ${blockList.receiver_Name}'s block ",Toast.LENGTH_LONG).show()

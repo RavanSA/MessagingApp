@@ -67,7 +67,6 @@ class MainChatScreen : AppCompatActivity() {
                     this@MainChatScreen,
                     NearbyUserFragment::class.java
                 ))
-//                Toast.makeText(applicationContext,"CLICK",Toast.LENGTH_LONG).show()
             }
 
             R.id.searchuser -> Toast.makeText(applicationContext,"Search User",Toast.LENGTH_LONG).show()
@@ -75,17 +74,5 @@ class MainChatScreen : AppCompatActivity() {
 
         return false
     }
-
-
-//    override fun onResume() {
-//        super.onResume()
-
-//        AppUtil().updateOnlineStatus("online")
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        AppUtil().updateOnlineStatus("offline")
-//    }
 
 }

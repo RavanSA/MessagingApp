@@ -42,8 +42,6 @@ class MessageRecyclerAdapter(
 
     fun stopPlaying() {
         if(player.isPlaying) {
-//            lastReceivedPlayedHolder?.progressBar?.abandon()
-//            lastPlayedHolder?.progressBar?.abandon()
             lastReceivedPlayedHolder?.imgPlay?.setImageResource(R.drawable.ic_baseline_play_arrow_24)
             lastPlayedHolder?.imgPlay?.setImageResource(R.drawable.ic_baseline_play_arrow_24)
             player.apply {

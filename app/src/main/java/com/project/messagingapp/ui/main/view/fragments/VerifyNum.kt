@@ -34,8 +34,6 @@ class VerifyNum : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         autoPassEditText()
-//        resendButton()
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -231,7 +229,7 @@ class VerifyNum : Fragment() {
             arg1: Int,
             arg2: Int,
             arg3: Int
-        ) { // TODO Auto-generated method stub
+        ) {
         }
 
         override fun onTextChanged(
@@ -239,7 +237,7 @@ class VerifyNum : Fragment() {
             arg1: Int,
             arg2: Int,
             arg3: Int
-        ) { // TODO Auto-generated method stub
+        ) {
         }
 
     }

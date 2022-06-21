@@ -68,6 +68,7 @@ class UserRegistrationProfile : AppCompatActivity() {
     private lateinit var ageModelInterpreter: Interpreter
     private lateinit var genderModelInterpreter: Interpreter
     private lateinit var ageDetection: AgeDetection
+
     private val realTimeOpts = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
         .build()
@@ -99,17 +100,10 @@ class UserRegistrationProfile : AppCompatActivity() {
 
             UserProfileSave.setOnClickListener {
                 if (CheckUserData()) {
-                    Log.d("INCHECKUSER", image.toString())
                     image?.let { it1 -> userViewModel.UploadData(username,status, it1) }
-//                    val sharedPref : SharedPreferences = this@UserRegistrationProfile.
-//                    getSharedPreferences("com.project.messaginapp.phonenumber", Context.MODE_PRIVATE)
-//
-//                    val number = sharedPref.getString("PhoneNumber",null )
                         val userRoom = UserRoomModel(firebaseAuth!!.uid!!,username
                             ,firebaseAuth!!.currentUser!!.phoneNumber!!,status, image.toString()
                         )
-
-//                    registrationViewModel.updateUser(username,status)
 
                     if ( !compatList.isDelegateSupportedOnThisDevice ){
                         Toast.makeText(this,"GPU acceleration is not available on this device",Toast.LENGTH_LONG).show()
@@ -182,13 +176,11 @@ class UserRegistrationProfile : AppCompatActivity() {
         val sdImageMainDirectory = File(root, fname)
         image = FileProvider.getUriForFile(this@UserRegistrationProfile, "com.project.messagingapp.provider",
             sdImageMainDirectory)
-        Log.d("IMAGEINCAMERA", image.toString())
         takePicture.launch(image)
     }
 
     val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
         if (success) {
-            Log.d("IMAGEINLAUNCHER", image.toString())
             Glide.with(this).load(image).into(imgPickImage)
         }
     }
@@ -207,9 +199,7 @@ class UserRegistrationProfile : AppCompatActivity() {
         firebaseFaceDetector.process(inputImage)
             .addOnSuccessListener { faces ->
                 if ( faces.size != 0 ) {
-
                     coroutineScope.launch {
-
                         val age = ageDetection.predictAge(cropToBBox(image, faces[0].boundingBox))
                         val ageFirebaseValue = floor( age.toDouble() ).toInt().toString()
                         val databaseRef = FirebaseDatabase.getInstance()
@@ -217,9 +207,6 @@ class UserRegistrationProfile : AppCompatActivity() {
                         val map = HashMap<String, Any>()
                         map["estimatedAge"] = ageFirebaseValue
                         databaseRef.updateChildren(map)
-
-
-
                     }
                 }
                 else {
@@ -264,6 +251,4 @@ class UserRegistrationProfile : AppCompatActivity() {
 
         return bitmap
     }
-
-
 }

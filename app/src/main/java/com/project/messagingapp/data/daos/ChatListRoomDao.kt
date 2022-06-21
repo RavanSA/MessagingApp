@@ -1,9 +1,7 @@
 package com.project.messagingapp.data.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.project.messagingapp.data.model.ChatListRoom
-import com.project.messagingapp.data.model.ChatRoom
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,8 +13,6 @@ interface ChatListRoomDao {
     @Query("UPDATE chat_list SET message_date = :date, lastMessageOfChat = :lastMessage WHERE chatid = :conversationID")
     suspend fun lastMessageOfChat(lastMessage: String, date: String,conversationID: String )
 
-
-    // SELECT * FROM chat_list
     @Query("SELECT * FROM chat_list")
     fun getChatListRoom(): List<ChatListRoom>
 

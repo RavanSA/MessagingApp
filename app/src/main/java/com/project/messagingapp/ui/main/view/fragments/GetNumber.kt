@@ -58,8 +58,6 @@ class GetNumber : Fragment() {
 
         registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
-
-
         view.otpSendBtn.setOnClickListener {
             if(checkNumber()){
                 sendOneTimePassword(number)
@@ -195,6 +193,5 @@ class GenericKeyEvent internal constructor(private val currentView: EditText, pr
         }
         return false
     }
-
 
 }

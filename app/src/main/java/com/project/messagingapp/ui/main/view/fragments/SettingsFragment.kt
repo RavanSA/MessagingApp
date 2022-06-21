@@ -46,19 +46,9 @@ class SettingsFragment : Fragment(), SettingRecyclerClickListener {
 
         settingRecyclerView = settingRecycler
 
-//        settingViewModel.getUserName().observe(viewLifecycleOwner, Observer { name ->
-//            tvSettingUserName.text = name.name
-//        })
-
-
- //       Glide.with(this@SettingsFragment).load(
-   //         Uri.parse("//content://com.android.providers.media.documents/document/image%3A230391")).into(settingProfilePicture)
-
         settingViewModel.getArrayList().observe(viewLifecycleOwner, { settingViewModels ->
             customSettingAdapter = CustomSettingsAdapter(this,this,settingViewModels!!)
             settingRecyclerView!!.layoutManager = LinearLayoutManager(activity)
-//content://com.android.providers.media.documents/document/image%3A230391
-            //content://com.android.providers.media.documents/document/image%3A230391
             settingRecyclerView!!.adapter = customSettingAdapter
         })
     }
@@ -73,22 +63,16 @@ class SettingsFragment : Fragment(), SettingRecyclerClickListener {
 
 
         registrationViewModel.getUserRoom().observe(viewLifecycleOwner, { user ->
-//            pickImages.launch("image/*")
             Log.d("USERROOM", user.toString())
             tvSettingUserName.text = user.userName
             val settingProfileUri = Uri.parse(user.profilePhoto)
             Log.d("SETTİNGFRAGMENTURI", settingProfileUri.path.toString())
-//            Picasso.with(context).load(settingProfileUri.path).into(settingProfilePicture)
             Glide.with(this).load(settingProfileUri)
                 .error(R.drawable.profilepic)
                 .centerCrop()
                 .timeout(60000)
                 .into(settingProfilePicture)
-//                settingProfilePicture.setImageURI(settingProfileUri)
-
         })
-
-
         return inflater.inflate(R.layout.settings_fragment, container, false)
     }
 
@@ -115,28 +99,6 @@ class SettingsFragment : Fragment(), SettingRecyclerClickListener {
             }
         }
     }
-
-
-//
-//    fun openFile(pickerInitialUri: Uri) {
-//        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-//            addCategory(Intent.CATEGORY_OPENABLE)
-//            type = "application/image"
-//
-//            // Optionally, specify a URI for the file that should appear in the
-//            // system file picker when it loads.
-//            putExtra(Pic.EXTRA_INITIAL_URI, pickerInitialUri)
-//        }
-//
-//        startActivityForResult(intent, PICK_PDF_FILE)
-//    }
-//
-//    val pickImages = registerForActivityResult(ActivityResultContracts.GetContent()){ uri: Uri? ->
-//        uri?.let { it ->
-//            Log.d("PICKIMAGESTORAGE", it.toString())
-//            Glide.with(this).load(it).into(settingProfilePicture)
-//        }
-//    }
 
 }
 

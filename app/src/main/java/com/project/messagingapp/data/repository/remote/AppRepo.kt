@@ -2,7 +2,6 @@ package com.project.messagingapp.data.repository.remote
 
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,22 +41,11 @@ class AppRepo(
 
     }
 
-//    @Suppress("RedundantSuspendModifier")
-//    @WorkerThread
-//     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
-//        return contactListDao.getAllContactList()
-//    }
-
-//    fun getContactListAndChatList(): List<ContactListandChatList>{
-//        return contactListDao.getContactListAndChatList()
-//    }
-
     fun getContactList(): List<ContactListRoom>{
         return contactListDao.getContactList()
     }
 
       fun addReceiverInformation(contactListRoom: ContactListRoom){
-          Log.d("ADDED TO DATABASE", contactListRoom.toString())
         contactListDao.addReceiverInformation(contactListRoom)
     }
 
@@ -98,7 +86,6 @@ class AppRepo(
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
                         val imageUrl = uri.result.toString()
-                        Log.d("APPREPOIMAGE",imageUrl)
                         val map = mapOf(
                             "name" to username,
                             "status" to status,
@@ -131,24 +118,18 @@ class AppRepo(
     fun updateImage(imageURI: Uri?) {
         val databaseRef = FirebaseDatabase.getInstance()
             .getReference("Users").child(AppUtil().getUID()!!)
-        Log.d("UPLOADİNG","PICTURE")
         try {
-
-
             AppUtil().getUID()!!.let { it ->
                 FirebaseStorage.getInstance().getReference().child(AppConstants.Path).child(it)
                     .putFile(imageURI!!)
                     .addOnSuccessListener {
                         val task = it.storage.downloadUrl
                         task.addOnCompleteListener { uri ->
-                            Log.d("FIREBASEUPLOAD", uri.toString())
                             val imageUrl = uri.result.toString()
-                            Log.d("FIREBASDEIMAGEURL",imageUrl)
                             val map = mapOf(
                                 "image" to imageUrl
                             )
                             databaseRef.updateChildren(map)
-                            Log.d("MAP", map.toString())
                         }
                     }
             }
@@ -160,6 +141,7 @@ class AppRepo(
     fun getAppContact(
         mobileContact: ArrayList<UserModel>
     ): MutableList<UserModel>? {
+
         if(appContacts == null) {
             val phoneNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
             val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
@@ -180,7 +162,6 @@ class AppRepo(
                                             appContacts?.add(userModel)
                                             val contactListRoom = ContactListRoom(userModel.uid!!, userModel.name!!,userModel.number!!,
                                                 userModel.status!!,userModel.image!!)
-                                                Log.d("CONTACTLIST", contactListRoom.toString())
                                                 addReceiverInformation(contactListRoom)
 
                                         }
@@ -235,8 +216,6 @@ class AppRepo(
                     if ( uid != AppUtil().getUID()) {
                         val userLocationLantitude = ds.child("locationLatitude").value.toString()
                         val userLocationLongtitude = ds.child("locationLongtitude").value.toString()
-                        Log.d("USERLOCATİONLAT", userLocationLantitude)
-                        Log.d("USERLOCATİONLONG", userLocationLongtitude)
 
                         val distanceCalculator: Double = haversineDistance(
                             currentUserLocation[0],
@@ -245,11 +224,9 @@ class AppRepo(
                         )
 
                         if (distanceCalculator <= 10) {
-                            Log.d("SNAPASHOTTEST", ds.toString())
                             val userModel = ds.getValue(UserModel::class.java)
                             userModel?.let { nearbyUsersList.add(it) }
                         }
-                        Log.d("USERLIST", nearbyUsersList.toString())
                     }
                 }
                 nearbyUsersLiveData.value = nearbyUsersList
@@ -260,7 +237,6 @@ class AppRepo(
             }
 
         })
-        Log.d("NEARBYUSERLIST", nearbyUsersList.toString())
         return nearbyUsersLiveData
     }
 
@@ -275,18 +251,15 @@ class AppRepo(
                             latUser: String, longUser: String): Double {
 
         val earthRadiusKm: Double = 6372.8
+
         val latCurrentUserDouble = strToDouble(latCurrentUser)
         val longCurrentUserDouble = strToDouble(longCurrentUser)
+
         val latUserDouble = strToDouble(latUser)
         val longUserDouble = strToDouble(longUser)
+
         val dLat = Math.toRadians(latCurrentUserDouble - latUserDouble);
         val dLon = Math.toRadians(longCurrentUserDouble - longUserDouble);
-        Log.d("LATCURRENTUSER", latCurrentUserDouble.toString())
-        Log.d("LongCURRENTUSER", longCurrentUserDouble.toString())
-        Log.d("LATUSER", latUserDouble.toString())
-        Log.d("LongUSER", longUserDouble.toString())
-//        val originLat = Math.toRadians(this.lat);
-//        val destinationLat = Math.toRadians(destination.lat);
 
         val a = Math.pow(Math.sin(dLat / 2), 2.toDouble()) + Math.pow(Math.sin(dLon / 2), 2.toDouble()) * Math.cos(latCurrentUserDouble) * Math.cos(latUserDouble);
         val c = 2 * Math.asin(Math.sqrt(a));
@@ -301,7 +274,6 @@ class AppRepo(
         appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!).addValueEventListener(
             object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                        Log.d("NAPSHOTTRST", snapshot.toString())
                         val currentUserLocationLatitude =  snapshot.child("locationLatitude").getValue(String::class.java)
 
                         val currentUserLocationLongtitutde =  snapshot.child("locationLongtitude").getValue(String::class.java)
@@ -311,9 +283,6 @@ class AppRepo(
                         if (currentUserLocationLongtitutde != null) {
                             gps[1] = currentUserLocationLongtitutde
                         }
-
-                        Log.d("CURRENTUSERLOCATİONLAT", currentUserLocationLatitude.toString())
-                        Log.d("CURRENTUSERLOCATİONLog", currentUserLocationLongtitutde.toString())
 
                 }
                 override fun onCancelled(error: DatabaseError) {
@@ -330,14 +299,12 @@ class AppRepo(
         appUtil.getDatabaseReferenceUsers().child(appUtil.getUID()!!).addValueEventListener(
             object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d("USEREMOTION", snapshot.toString())
                     emotion = snapshot.child("emotion").getValue(String::class.java).toString()
                 }
                 override fun onCancelled(error: DatabaseError) {
                     Log.d("ERROR OCCURED", error.toString())
                 }
             })
-        Log.d("REPOSITORYEMOTION",emotion)
         return emotion
     }
 

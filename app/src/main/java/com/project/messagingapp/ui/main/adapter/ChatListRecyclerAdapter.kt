@@ -39,31 +39,11 @@ class ChatListRecyclerAdapter(
 
     private lateinit var dialog: AlertDialog
 
-
     private fun getColor(): String{
         val testValue = chatListViewModel.getEmotion()
         Log.d("TESTVALUE",testValue)
         return testValue
     }
-//
-//    fun inflateDialog (v: Context?) {
-//        Toast.makeText(v, "long click", Toast.LENGTH_SHORT).show()
-//        val updateDialog = AlertDialog.Builder(v)
-//        val layout:View = LayoutInflater.from(v).inflate(R.layout.chatlist_recycler_dialog,
-//            null,false)
-//        updateDialog.setView(layout)
-//
-//        dialog = updateDialog.create()
-//        dialog.show()
-//
-//
-//        layout.block_user.setOnClickListener {
-//            Toast.makeText(v?.context, "long click", Toast.LENGTH_SHORT).show()
-//            dialog.dismiss()
-//        }
-//
-//
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListRecyclerView {
         val chatItemLayoutBing: ChatlistItemLayoutBinding = DataBindingUtil.inflate(
@@ -93,13 +73,6 @@ class ChatListRecyclerAdapter(
             })
 
 
-//        val colorStr: String = getEmotion()
-//        Log.d("COLORSTR",colorStr)
-//        if(!colorStr.isEmpty()){
-//            Log.d("TESTVALUE",colorStr)
-//            holder.list.profImageChatList.borderColor = getEmotion().toColorInt()
-//        }
-
         if("https://firebasestorage.googleapis.com/" in chatList.lastMessageOfChat) {
             holder.list.txtChatStatus.text = chatList.lastMessageOfChat
         } else {
@@ -111,7 +84,6 @@ class ChatListRecyclerAdapter(
                 .into(holder.list.profImageChatList)
         }
 
-//        holder.list.txtChatStatus.text = chatList.lastMessageOfChat
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, MessageActivity::class.java)
             intent.putExtra("id_receiver",chatList.receiver_id)
@@ -124,10 +96,6 @@ class ChatListRecyclerAdapter(
             inflateDialog(chatList)
             return@setOnLongClickListener true
         }
-
-    //        holder.itemView.setOnLongClickListener {
-////            chatListViewModel.blockUser(chatList.receiver_id,"1")
-//        }
     }
 
     override fun getItemCount(): Int {
