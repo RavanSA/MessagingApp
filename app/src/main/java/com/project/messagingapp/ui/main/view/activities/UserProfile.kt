@@ -50,15 +50,12 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
             ProfilePhone.text =  user.phoneNumber
             ProfileStatus.text =  user.userStatus
             val roomUri = Uri.parse(user.profilePhoto)
-            Log.d("USERPROFİLEURI", roomUri.toString())
             Glide.with(this).load(roomUri).into(updatePickImage)
         })
-
 
         profileBinding.updatePickImage.setOnClickListener {
             updateImageDialog()
         }
-
 
         profileBinding.clickHandler = this
 
@@ -153,7 +150,6 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
 
         imageURI = FileProvider.getUriForFile(this@UserProfile, "com.project.messagingapp.provider",
             sdImageMainDirectory)
-        Log.d("IMAGEINCAMERA", imageURI.toString())
         takePictureLauncher.launch(imageURI)
     }
 
@@ -180,7 +176,6 @@ class UserProfile : AppCompatActivity(),OnClickInterface {
         uri?.let { it ->
             registrationViewModel.updatedUserLocalProfileImage(it.toString())
             profileViewModel.updateImage(it)
-            Log.d("PICKIMAGESTORAGE", it.toString())
             Glide.with(this).load(it).into(updatePickImage)
         }
     }

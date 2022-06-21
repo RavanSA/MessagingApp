@@ -31,9 +31,7 @@ class ProfileViewModel(application: Application): AndroidViewModel(application) 
     }
 
     fun updateImage(imageURI: Uri?) {
-        Log.d("UPLOADVIEWMODEL","CALLED")
         appRepo.updateImage(imageURI)
     }
-
 
 }

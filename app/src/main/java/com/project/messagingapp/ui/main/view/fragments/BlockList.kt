@@ -33,7 +33,6 @@ class BlockList : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         blockListViewModel = ViewModelProvider(this)[BlockListViewModel::class.java]
 
         blockListBinding = FragmentBlockListBinding.inflate(layoutInflater)

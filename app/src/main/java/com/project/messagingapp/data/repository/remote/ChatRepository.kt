@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 
 interface ChatRepository {
+
     suspend fun createChat(message: String,receiverID: String)
 
     suspend fun sendMessage(message: String, receiverID: String,type: String  ="text")
@@ -70,4 +71,5 @@ interface ChatRepository {
     fun blockUser(receiverID: String, block: String) : Unit
 
     fun getAllBlockedUser(): MutableList<ContactChatList>
+
 }

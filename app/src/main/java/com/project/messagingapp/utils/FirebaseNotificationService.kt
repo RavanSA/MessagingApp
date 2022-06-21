@@ -42,15 +42,6 @@ class FirebaseNotificationService: FirebaseMessagingService() {
             val message = map["message"]
             val receiverID = map["receiverID"]
             val conversationID = map["conversationID"]
-//            val chatDao: ChatRoomDao = ChatDatabase.getLocalDatabase(application).getChatRoomDao()
-//            val chatRoom  = ChatRoom(0,conversationID!!,"not defined yet",message!!,
-//                receiverID!!,AppUtil().getUID()!!,"text")
-//            GlobalScope.launch {
-//                withContext(Dispatchers.IO) {
-////                    chatDao.sendNewMessage(chatRoom)
-//                }
-//            }
-            Log.d("MAPFIREBASENOTIFICATION", map.toString())
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
                 createOreoNotification(name!!, message!!, receiverID!!, conversationID!!)

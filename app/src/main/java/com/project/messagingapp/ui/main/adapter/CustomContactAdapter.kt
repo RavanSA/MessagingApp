@@ -48,12 +48,7 @@ class CustomContactAdapter(
             Glide.with(holder.itemView.context).load(userModel.image)
                 .into(holder.item.imageProfile)
         }
-//        holder.item.imgContactInfo.setOnClickListener {
-//
-//            val intent = Intent(it.context, ContactUserInfo::class.java)
-//            intent.putExtra("UID", userModel.uid)
-//            it.context.startActivity(intent)
-//        }
+
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context,MessageActivity::class.java)
@@ -80,7 +75,6 @@ class CustomContactAdapter(
                 val contactSearch = constraint.toString()
                 if(contactSearch.isEmpty()){
                     allContact = appContacts
-                    Log.d("ALLCONTACTFILTER",allContact.toString())
                 } else {
                     val filterContact = ArrayList<UserModel>()
                     for(friends in appContacts){

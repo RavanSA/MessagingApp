@@ -22,12 +22,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-//private lateinit var nearbyDataBinding: ActivityNearbyUserFragmentBinding
-
 class NearbyUserFragment : AppCompatActivity() {
 
     private lateinit var nearbyUserViewModel: NearbyUsersViewModel
     private var nearbyAdapter: NearbyUsersAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nearby_user_fragment)
@@ -57,7 +56,6 @@ class NearbyUserFragment : AppCompatActivity() {
 
         var nearbyUserList = mutableListOf<UserModel>()
         nearbyUserViewModel.getNearbyUsersList().observe(this,  { data ->
-            Log.d("DATABEFOREADAPTER", data.toString())
             nearbyUserList.addAll(data)
             countListNearby.text = nearbyUserList.size.toString() + " user found near you"
             if(data.size > 0){
@@ -70,19 +68,13 @@ class NearbyUserFragment : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     fun callAdapter(data: MutableList<UserModel>) {
 
-//        val data = observeList()
                 nearbyAdapter = NearbyUsersAdapter(data)
         recyclerViewNearby.adapter = nearbyAdapter
 
         recyclerViewNearby.layoutManager = GridLayoutManager(
                     this@NearbyUserFragment, 2
                 )
-                Log.d("DATAINCALLADAPTER", data.toString())
         recyclerViewNearby.hasFixedSize()
-//        nearbyAdapter?.run {
-//                    setData(data)
-//                                nearbyAdapter!!.notifyDataSetChanged()
-//                }
     }
 
 }

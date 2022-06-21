@@ -9,8 +9,6 @@ import com.project.messagingapp.data.model.UserRoomModel
 class UserRepository(private val userDao: UserRoomDao) {
 
     suspend fun insertUser(user: UserRoomModel){
-        Log.d("INSERT","CALLED")
-        Log.d("INSERT", user.toString())
         userDao.insertUser(user)
     }
 

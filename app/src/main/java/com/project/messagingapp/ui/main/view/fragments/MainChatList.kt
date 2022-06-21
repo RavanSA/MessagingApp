@@ -51,9 +51,6 @@ class MainChatList : Fragment() {
     private lateinit var chatListViewModel: ChatListViewModel
     private var chatAdapter: ChatListRecyclerAdapter? = null
     private var locationManager : LocationManager? = null
-//    private var chatItemLayout: ChatlistItemLayoutBinding? = null
-
-    //    private var testChatList:MutableList<ChatListRoom> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,35 +58,14 @@ class MainChatList : Fragment() {
     ): View? {
         chatBinding = FragmentMainChatListBinding.inflate(layoutInflater,container,false)
 
-//        chatItemLayout = ChatlistItemLayoutBinding.inflate()
 
         chatListViewModel = ViewModelProvider(this)[ChatListViewModel::class.java]
 
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
-                // And Update Ui here
-//                getContactList(
-//            getContactListAndChatList()
                 getCurrentUserChatList()
             }
         }
-
-
-//        locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
-//
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//         locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L,
-//             0f, locationListener)
-//        }
-
-        Log.d("TESTjbhjhhjh", chatListViewModel.getContactChatUntilChanged().toString())
 
         lifecycle.coroutineScope.launch {
             chatListViewModel.getContacChattList().distinctUntilChanged().collect() {
@@ -98,7 +74,6 @@ class MainChatList : Fragment() {
 
         }
 
-//        getLastKnownLocation(requireContext())
         return chatBinding.root
     }
 
@@ -108,23 +83,13 @@ class MainChatList : Fragment() {
         val testChatList = chatListViewModel.getChatListRoom()
         val newList = mutableListOf<ContactChatList>()
 
-        Log.d("TEST", testContactList.size.toString())
-        Log.d("TEST2", testChatList.size.toString())
-        Log.d("TESTCHATLIST", testChatList.toString())
         GlobalScope.launch(Dispatchers.IO) {
 
             for (elementContact in testContactList) {
                 for (elementChat in testChatList) {
                     withContext(Dispatchers.IO) {
 
-                    Log.d("ELEMENCTCHAT", elementChat.uid)
-                    Log.d("ELEMENTCONTACT", elementContact.receiverID)
                         if (elementContact.receiverID == elementChat.uid) {
-//                    Log.d("FINAL TEST", testChatList.toString())
-
-                        Log.d("CONTACTRECEIVERID",elementContact.receiverID)
-                        Log.d("CHATLISTRECEVIER",elementChat.uid)
-//                        Log.d("CHATLISTRECEVIER",elementChat.)
                         val contactList = ContactChatList(
                             elementChat.chatID,
                             elementContact.receiverID,
@@ -144,12 +109,8 @@ class MainChatList : Fragment() {
                     }
                     }
             }
-//            callAdapter(newList)
-//            getCurrentUserChatList(newList)
         }
 
-
-        Log.d("NEWLIST CREATED", newList.toString())
         return newList
     }
 
@@ -157,12 +118,9 @@ class MainChatList : Fragment() {
     private suspend fun getCurrentUserChatList() {
         val local = getContactListAndChatList()
         if (!isNetworkAvailable(requireContext())) {
-//            callAdapter(local)
             Log.d("No INTERNET CONNECTION", local.toString())
         } else if(isNetworkAvailable(requireContext())){
-//            callAdapter(local)
             chatListViewModel.currrentUserChatList.observe(requireActivity(), {
-//                observeChatList(it)
                 Log.d("INTERNET CONNECTION", it.toString())
                 observeChatList(it.mainChatList,local)
             })
@@ -191,14 +149,9 @@ class MainChatList : Fragment() {
                                             element.uid
                                         )
                                         newLocalChatList.add(chatList)
-//                                        chatListViewModel.insertContactChatList(local)
-//                                        chatListViewModel.createChatIfNotExist(chatList)
-//                                    roomElement.lastMessageOfChat = element.lastMessageOfChat
                                     }
                                     chatListViewModel.deleteAndCreate(newLocalChatList)
-//                                    val newLocalDBChatList = chatListViewModel.getChatListRoom()
                                     Log.d("INTERNET","CONNECTION")
-//                                    callAdapter(local)
                                 } else {
                                   for (element in remoteList){
                                       chatListViewModel.updateLastMessage(
@@ -207,15 +160,7 @@ class MainChatList : Fragment() {
                                           element.chatID
                                       )
 
-//                                      chatListViewModel.contactLastMessageUpdate(
-//                                          element.message_date,
-//                                          element.lastMessageOfChat,
-//                                          element.chatID
-//                                      )
                                   }
-//                                    callAdapter(local)
-                                    ///
-                                    Log.d("INTERNET IN ELSE","CONNECTION")
                                 }
                                 }
                             }
@@ -224,26 +169,17 @@ class MainChatList : Fragment() {
     }
 
     private fun callAdapter(chatModel: MutableList<ContactChatList>){
-//
-//        if(chatModel.isEmpty()){
-//            chatBinding.mainChatListEmpty.show()
-//        } else {
-        Log.d("CHATMODELADAPGTER", chatModel.toString())
             activity?.runOnUiThread {
                 chatBinding.recyclerViewChat.layoutManager = LinearLayoutManager(
                     requireActivity(),
                     LinearLayoutManager.VERTICAL, false
                 )
 
-//                chatBinding.recyclerViewChat.adapter = ChatListRecyclerAdapter(chatModel){ item ->
-//                    chatListViewModel.blockUser(item.)
-//                }
-
                 chatAdapter = context?.let { ChatListRecyclerAdapter(it,chatListViewModel,chatModel) }
                 chatBinding.recyclerViewChat.adapter = chatAdapter
                 chatAdapter!!.notifyDataSetChanged()
             }
-//        }
+
     }
 
 
@@ -273,57 +209,5 @@ class MainChatList : Fragment() {
         }
         return false
     }
-
-//    private val locationListener: LocationListener = object : LocationListener {
-//        override fun onLocationChanged(location: Location) {
-//            val text = "$location.longitude:$location.latitude"
-//            Log.d("LOC LAT", text)
-//        }
-//        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-//        override fun onProviderEnabled(provider: String) {}
-//        override fun onProviderDisabled(provider: String) {}
-//    }
-//fun getLastKnownLocation(context: Context) {
-//    Log.d("LOCATION","FUNCTİON")
-//    val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//    val providers: List<String> = locationManager.getProviders(true)
-//    var location: Location? = null
-//    Log.d("PROVIDERSIZE", providers.size.toString())
-//    for (i in providers.size - 1 downTo 0) {
-//        Log.d("LOCATION","IN FOR LOOP")
-//
-//        if (ContextCompat.checkSelfPermission(requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION) !==
-//            PackageManager.PERMISSION_GRANTED) {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                ActivityCompat.requestPermissions(requireActivity(),
-//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-//            } else {
-//                ActivityCompat.requestPermissions(requireActivity(),
-//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-//            }
-//        }
-//
-//        location= locationManager.getLastKnownLocation(providers[i])
-//        if (location != null)
-//            Log.d("LOCATIONGETTINGNULL", location.toString())
-//        break
-//    }
-//    Log.d("LOGHERELOCATION", location.toString())
-//    val gps = DoubleArray(2)
-//    if (location != null) {
-//        Log.d("LOCATION NOT NULL","ASAAA")
-//        gps[0] = location.getLatitude()
-//        gps[1] = location.getLongitude()
-//        Log.e("gpsLat",gps[0].toString())
-//        Log.e("gpsLong",gps[1].toString())
-//    }
-//
-//}
-
-
-
-
 }
 

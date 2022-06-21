@@ -25,7 +25,6 @@ class NearbyUsersAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d("NEARBYVIEWHODER", nearbyUserList.toString())
 
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.nearby_user_item, parent, false)

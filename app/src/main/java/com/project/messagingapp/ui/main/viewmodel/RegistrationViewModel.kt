@@ -18,7 +18,6 @@ class RegistrationViewModel(application: Application):AndroidViewModel(applicati
     }
 
     fun insertUser(user:UserRoomModel) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("INSERTVIEWMODEL", user.toString())
         repository.insertUser(user)
     }
 
@@ -31,7 +30,6 @@ class RegistrationViewModel(application: Application):AndroidViewModel(applicati
     }
 
     fun updatedUserLocalProfileImage(newUpdatedProfileImage: String) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("ROOMPROFİLE","UPDATED")
         repository.updateUserLocalProfileImage(newUpdatedProfileImage)
     }
 
@@ -41,13 +39,3 @@ class RegistrationViewModel(application: Application):AndroidViewModel(applicati
 
 
 }
-
-//class RegistrationViewModelFactory(private val application: Application) : ViewModelProvider.NewInstanceFactory() {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return RegistrationViewModel(application) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}

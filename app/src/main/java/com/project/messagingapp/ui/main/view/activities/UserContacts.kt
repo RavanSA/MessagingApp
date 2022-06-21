@@ -24,8 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-//TODO("Dealing with data state")
-//TODO("whether the data is currently loading, has loaded successfully or failed.")
 class UserContacts : AppCompatActivity() {
     private lateinit var contactBinding: ActivityUserContactsBinding
     private lateinit var phoneNumber: String

@@ -88,7 +88,6 @@ class MessageViewModel(application: Application): AndroidViewModel(application) 
         val response = liveData(Dispatchers.IO) {
             emit(chatRepo.getToken(message,receiverID,name))
         }
-        Log.d("TOKENVIEWMODEL", response.toString())
 
         return response
     }

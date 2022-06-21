@@ -65,17 +65,10 @@ class ChatListViewModel(application: Application): AndroidViewModel(application)
     }
 
 
-//     fun getContactListRoom(): Flow<MutableList<ContactChatList>> {
-//        return appRepo.getContactListRoom()
-//    }
-
     fun getContactListRoom2(): List<ContactListRoom>{
         return appRepo.getContactList()
     }
 
-//    fun getContactListAndChatList(): List<ContactListandChatList>{
-//        return appRepo.getContactListAndChatList()
-//    }
 
     suspend fun createChatIfNotExist(chatList: ChatListRoom){
         chatRepo.createChatIfNotExist(chatList)

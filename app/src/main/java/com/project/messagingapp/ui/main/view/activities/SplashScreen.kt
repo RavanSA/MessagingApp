@@ -99,53 +99,11 @@ class SplashScreen : AppCompatActivity() {
                     Log.d("TESTFLOW", it.toString())
                 }
             }
-
-//            getLastKnownLocation(this)
-
-//            registratedUser.putExtra("flow_chat_list",testChatList)
             getLocation()
             startActivity(registratedUser)
         } else {
             startActivity(notRegistratedUser)
-            //    fun getLastKnownLocation(context: Context) {
-//        Log.d("LOCATION","FUNCTİON")
-//        val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//        val providers: List<String> = locationManager.getProviders(true)
-//        var location: Location? = null
-//        for (i in providers.size - 1 downTo 0) {
-//            Log.d("LOCATION","IN FOR LOOP")
-//
-//            if (ActivityCompat.checkSelfPermission(
-//                    this,
-//                    Manifest.permission.ACCESS_FINE_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                    this,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED
-//            ) {
-//                return
-//            } else {
-//                Log.d("PERMISSION NOT GRANTED","asdasd")
-//            }
-//            location= locationManager.getLastKnownLocation(providers[i])
-//            if (location != null)
-//                Log.d("LOCATIONGETTINGNULL", location.toString())
-//                break
-//        }
-//        val gps = DoubleArray(2)
-//        if (location != null) {
-//            gps[0] = location.getLatitude()
-//            gps[1] = location.getLongitude()
-//            Log.e("gpsLat",gps[0].toString())
-//            Log.e("gpsLong",gps[1].toString())
-//
-//        }
-//
-//    }
-
-
         }
-
     }
 
     fun getLocation() {

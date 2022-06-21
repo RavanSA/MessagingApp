@@ -10,6 +10,7 @@ import com.project.messagingapp.data.model.*
 @Database(entities = arrayOf(UserRoomModel::class, ChatListRoom::class, ChatRoom::class,
         ContactListRoom::class,ContactChatList::class), version = 1, exportSchema = false)
 abstract class ChatDatabase:RoomDatabase() {
+
     abstract fun getUserRoomDao(): UserRoomDao
     abstract fun getChatListRoomDao(): ChatListRoomDao
     abstract fun getChatRoomDao(): ChatRoomDao

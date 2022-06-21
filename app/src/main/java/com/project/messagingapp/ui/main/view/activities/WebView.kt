@@ -28,8 +28,6 @@ class WebView : AppCompatActivity() {
 
         url = intent.getStringExtra("url")
 
-//        Log.d("URL")
-
         app_web_view.webViewClient = object : WebViewClient(){
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 val uri: Uri = Uri.parse(url)
@@ -45,8 +43,6 @@ class WebView : AppCompatActivity() {
             }
         }
 
-
-        Log.d("URLFORWEBVİEW", url.toString())
         app_web_view.loadUrl("$url + .pdf")
 
     }

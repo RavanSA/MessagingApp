@@ -34,6 +34,7 @@ class ChatRepositoryImpl(
     private val contactListDao: ContactListDao,
     private val contactChatDao: ContactChatDao
 ): ChatRepository {
+
     private var conversationID: String? = null
     private var chatModelList: MutableList<ContactChatList>? = mutableListOf()
     private var appUtil = AppUtil()
@@ -56,9 +57,6 @@ class ChatRepositoryImpl(
         date: String,
         conversationID: String
     ) {
-        Log.d("LASTMESSAGE", lastMessage)
-        Log.d("CONVERSATION", conversationID)
-        Log.d("DATE", date)
         chatListDao.lastMessageOfChat(lastMessage, date, conversationID)
     }
 
@@ -71,7 +69,6 @@ class ChatRepositoryImpl(
     }
 
     override suspend fun addNewMessage(chatRoom: ChatRoom): Long {
-        Log.d("SENDNEWMESSAGEROOM", chatRoom.toString())
         return chatRoomDao.sendNewMessage(chatRoom)
     }
 
@@ -279,12 +276,6 @@ class ChatRepositoryImpl(
                                     Log.d("KEYS", childSnap.key.toString())
                                     childSnap.getValue(MessageModel::class.java)!!
                                 }
-
-//                                        snapshot.key!!.map { childSnap ->
-//
-//                                        }
-//                                        Log.d("MESSAGEKEYS", messageKeys.toString())
-
                                 listOfMessages.addAll(response.messageList!!)
                             }
                         }
@@ -326,7 +317,6 @@ class ChatRepositoryImpl(
         val mutableLiveData = MutableLiveData<ChatResponse>()
         val databaseRef =
             FirebaseDatabase.getInstance().getReference("ChatList").child(AppUtil().getUID()!!)
-        //SELECT * FROM chat_list  WHERE uid = user.uid and member = receiverID
         val chatQuery = databaseRef.orderByChild("member").equalTo(receiverID)
 
         chatQuery.get().addOnCompleteListener { task ->
@@ -367,8 +357,6 @@ class ChatRepositoryImpl(
 
             databaseReference.child(messageKey!!).setValue(messageModel)
 
-            Log.d("MESSAGEKEY ", messageKey.toString())
-
 
             val chatRoom = ChatRoom(
                 messageKey, conversationID!!, System.currentTimeMillis().toString(), message,
@@ -376,7 +364,6 @@ class ChatRepositoryImpl(
             )
 
             addNewMessage(chatRoom)
-            Log.d("ADDNEWMESSAGEROOM", chatRoom.toString())
             val map: MutableMap<String, Any> = HashMap()
 
             map["lastMessage"] = message
@@ -440,7 +427,6 @@ class ChatRepositoryImpl(
 
                 to.put("to", token)
                 to.put("data", data)
-                Log.d("TOPUT", to.toString())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -457,13 +443,11 @@ class ChatRepositoryImpl(
     }
 
     override fun sendNotification(to: JSONObject): JsonObjectRequest {
-        Log.d("TOSEND", to.toString())
         val request: JsonObjectRequest = object : JsonObjectRequest(
             Method.POST,
             AppConstants.NOTIFICATION_URL,
             to,
             Response.Listener { response: JSONObject ->
-
                 Log.d("SENDNOTICATIONREPO", "onResponse: $response")
             },
             Response.ErrorListener { error ->
@@ -483,7 +467,6 @@ class ChatRepositoryImpl(
 
                 map["Authorization"] = "key=" + AppConstants.SERVER_KEY
                 map["Content-type"] = "application/json"
-                Log.d("JSONCONTECTTEST", map.toString())
                 return map
             }
 
@@ -492,7 +475,6 @@ class ChatRepositoryImpl(
             }
         }
 
-        Log.d("TOKENVIEWMODEL", request.toString())
 
         return request
     }
@@ -506,22 +488,16 @@ class ChatRepositoryImpl(
 
     override suspend fun sendImage(uri: Uri, receiverID: String) {
         var imageUrl = ""
-//        val currentUserReference = appUtil.getDatabaseReferenceUsers().
-//        child(appUtil.getUID()!!)
-//        userUploadData = MutableLiveData()
         conversationID?.let { it1 ->
             appUtil.getStorageReference().child(AppConstants.chatPath).child(it1).child(System.currentTimeMillis().toString()).putFile(uri)
                 .addOnSuccessListener {
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
                         imageUrl = uri.result.toString()
-                        Log.d("APPREPOIMAGE", imageUrl)
-                        Log.d("IMAGE UPLOADED", "TRUE")
                         GlobalScope.launch(Dispatchers.IO) {
                             withContext(Dispatchers.IO) {
                                 if (!imageUrl.isNullOrEmpty()) {
                                     sendMessage(imageUrl, receiverID, "image")
-                                    Log.d("MESSAGESENDED", "TRUE")
                                 }
                             }
                         }
@@ -540,10 +516,7 @@ class ChatRepositoryImpl(
             contentType = "audio/mpeg"
         }
 
-//        val voiceUri: Uri = Uri.parse(lastAudioFile)
         val voiceUri: Uri = Uri.fromFile(File(lastAudioFile))
-
-        Log.d("VOICEURI",voiceUri.toString())
 
         conversationID?.let {
             appUtil.getStorageReference().child(AppConstants.chatPath).child(it).child(System.currentTimeMillis().toString()).putFile(voiceUri, metadata)
@@ -551,13 +524,10 @@ class ChatRepositoryImpl(
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
                         voiceURL = uri.result.toString()
-                        Log.d("VOİCE", voiceURL)
-                        Log.d("IMAGE UPLOADED", "TRUE")
                         GlobalScope.launch(Dispatchers.IO) {
                             withContext(Dispatchers.IO) {
                                 if (!voiceURL.isNullOrEmpty()) {
                                     sendMessage(voiceURL, receiverID, "audio")
-                                    Log.d("MESSAGESENDED", "TRUE")
                                 }
                             }
                         }
@@ -575,13 +545,10 @@ class ChatRepositoryImpl(
                     val task = it.storage.downloadUrl
                     task.addOnCompleteListener { uri ->
                         fileUrl = uri.result.toString()
-                        Log.d("VOİCE", fileUrl)
-                        Log.d("IMAGE UPLOADED", "TRUE")
                         GlobalScope.launch(Dispatchers.IO) {
                             withContext(Dispatchers.IO) {
                                 if (!fileUrl.isNullOrEmpty()) {
                                     sendMessage(fileUrl, receiverID, "document")
-                                    Log.d("MESSAGESENDED", "TRUE")
                                 }
                             }
                         }
@@ -591,16 +558,10 @@ class ChatRepositoryImpl(
     }
 
     override fun sendCurrentLocation(currentLocation: String, receiverID: String) {
-//        val location = currentLocation[0] + "," + currentLocation[1]
-
-        Log.d("CURRENTLATITUDE",currentLocation)
-//        Log.d("CURRENTLONGTITUDE",currentLocation[1])
 
         GlobalScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO){
-//                if(!currentLocation[0].isNullOrEmpty() || !currentLocation[1].isNullOrEmpty()) {
                     sendMessage(currentLocation, receiverID, "location")
-//                }
             }
         }
 
@@ -611,6 +572,5 @@ class ChatRepositoryImpl(
         value.addAll(values)
         this.value = value
     }
-
 
 }

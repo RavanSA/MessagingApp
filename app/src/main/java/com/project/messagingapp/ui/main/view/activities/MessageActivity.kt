@@ -82,15 +82,18 @@ class MessageActivity : AppCompatActivity() {
     private var userName: String? = null
     private var receiverImage: String? = null
     private lateinit var messageViewModel: MessageViewModel
+
     private var messageAdapter: MessageRecyclerAdapter? = null
     private var checkChatBool: String? = null
     private var receiver_userName: String? = null
     private val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     private val requestcode = 1
     private var imageURI: Uri? = null
+
     private lateinit var dialog: AlertDialog
     private var recorder: MediaRecorder? = null
     private var isRecording: Boolean = false
+
     private var recordStart = 0L
     private var lastAudioFile=""
     private var recordDuration = 0L
@@ -124,7 +127,6 @@ class MessageActivity : AppCompatActivity() {
         progressDialog.show()
         classifier.processVocab( object: Classifier.VocabCallback {
             override fun onVocabProcessed() {
-                // Processing done, dismiss the progressDialog.
                 progressDialog.dismiss()
             }
         })
@@ -135,8 +137,6 @@ class MessageActivity : AppCompatActivity() {
                 getUserMessages()
             }
         }
-
-        Log.d("CHECKCHATBOOL1",checkChatBool.toString())
 
         messageBinding = ActivityMessageBinding.inflate(layoutInflater)
         setContentView(messageBinding.root)
@@ -214,7 +214,6 @@ class MessageActivity : AppCompatActivity() {
         lastAudioFile=
             "${this.externalCacheDir?.absolutePath}/audiorecord${System.currentTimeMillis()}.mp3"
 
-        Log.d("LASTADIOFILEPATH",lastAudioFile.toString())
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -251,17 +250,11 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-//    private fun getMessages(){
-//        getChatID(receiverID!!)
-//
-//    }
-
     private suspend fun getUserMessages(){
         val internetConnection = AppUtil().checkInternetConnection(this)
         if(internetConnection){
             checkChatBool = checkChatCreated(receiverID!!)
             getChatID(receiverID!!)
-//            checkOnlineStatus(receiverID!!)
         } else if(!internetConnection){
             receiverID?.let { messageViewModel.getUserMessageFromRoomDb(it) }
         }
@@ -287,7 +280,6 @@ class MessageActivity : AppCompatActivity() {
 
     private fun readMessage(allMessages: List<ChatListModel>){
         messageViewModel.readMessages(allMessages).observe(this@MessageActivity,{ data ->
-//                callAdapter(data)
                 for(element in data){
                     val chatRoom = ChatRoom(
                         element.messageKey,element.chatID,element.date,element.message,
@@ -297,10 +289,6 @@ class MessageActivity : AppCompatActivity() {
                         messageViewModel.addNewMessage(
                             chatRoom
                         )
-
-//                        val testReturnType = messageViewModel.addNewMessage(chatRoom)
-//                        messageViewModel.deleteMessageFromFirebase(element.chatID,element.messageKey)
-//                        Log.d("testReturnType", testReturnType.toString())
                     }
                 }
         })
@@ -320,14 +308,12 @@ class MessageActivity : AppCompatActivity() {
 
     private suspend fun createChat(message: String, receiverID: String){
             messageViewModel.createChat(message,receiverID).observe(this@MessageActivity, Observer {
-                Log.d("CHAT CREATED","")
             })
     }
 
     private suspend fun sendMessage(message: String, receiverID: String){
         messageViewModel.sendMessage(message, receiverID)
             .observe(this@MessageActivity, Observer {
-                Log.d("MessageSended",it.toString())
             })
     }
 
@@ -339,11 +325,8 @@ class MessageActivity : AppCompatActivity() {
                         sendMessage(AES.encrypt(message), receiverID)
                     userName?.let { getToken(message, receiverID, it) }
                     recognizeEmotion(message)
-
-//                    )
                 } else {
                     createChat(AES.encrypt(message), receiverID)
-//                    messageViewModel.createChatIfNotExist()
                     recognizeEmotion(message)
                 }
         }
@@ -352,7 +335,6 @@ class MessageActivity : AppCompatActivity() {
     private fun checkOnlineStatus( receiverID: String) {
        lifecycleScope.launch {
            messageViewModel.checkOnlineStatus(receiverID).observe(this@MessageActivity, Observer {
-//               messageBinding.online = it.online
 
                val typing = it.typing
                userName = it.name
@@ -406,7 +388,6 @@ class MessageActivity : AppCompatActivity() {
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
-            Log.d("ACTIVISENDNOTIFICATION", sendNotifi.toString())
         requestQueue.add(sendNotifi)
 
     }
@@ -470,9 +451,6 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun sendCurrentLocation() {
-//        val currentLocationTest = SplashScreen().gps
-//
-//       val currentLocation = currentLocationTest[0].toString() + "," + currentLocationTest[1].toString()
         val sharedPref : SharedPreferences = this@MessageActivity.
         getSharedPreferences("com.project.messaginapp.location", Context.MODE_PRIVATE)
 
@@ -525,7 +503,6 @@ class MessageActivity : AppCompatActivity() {
         var takePicture: ActivityResultLauncher<Uri>? = null
         takePicture =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-//                Toast.makeText(this, "In Launcher" + imageURI.toString(), Toast.LENGTH_LONG).show()
                 if (success) {
                     Log.d("IMAGEURIMESSAGE", imageURI.toString())
                     GlobalScope.launch (Dispatchers.IO){
@@ -581,17 +558,13 @@ class MessageActivity : AppCompatActivity() {
 
 
     private fun recognizeEmotion(message: String){
-        // Init TFLiteInterpreter
         val appUtil = AppUtil()
         val tokenizedMessage = classifier.tokenize(message.lowercase(Locale.getDefault()).trim().toString())
-        Log.d("TOKENIZEDMESSAGE", tokenizedMessage.toString())
         val paddedMessage = classifier.padSequence(tokenizedMessage)
-        for ( i in paddedMessage){
-            Log.d("PADDEDMESSAGEFORLOOP", i.toString())
-        }
-        Log.d("PADDEDMESSAGE", paddedMessage.size.toString())
+
         val results = classifySequence(paddedMessage)
         val maxResultValue = results.maxOrNull()
+
         val label1 = results[0]
         val label2 = results[1]
         val label3 = results[2]
@@ -625,16 +598,6 @@ class MessageActivity : AppCompatActivity() {
                 appUtil.setUserMood("#821747")
             }
         }
-
-
-        Log.d("RESULTEMOTION", results.toString())
-        Log.d("LABEL1", label1.toString())
-        Log.d("LABEL2", label2.toString())
-        Log.d("LABEL3", label3.toString())
-        Log.d("LABEL4", label4.toString())
-        Log.d("LABEL5", label5.toString())
-        Log.d("LABEL6", label6.toString())
-
 
     }
 
@@ -682,28 +645,14 @@ class MessageActivity : AppCompatActivity() {
 //                3849F, 4779F, 4322F)
 //        )
 
-        Log.d("SEQUENCESIZE", sequence.size.toString())
-        for ( i in sequence){
-            Log.d("PADDEDMESSAGECLASSIFIER", i.toString())
-        }
-
-        val results = FloatArray(sequence.size) { sequence[it].toFloat() }
-
-        Log.d("RSULTSFLOAT", results.toString())
-
         val inputs : Array<FloatArray> = arrayOf(
             sequence
         )
 
-        Log.d("INPUTSIZE", inputs[0].size.toString())
         val outputs : Array<FloatArray> = arrayOf(FloatArray( 6 ))
 
         tfLiteInterpreter?.run( inputs , outputs )
-        for ( i in inputs[0]){
-            Log.d("INPUTSEQUENCE", i.toString())
-        }
-        Log.d("INPUTSCLASSFYSEQ", inputs.size.toString())
-        Log.d("OUTPUTCLASSFYSEQ", outputs.size.toString())
+
         return outputs[0]
     }
 
